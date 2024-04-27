@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scraped Data</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'WishStack/css/scraped_data.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Mobile Phones</h1>
+        <div class="product-row">
+            {% for product, price, description, image in products %}
+            <div class="product-item">
+                <img src="{{ image }}" alt="{{ product }}">
+                <h2>{{ product }}</h2>
+                <p>Price: {{ price }}</p>
+                <p>Description: {{ description }}</p>
+                <button class="wish-button">Wish</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

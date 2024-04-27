@@ -1,0 +1,249 @@
+@media only screen and (max-width: 768px) {
+    /* Hide sub-menu for smaller screens */
+    .sub-menu {
+        display: none;
+    }
+    /* Show content below the title for smaller screens */
+    #about {
+        display: block;
+        padding: 20px;
+        text-align: center;
+		font-size: medium;
+    }
+}
+body{
+	background-image:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url('../images/Gift.png');
+}
+*{
+	margin: 0;
+	padding: 0;
+	
+}
+header{
+	
+	height: 100vh;
+	background-size: cover;
+	background-position: center;
+	min-height: 100px;
+}
+ul{
+    float:right;
+    list-style-type: none;
+    margin-top: 30px;
+    margin-right:-50px ; /* Adjust the value as needed */
+}
+ul li{
+	display: inline-block;
+}
+ul li a{
+	text-decoration: none;
+	color: #fff;
+	padding: 5px 20px;
+	border: 1px solid transparent;
+	transition: 0.5s ease;
+	font-family: Century Gothic
+
+}
+
+ul li a:hover{
+	background-color: #fff;
+	color: #000;
+}
+
+ul li.active a{
+background-color:#fff;
+	color: #000;
+
+}
+
+.logo img{
+	float: left;
+	width: 150px;
+	height: auto;
+}
+
+.main{
+	max-width: 1200px;
+	margin: auto;
+	text-align: center;
+}
+
+.title{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+}
+
+.title h1{
+	color: #fff;
+	font-size: 85px;
+	font-family: Century Gothic;
+	text-align: center;
+	
+}
+.title p{
+    font-size: 30px;
+    font-family: Brush Script MT;
+    color: #fff;
+    position: relative; /* Add position relative */
+    left: 50px; /* Adjust the value as needed */
+}
+
+
+
+
+.button{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+}
+
+.btn{
+	border: 1px solid #fff;
+	padding: 5px 20px;
+	color: #fff;
+	transition: 0.6s ease;
+	font-size: 18px;
+	text-decoration: none;
+}
+
+.btn:hover{
+	background-color: #fff;
+	color: #000;
+}
+
+.sub-menu{
+	display: none;
+    top:6%;
+    position: relative;
+	font-family: Century Gothic;
+}
+
+.sub-menu ul{
+	position: absolute;
+
+}
+
+.main ul li:hover .sub-menu
+{
+	display: block;
+	position: absolute;
+	background-color: rgb(0,45,117);
+	margin-top: 12px;
+	margin-left: -8px;
+}
+
+.main ul li:hover .sub-menu ul 
+{
+	display: block;
+	margin:6px;
+
+}
+.main ul li:hover .sub-menu ul li
+{
+	width: 75px;
+	padding: 5px;
+	border-bottom: 1px#fff;
+	background: transparent;
+	transition: 0.4s ease;
+	text-align: left;
+	border-radius: 0;
+	
+}
+
+.main ul li:hover .sub-menu ul li:last-child 
+{
+	border-bottom: none;
+}
+
+
+.about-section {
+    background: url("images/Gift.png");
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    background-attachment: fixed;
+    padding: 20px; /* Add padding to the about section */
+    text-align: center;
+    color: #fff; /* Set text color to white */
+    margin: 20px; /* Add some margin around the content */
+    border-radius: 10px; /* Add border-radius for rounded corners */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Add a shadow for depth */
+}
+
+.about-section h2 {
+    font-size: 36px; /* Increase the font size of the heading */
+    margin-bottom: 20px; /* Add some space below the heading */
+}
+
+.about-section p {
+    font-size: 18px; /* Increase the font size of the paragraphs */
+    line-height: 1.6; /* Increase the line height for better readability */
+}
+
+#contact {
+    background: url("images/Gift.png");
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    background-attachment: fixed;
+    padding: 20px; /* Add padding to the contact section */
+    text-align: center;
+    color: #fff;
+    margin: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	
+}
+.contact-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+
+#contact h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+#contact p {
+    font-size: 18px;
+    
+}
+
+#contact ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#contact ul li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+#contact ul li i {
+    align-items: center;
+    justify-content: center;
+}
+#contact ul li {
+   
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#contact ul li i {
+    
+    vertical-align: middle;
+    font-size: 24px;
+}
+.contact-section ul li:first-child {
+    margin-right: 90px; /* Adjust the value as needed */
+}
+
+

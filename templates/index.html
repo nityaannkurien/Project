@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WishStack</title>
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">  
+    <link rel="stylesheet" href="static/WishStack/css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="main">
+        
+         <ul>
+         <li class="active"><a href="#" onclick="showSection('home')">Home</a></li>
+         
+         <li><a href="#" onclick="showSection('about')">About Us</a></li>
+         
+         <li><a href="#" onclick="showSection('contact')">Contact Us</a></li>
+         {% if user.is_authenticated %}
+            <li><a href='/create'>Create Wishlist</a></li>
+         {% else %}
+            <li><a href="/login">Log in</a></li>
+         {% endif %}
+         
+        </ul>
+
+         </div>
+         <div class="title">
+            <h1>WISHSTACK</h1>
+                <p>A gift giving experience like no other!!</p>
+        </div>
+    </header>
+    <section id="home">
+        <!-- Home section content -->
+    </section>
+    <section id="about" style="display: none;">
+        <div class="about-section">
+            <h2>About Us</h2>
+            <p>Welcome to WishStack, where we believe that the art of gift-giving should be a joyous and seamless experience.</p>
+            <p>At WishStack, we've created a platform that allows you to curate your perfect wishlist, filled with items that you truly desire. Whether it's for a birthday, anniversary, or any special occasion, WishStack lets you create and customize your wishlist with ease.</p>
+        </div>
+    </section>
+    <section id="contact" style="display: none;">
+        <div class="contact-section">
+            <h2>Contact Us</h2>
+            <p>Feel free to contact us for any inquiries or assistance.</p>
+            <ul>
+                <li><i class="fa fa-phone"></i> <a href="tel:8075897739">8075897739</a></li>
+                <li><i class="fa fa-envelope"></i> <a href="mailto:wishstack@gmail.com">wishstack@gmail.com</a></li>
+            </ul>
+            <p style="margin-top: 20px;">We are here to help you with any questions or concerns you may have.</p>
+        </div>
+    </section>
+
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('section').forEach(section => {
+                section.style.display = 'none';
+            });
+
+            // Show the selected section
+            document.getElementById(sectionId).style.display = 'block';
+
+            // Scroll to the selected section
+            document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

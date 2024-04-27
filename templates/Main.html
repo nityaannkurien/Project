@@ -1,0 +1,40 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create WishList</title>
+    <link rel="stylesheet" href="{% static 'WishStack/css/Main.css' %}">
+    <style>
+      body {
+        background-image: url("{% static 'WishStack/images/Gift.png' %}");
+      }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <ul class="navbar-list">
+                <li style="text-align: center;"><a>Create your WishList</a></li>
+            </ul>
+            <div class="filter-dropdown">
+                Filter
+                <div class="filter-dropdown-content">
+                    <button id="highToLowBtn">High to Low</button>
+                    <button id="lowToHighBtn">Low to High</button>
+                </div>
+            </div>
+            <button class="share-button">Share</button>
+            <button class="logout-button">Logout</button>
+        </nav>
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="amazon-button" onclick="window.location.href='{% url 'scrape_flipkart' %}'" data-api-url="{% url 'start_wishing' %}?wishlistName={{ wishlist_name }}">Flipkart</button>
+        </div>
+    </div>
+    <script src="WishStack/js/Main.js"></script>
+    
+</body>
+</html>

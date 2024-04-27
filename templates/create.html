@@ -1,0 +1,83 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create WishList</title>
+    <link rel="stylesheet" href="{% static 'WishStack/css/create.css' %}">
+    <style>
+      body {
+        background-image: url("{% static 'WishStack/images/Gift.png' %}");
+      }
+    </style>
+</head>
+<body>
+  <div class="wrapper">
+    <nav class="navbar">
+      <ul class="navbar-list">
+        <li><a>{{ name }}'s WishList</a></li>
+      </ul>
+
+      <div class="profile-dropdown">
+        <div class="profile-dropdown-btn">
+          <div class="profile-img">
+            <img src="{% static 'WishStack/images/humanicon.jpeg' %}" alt="Profile Image" />
+          </div>
+          <ul class="profile-dropdown-list">
+            <li><a href="/edit"><i class="fa-regular fa-user"></i> Edit Profile</a></li>
+            <li><a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log out</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div id="wishlist-container" class="wishlist-container">
+      <div class="wishlist-item">
+        <div class="button-container">
+          <span>Create a wishlist</span>
+          <a href="/wishing/"><button class="add-button">+</button></a>
+          <div class="options-dropdown">
+            <img class="options-button" src="{% static 'WishStack/images/dots.jpeg' %}" alt="Options" />
+            <div class="options-dropdown-content">
+              <a href="#">Edit</a>
+              <a href="#">Delete</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let dropdownBtn = document.querySelector(".profile-dropdown-btn");
+
+    dropdownBtn.addEventListener("click", function() {
+      let dropdownList = dropdownBtn.querySelector(".profile-dropdown-list");
+      dropdownList.classList.toggle("active");
+    });
+
+    window.addEventListener("click", function(event) {
+      if (!dropdownBtn.contains(event.target)) {
+        let dropdownList = dropdownBtn.querySelector(".profile-dropdown-list");
+        dropdownList.classList.remove("active");
+      }
+    });
+    
+    let optionsBtn = document.querySelector(".options-button");
+
+    optionsBtn.addEventListener("click", function() {
+      let optionsDropdown = document.querySelector(".options-dropdown-content");
+      optionsDropdown.classList.toggle("active");
+    });
+
+    window.addEventListener("click", function(event) {
+      if (!optionsBtn.contains(event.target)) {
+        let optionsDropdown = document.querySelector(".options-dropdown-content");
+        optionsDropdown.classList.remove("active");
+      }
+    });
+  </script>
+</body>
+</html>
