@@ -82,10 +82,32 @@ h1 {
   color: white;
   padding: 12px 24px; /* Adjusted padding */
   border: none;
-  border-radius: 3px;
+  border-radius: 10px;
   cursor: pointer;
   font-size: 16px; /* Adjusted font size */
   position: relative;
   display: inline-flex;
   align-items: center;
 }
+.navigation {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.navigation a {
+  padding: 10px 20px;
+  margin: 0 10px;
+  text-decoration: none;
+  color: white;
+  border: 1px solid #333;
+  border-radius: 10px;
+  background-color: #df9953;
+}
+
+.navigation a:hover {
+  background-color: #e08f3f;
+  color: white;
+}
+
+/* Other CSS styles */

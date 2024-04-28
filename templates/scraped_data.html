@@ -7,7 +7,13 @@
 </head>
 <body>
     <div class="container">
-        <h1>Mobile Phones</h1>
+        <div class="navigation">
+            <a href="#mobiles">Mobile Phone</a>
+            <a href="#bedsheets">Bedsheet</a>
+            <a href="#homedecor">Home Decor</a>
+            <a href="#earbuds">Earbuds</a>
+        </div>
+        <h1 id="mobiles">Mobile Phones</h1>
         <div class="product-row">
             {% for product, price, description, image in products %}
             <div class="product-item">
@@ -15,7 +21,40 @@
                 <h2>{{ product }}</h2>
                 <p>Price: {{ price }}</p>
                 <p>Description: {{ description }}</p>
-                <button class="wish-button"  onclick="window.location.href='{% url 'main' %}'">Wish</button>
+                <button class="wish-button">Wish</button>
+            </div>
+            {% endfor %}
+        </div>
+        <h1 id="bedsheets">Bedsheets</h1>
+        <div class="product-row">
+            {% for product, price, image in products1 %}
+            <div class="product-item">
+                <img src="{{ image }}" alt="{{ product }}">
+                <h2>{{ product }}</h2>
+                <p>Price: {{ price }}</p>
+                <button class="wish-button">Wish</button>
+            </div>
+            {% endfor %}
+        </div>
+        <h1 id="homedecor">Home Decor</h1>
+        <div class="product-row">
+            {% for product, price, image in products2 %}
+            <div class="product-item">
+                <img src="{{ image }}" alt="{{ product }}">
+                <h2>{{ product }}</h2>
+                <p>Price: {{ price }}</p>
+                <button class="wish-button">Wish</button>
+            </div>
+            {% endfor %}
+        </div>
+        <h1 id="earbuds">Earbuds</h1>
+        <div class="product-row">
+            {% for product, price, image in products4 %}
+            <div class="product-item">
+                <img src="{{ image }}" alt="{{ product }}">
+                <h2>{{ product }}</h2>
+                <p>Price: {{ price }}</p>
+                <button class="wish-button">Wish</button>
             </div>
             {% endfor %}
         </div>
