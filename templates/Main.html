@@ -28,13 +28,15 @@
                 </div>
             </div>
             <button class="share-button">Share</button>
-            <button class="logout-button">Logout</button>
+            <button class="logout-button" onclick="window.location.href='{% url 'logout' %}'">Logout</button>
+
         </nav>
         <div style="text-align: center; margin-top: 20px;">
             <button class="amazon-button" onclick="window.location.href='{% url 'scrape_flipkart' %}'" data-api-url="{% url 'start_wishing' %}?wishlistName={{ wishlist_name }}">Flipkart</button>
         </div>
     </div>
     <script src="WishStack/js/Main.js"></script>
+
     
     
 </body>
