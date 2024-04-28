@@ -88,6 +88,17 @@
     let existingWishlistContainer = document.getElementById('wishlist-container');
     let clonedWishlistContainer = existingWishlistContainer.cloneNode(true);
 
+    // Remove the button from the cloned item
+    let addButton = clonedWishlistContainer.querySelector('.add-button');
+      addButton.parentNode.removeChild(addButton);
+    
+    // Remove the label from the cloned item
+    let labelSpan = clonedWishlistContainer.querySelector('span');
+      labelSpan.parentNode.removeChild(labelSpan);
+
+    // Add a link to the cloned item
+   
+
     // Append the cloned wishlist container to the new wishlist container
     newWishlistContainer.appendChild(clonedWishlistContainer);
 

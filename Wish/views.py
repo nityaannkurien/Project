@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -8,6 +8,8 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.urls import reverse
 import requests
+
+
 from bs4 import BeautifulSoup
 import urllib.request
 # Create your views here.
@@ -97,6 +99,7 @@ def start_wishing(request):
         return redirect(reverse("home"))  # Redirect to the home page if no wishlist name is provided
     # Redirect to the API URL with the wishlist name as a query parameter
     return redirect(f"https://example.com/api?wishlistName={wishlist_name}")
+    HttpResponseRedirect('/main')
 
 def scrape_flipkart(request):
     Product_name = []
@@ -144,3 +147,5 @@ def scrape_flipkart(request):
         'products': zip(Product_name, Prices, Description, Images)
     }
     return render(request, 'scraped_data.html', context)
+
+
