@@ -37,7 +37,7 @@
       <div class="wishlist-item">
         <div class="button-container">
           <span>Create a wishlist</span>
-          <a href="/wishing/"><button class="add-button">+</button></a>
+          <a href="/wishing/"><button class="add-button" onclick="addBox()">+</button></a>
           <div class="options-dropdown">
             <img class="options-button" src="{% static 'WishStack/images/dots.jpeg' %}" alt="Options" />
             <div class="options-dropdown-content">
@@ -78,6 +78,27 @@
         optionsDropdown.classList.remove("active");
       }
     });
+
+    function addBox() {
+    // Create a new wishlist container
+    let newWishlistContainer = document.createElement('div');
+    newWishlistContainer.className = 'wishlist-container';
+
+    // Clone the existing wishlist container
+    let existingWishlistContainer = document.getElementById('wishlist-container');
+    let clonedWishlistContainer = existingWishlistContainer.cloneNode(true);
+
+    // Append the cloned wishlist container to the new wishlist container
+    newWishlistContainer.appendChild(clonedWishlistContainer);
+
+    // Append the new wishlist container to the wrapper
+    let wrapper = document.querySelector('.wrapper');
+    wrapper.appendChild(newWishlistContainer);
+
+    // Redirect to the wishing.html page
+    window.location.href = "/WishStack/wishing.html";
+}
+
   </script>
 </body>
 </html>
