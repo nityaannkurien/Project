@@ -34,15 +34,15 @@
     </nav>
 
     <div id="wishlist-container" class="wishlist-container">
-      <div class="wishlist-item">
+      <div class="wishlist-item" onclick="redirectToWishing()">
         <div class="button-container">
           <span>Create a wishlist</span>
           <a href="/wishing/"><button class="add-button" onclick="addBox()">+</button></a>
           <div class="options-dropdown">
             <img class="options-button" src="{% static 'WishStack/images/dots.jpeg' %}" alt="Options" />
             <div class="options-dropdown-content">
-              <a href="#">Edit</a>
-              <a href="#">Delete</a>
+              <a href="">Edit</a>
+              <a href="" onclick="deleteBox(this)">Delete</a>
             </div>
           </div>
         </div>
@@ -64,7 +64,7 @@
         dropdownList.classList.remove("active");
       }
     });
-    
+
     let optionsBtn = document.querySelector(".options-button");
 
     optionsBtn.addEventListener("click", function() {
@@ -79,37 +79,38 @@
       }
     });
 
-    function addBox() {
-    // Create a new wishlist container
-    let newWishlistContainer = document.createElement('div');
-    newWishlistContainer.className = 'wishlist-container';
+    function deleteBox(element) {
+    let wishlistContainer = element.closest('.wishlist-container');
+    wishlistContainer.parentNode.removeChild(wishlistContainer);
+}
 
-    // Clone the existing wishlist container
+
+    function addBox() {
     let existingWishlistContainer = document.getElementById('wishlist-container');
     let clonedWishlistContainer = existingWishlistContainer.cloneNode(true);
 
-    // Remove the button from the cloned item
     let addButton = clonedWishlistContainer.querySelector('.add-button');
-      addButton.parentNode.removeChild(addButton);
-    
-    // Remove the label from the cloned item
+    addButton.parentNode.removeChild(addButton);
+
     let labelSpan = clonedWishlistContainer.querySelector('span');
-      labelSpan.parentNode.removeChild(labelSpan);
+    labelSpan.parentNode.removeChild(labelSpan);
 
-    // Add a link to the cloned item
-   
+    let label = document.createElement('label');
+    label.textContent = 'Create a wishlist';
+    
+    // Append the label to the wishlist-item
+    let wishlistItem = clonedWishlistContainer.querySelector('.wishlist-item');
+    wishlistItem.appendChild(label);
 
-    // Append the cloned wishlist container to the new wishlist container
-    newWishlistContainer.appendChild(clonedWishlistContainer);
-
-    // Append the new wishlist container to the wrapper
     let wrapper = document.querySelector('.wrapper');
-    wrapper.appendChild(newWishlistContainer);
-
-    // Redirect to the wishing.html page
-    window.location.href = "/WishStack/wishing.html";
+    wrapper.appendChild(clonedWishlistContainer);
 }
 
+
+
+    function redirectToWishing() {
+      window.location.href = "/WishStack/wishing.html";
+    }
   </script>
 </body>
 </html>
