@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scraped Data</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'WishStack/css/scraped_data.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="navigation">
+            <a href="#Women">Women Clothing</a>
+            <a href="#Men">Men Clothing</a>
+            <a href="#Boy">Boy Clothing</a>
+            <a href="#Girl">Girl Clothing</a>
+        </div>
+        <h1 id="mobiles">Women Clothing</h1>
+        <div class="product-row">
+            {% for product, price, description, image in products %}
+            <div class="product-item">
+                <img src="{{ image }}" alt="{{ product }}">
+                <h2>{{ product }}</h2>
+                <p>Price: {{ price }}</p>
+                <p>Description: {{ description }}</p>
+                <button class="wish-button">Wish</button>
+            </div>
+            {% endfor %}
+        </div>
+        <h1 id="Men">Men Clothing</h1>
+        <div class="product-row">
+            {% for product, price, description, image in products1 %}
+            <div class="product-item">
+                <img src="{{ image }}" alt="{{ product }}">
+                <h2>{{ product }}</h2>
+                <p>Price: {{ price }}</p>
+                <p>Description: {{ description }}</p>
+                <button class="wish-button">Wish</button>
+            </div>
+            {% endfor %}
+        </div>
+        <h1 id="Boy">Boy Clothing</h1>
+        <div class="product-row">
+            {% for product, price, description, image in products2 %}
+            <div class="product-item">
+                <img src="{{ image }}" alt="{{ product }}">
+                <h2>{{ product }}</h2>
+                <p>Price: {{ price }}</p>
+                <p>Description: {{ description }}</p>
+                <button class="wish-button">Wish</button>
+            </div>
+            {% endfor %}
+        </div>
+        <h1 id="Girl">Girl Clothing</h1>
+        <div class="product-row">
+            {% for product, price, description, image in products4 %}
+            <div class="product-item">
+                <img src="{{ image }}" alt="{{ product }}">
+                <h2>{{ product }}</h2>
+                <p>Price: {{ price }}</p>
+                <p>Description: {{ description }}</p>
+                <button class="wish-button">Wish</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
