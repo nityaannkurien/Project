@@ -4,15 +4,54 @@
 <head>
     <title>Scraped Data</title>
     <link rel="stylesheet" type="text/css" href="{% static 'WishStack/css/scraped_data.css' %}">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            padding-top: 60px; /* Adjust based on the height of your fixed navigation */
+        }
+
+        .navigation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            padding: 10px 0;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .navigation a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            display: inline-block;
+        }
+
+        .navigation a:hover {
+            background-color: #555;
+        }
+
+        h1 {
+            margin-top: 40px; /* Adjust based on the height of your fixed navigation */
+            padding-top: 20px; /* Add some space above the heading */
+            border-top: 1px solid #ddd;
+        }
+    </style>
 </head>
 <body>
+    <div class="navigation">
+        <a href="#mobiles">Women Clothing</a>
+        <a href="#Men">Men Clothing</a>
+        <a href="#Boy">Boy Clothing</a>
+        <a href="#Girl">Girl Clothing</a>
+    </div>
     <div class="container">
-        <div class="navigation">
-            <a href="#Women">Women Clothing</a>
-            <a href="#Men">Men Clothing</a>
-            <a href="#Boy">Boy Clothing</a>
-            <a href="#Girl">Girl Clothing</a>
-        </div>
         <h1 id="mobiles">Women Clothing</h1>
         <div class="product-row">
             {% for product, price, description, image in products %}
