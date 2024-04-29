@@ -17,7 +17,6 @@ urlpatterns = [
     path('api/', views.api_view, name='api'),  
     path("start-wishing/", views.start_wishing, name="start_wishing"),
     path('scrape/', scrape_flipkart, name='scrape_flipkart'),
-    path('scrape/', scrape_flipkart, name='scrape_flipkart'),
     path('scrape1/', scrape_flipkart1, name='scrape_flipkart1'),
-   
+    
 ]

@@ -48,6 +48,23 @@
         </div>
       </div>
     </div>
+
+    {% for j in listname %}
+    <div id="wishlist-container" class="wishlist-container">
+      <div class="wishlist-item" onclick="redirectToWishing()">
+        <div class="button-container">
+          <span>{{ j.wishlist_name }}</span>
+          <div class="options-dropdown">
+            <img class="options-button" src="{% static 'WishStack/images/dots.jpeg' %}" alt="Options" />
+            <div class="options-dropdown-content">
+              <a href="">Edit</a>
+              <a href="" onclick="deleteBox(this)">Delete</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
   </div>
 
   <script>

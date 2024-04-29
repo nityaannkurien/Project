@@ -11,6 +11,7 @@ import requests
 from bs4 import BeautifulSoup
 import urllib.request
 import requests
+from .models import List,ListItem
 
 
 from bs4 import BeautifulSoup
@@ -57,7 +58,8 @@ def signup(request):
 def create(request):
     if request.user.is_authenticated:
         username = request.user
-        variable = {'name': username.first_name}
+        items = List.objects.all()
+        variable = {'name': username.first_name, 'listname' : items}
         return render(request, 'create.html', variable)
     return redirect('/login')
 
@@ -523,4 +525,28 @@ def scrape_flipkart1(request):
     }
     
     return render(request, 'scraped_data1.html', context)
+
+def add_to_wishlist(request):
+    if request.method == 'POST' and request.is_ajax():
+        # Get the product ID from the request
+        product_id = request.POST.get('product_id')
+
+        # Perform operations to add the product to the wishlist
+        # You can save the product ID in the user's session, database, or any other storage mechanism
+
+        # For demonstration purposes, let's assume we have a Product model
+        # and we retrieve the product details to return in the response
+        from .models import Product
+        try:
+            product = Product.objects.get(id=product_id)
+            # Simulate adding the product to the wishlist
+            # You should replace this with your actual logic
+            # For example, you might save the product ID to the user's profile
+            return JsonResponse({'success': True, 'product_name': product.name})
+        except Product.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Product not found'}, status=404)
+    else:
+        # Handle invalid requests
+        return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
+
 
