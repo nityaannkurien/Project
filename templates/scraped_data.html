@@ -4,60 +4,99 @@
 <head>
     <title>Scraped Data</title>
     <link rel="stylesheet" type="text/css" href="{% static 'WishStack/css/scraped_data.css' %}">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            padding-top: 60px; /* Adjust based on the height of your fixed navigation */
+        }
+
+        .navigation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            padding: 10px 0;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .navigation a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            display: inline-block;
+        }
+
+        .navigation a:hover {
+            background-color: #555;
+        }
+
+        h1 {
+            margin-top: 40px; /* Adjust based on the height of your fixed navigation */
+            padding-top: 20px; /* Add some space above the heading */
+            border-top: 1px solid #ddd;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
         <div class="navigation">
             <a href="#mobiles">Mobile Phone</a>
             <a href="#bedsheets">Bedsheet</a>
             <a href="#homedecor">Home Decor</a>
             <a href="#earbuds">Earbuds</a>
         </div>
-        <h1 id="mobiles">Mobile Phones</h1>
-        <div class="product-row">
-            {% for product, price, description, image in products %}
-            <div class="product-item">
-                <img src="{{ image }}" alt="{{ product }}">
-                <h2>{{ product }}</h2>
-                <p>Price: {{ price }}</p>
-                <p>Description: {{ description }}</p>
-                <button class="wish-button">Wish</button>
+        <div class="container">
+            <h1 id="mobiles">Mobile Phones</h1>
+            <div class="product-row">
+                {% for product, price, description, image in products %}
+                <div class="product-item">
+                    <img src="{{ image }}" alt="{{ product }}">
+                    <h2>{{ product }}</h2>
+                    <p>Price: {{ price }}</p>
+                    <p>Description: {{ description }}</p>
+                    <button class="wish-button">Wish</button>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
-        <h1 id="bedsheets">Bedsheets</h1>
-        <div class="product-row">
-            {% for product, price, image in products1 %}
-            <div class="product-item">
-                <img src="{{ image }}" alt="{{ product }}">
-                <h2>{{ product }}</h2>
-                <p>Price: {{ price }}</p>
-                <button class="wish-button">Wish</button>
+            <h1 id="bedsheets">Bedsheets</h1>
+            <div class="product-row">
+                {% for product, price, image in products1 %}
+                <div class="product-item">
+                    <img src="{{ image }}" alt="{{ product }}">
+                    <h2>{{ product }}</h2>
+                    <p>Price: {{ price }}</p>
+                    <button class="wish-button">Wish</button>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
-        <h1 id="homedecor">Home Decor</h1>
-        <div class="product-row">
-            {% for product, price, image in products2 %}
-            <div class="product-item">
-                <img src="{{ image }}" alt="{{ product }}">
-                <h2>{{ product }}</h2>
-                <p>Price: {{ price }}</p>
-                <button class="wish-button">Wish</button>
+            <h1 id="homedecor">Home Decor</h1>
+            <div class="product-row">
+                {% for product, price, image in products2 %}
+                <div class="product-item">
+                    <img src="{{ image }}" alt="{{ product }}">
+                    <h2>{{ product }}</h2>
+                    <p>Price: {{ price }}</p>
+                    <button class="wish-button">Wish</button>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
-        <h1 id="earbuds">Earbuds</h1>
-        <div class="product-row">
-            {% for product, price, image in products4 %}
-            <div class="product-item">
-                <img src="{{ image }}" alt="{{ product }}">
-                <h2>{{ product }}</h2>
-                <p>Price: {{ price }}</p>
-                <button class="wish-button">Wish</button>
+            <h1 id="earbuds">Earbuds</h1>
+            <div class="product-row">
+                {% for product, price, image in products4 %}
+                <div class="product-item">
+                    <img src="{{ image }}" alt="{{ product }}">
+                    <h2>{{ product }}</h2>
+                    <p>Price: {{ price }}</p>
+                    <button class="wish-button">Wish</button>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
-    </div>
 </body>
 </html>

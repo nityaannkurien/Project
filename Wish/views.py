@@ -12,6 +12,8 @@ from bs4 import BeautifulSoup
 import urllib.request
 import requests
 from .models import List,ListItem
+from django.http import JsonResponse
+
 
 
 from bs4 import BeautifulSoup
@@ -876,35 +878,3 @@ def scrape_flipkart1(request):
     
     return render(request, 'scraped_data1.html', context)
 
-async def scraped_data1(request):
-    # Simulating asynchronous scraping of data from Flipkart for women's clothing
-    women_clothing_task = asyncio.create_task(scrape_flipkart_women_clothing())
-    
-    # Simulate delay and wait for the task to complete
-    await asyncio.sleep(random.randint(3, 5))
-    
-    # Retrieve the scraped data (mocked)
-    women_clothing_data = women_clothing_task.result()
-    
-    # Mock data for men's clothing
-    men_clothing_data = ["Men's Item 1", "Men's Item 2", "Men's Item 3"]
-    
-    # Mock data for boy's clothing
-    boy_clothing_data = ["Boy's Item 1", "Boy's Item 2", "Boy's Item 3"]
-    
-    # Mock data for girl's clothing
-    girl_clothing_data = ["Girl's Item 1", "Girl's Item 2", "Girl's Item 3"]
-    
-    context = {
-        'women_clothing_data': women_clothing_data,
-        'men_clothing_data': men_clothing_data,
-        'boy_clothing_data': boy_clothing_data,
-        'girl_clothing_data': girl_clothing_data,
-    }
-    
-    return render(request, 'scraped_data1.html', context)
-
-async def scrape_flipkart_women_clothing():
-    # Simulating scraping data from Flipkart for women's clothing (mocked)
-    await asyncio.sleep(random.randint(3, 5))  # Simulate delay
-    return ["Women's Item 1", "Women's Item 2", "Women's Item 3"]
