@@ -42,7 +42,7 @@
             <img class="options-button" src="{% static 'WishStack/images/dots.jpeg' %}" alt="Options" />
             <div class="options-dropdown-content">
               <a href="">Edit</a>
-              <a href="" onclick="deleteBox(this)">Delete</a>
+              <a href="" onclick="deleteList('{{ wishlist_id }}')">Delete</a>
             </div>
           </div>
         </div>
@@ -58,7 +58,10 @@
             <img class="options-button" src="{% static 'WishStack/images/dots.jpeg' %}" alt="Options" />
             <div class="options-dropdown-content">
               <a href="">Edit</a>
-              <a href="" onclick="deleteBox(this)">Delete</a>
+             <!-- Update the href attribute to include the wishlist ID -->
+              <a href="{% url 'delete_list' wishlist_id=j.wishlist_id %}">Delete</a>
+
+
             </div>
           </div>
         </div>
@@ -96,10 +99,6 @@
       }
     });
 
-    function deleteBox(element) {
-    let wishlistContainer = element.closest('.wishlist-container');
-    wishlistContainer.parentNode.removeChild(wishlistContainer);
-}
 
 
     function addBox() {
@@ -126,8 +125,41 @@
 
 
     function redirectToWishing() {
-      window.location.href = "/WishStack/wishing.html";
+      window.location.href = "/create/";
     }
+
+    function deleteList(wishlistId) {
+    // You can use AJAX to send a POST request to the server to delete the wishlist
+    // Here's an example using fetch API
+    fetch(`/delete/${wishlistId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            // You may need to include CSRF token if your Django project requires it
+            // 'X-CSRFToken': getCookie('csrftoken') // Example of getting CSRF token from a cookie
+        },
+        // You can include additional data in the request body if needed
+        // body: JSON.stringify({ wishlistId: wishlistId })
+    })
+    .then(response => {
+        if (response.ok) {
+            // Wishlist deleted successfully, you can perform any additional actions here
+            console.log('Wishlist deleted successfully');
+            // For example, you may want to remove the deleted wishlist from the UI
+            // You can do this using JavaScript DOM manipulation
+            // Example: document.getElementById(`wishlist-${wishlistId}`).remove();
+        } else {
+            // Wishlist deletion failed, handle error if needed
+            console.error('Failed to delete wishlist');
+        }
+    })
+    .catch(error => {
+        console.error('Error deleting wishlist:', error);
+    });
+}
+
+
+
   </script>
 </body>
 </html>

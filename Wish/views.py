@@ -13,6 +13,7 @@ import urllib.request
 import requests
 from .models import List,ListItem
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 
 
 
@@ -499,3 +500,18 @@ def add_to_wishlist(request):
         return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
 
 
+
+def deleteList(request, wishlist_id):
+        # Assuming you have a List model and each wishlist has a unique ID
+        # Retrieve the wishlist object
+        wishlist = get_object_or_404(List, wishlist_id=wishlist_id)
+        print(wishlist_id)
+
+        # Perform deletion logic here, for example:
+        wishlist.delete()
+
+        # Return a success response
+        return redirect('/create')
+    #else:
+        # Return a failure response if the request is not POST or not AJAX
+        #return redirect('/create')

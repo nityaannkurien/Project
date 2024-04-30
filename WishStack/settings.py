@@ -69,6 +69,7 @@ TEMPLATES = [
     },
 ]
 
+APPEND_SLASH = False
 WSGI_APPLICATION = 'WishStack.wsgi.application'
 
 
