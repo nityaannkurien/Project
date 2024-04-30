@@ -54,46 +54,46 @@
         <div class="container">
             <h1 id="mobiles">Mobile Phones</h1>
             <div class="product-row">
-                {% for product, price, description, image in products %}
+                {% for product, price, description, image,product_id in products %}
                 <div class="product-item">
                     <img src="{{ image }}" alt="{{ product }}">
                     <h2>{{ product }}</h2>
                     <p>Price: {{ price }}</p>
                     <p>Description: {{ description }}</p>
-                    <button class="wish-button">Wish</button>
+                    <button class="wish-button" data-product-id="{{product_id}}">Wish</button>
                 </div>
                 {% endfor %}
             </div>
             <h1 id="bedsheets">Bedsheets</h1>
             <div class="product-row">
-                {% for product, price, image in products1 %}
+                {% for product, price, image, product_id in products1 %}
                 <div class="product-item">
                     <img src="{{ image }}" alt="{{ product }}">
                     <h2>{{ product }}</h2>
                     <p>Price: {{ price }}</p>
-                    <button class="wish-button">Wish</button>
+                    <button class="wish-button"  data-product-id="{{product_id}}">Wish</button>
                 </div>
                 {% endfor %}
             </div>
             <h1 id="homedecor">Home Decor</h1>
             <div class="product-row">
-                {% for product, price, image in products2 %}
+                {% for product, price, image, product_id in products2 %}
                 <div class="product-item">
                     <img src="{{ image }}" alt="{{ product }}">
                     <h2>{{ product }}</h2>
                     <p>Price: {{ price }}</p>
-                    <button class="wish-button">Wish</button>
+                    <button class="wish-button"  data-product-id="{{product_id}}">Wish</button>
                 </div>
                 {% endfor %}
             </div>
             <h1 id="earbuds">Earbuds</h1>
             <div class="product-row">
-                {% for product, price, image in products4 %}
+                {% for product, price, image, product_id in products4 %}
                 <div class="product-item">
                     <img src="{{ image }}" alt="{{ product }}">
                     <h2>{{ product }}</h2>
                     <p>Price: {{ price }}</p>
-                    <button class="wish-button">Wish</button>
+                    <button class="wish-button" data-product-id="{{product_id}}">Wish</button>
                 </div>
                 {% endfor %}
             </div>
