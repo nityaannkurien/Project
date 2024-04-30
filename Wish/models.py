@@ -10,12 +10,13 @@ import uuid
 class List(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE,null=True, blank=True)
-    wishlist_name =  models.CharField(max_length=255)
+    
     wishlist_id = models.UUIDField(default=uuid.uuid4, unique=True, editable=True)
+    wishlist_name =  models.CharField(max_length=255)
     description =models.TextField(null=True,blank=True)
 
     def __str__(self):
-        return self.wishlist_name
+        return str(self.wishlist_id)
     
 class ListItem(models.Model):
     wishlist = models.ForeignKey(List, on_delete=models.CASCADE, related_name='items')
