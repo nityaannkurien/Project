@@ -16,6 +16,7 @@ from django.http import JsonResponse
 
 
 
+
 from bs4 import BeautifulSoup
 import urllib.request
 # Create your views here.
@@ -96,6 +97,12 @@ def index(request):
     return render(request, 'index.html')
 
 def main(request):
+    if request.method=="POST":
+        wishname = request.POST.get('wishname')
+        wishdesc = request.POST.get('wishdesc')
+
+        namew=List( wishlist_name = wishname,description = wishdesc, user=request.user)
+        namew.save()
     return render(request, 'main.html')
 
 def api_view(request):
