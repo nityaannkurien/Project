@@ -32,7 +32,7 @@ def loginUser(request):
         user =  authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('/create')
+            return redirect('/create/')
         else:
             messages.error(request, 'Invalid Email or Password')
             return render(request, 'login.html')
@@ -124,7 +124,7 @@ def scrape_flipkart(request):
     Description = []
     Images = []
     Product_id=[]
-    j=0
+    j=1
     url = "https://www.flipkart.com/search?q=mobiles+under+50000&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page="+str(1)
     r = requests.get(url)
     soup = BeautifulSoup(r.text, "lxml")
@@ -286,6 +286,41 @@ def scrape_flipkart(request):
     }
     
     return render(request, 'scraped_data.html', context)
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -295,7 +330,7 @@ def scrape_flipkart1(request):
     Description = []
     Images = []
     Product_id=[]
-    j=0
+    j=1
     url = "https://www.flipkart.com/search?q=tops+for+women&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page=4"
     r = requests.get(url)
     soup = BeautifulSoup(r.text, "lxml")
@@ -493,11 +528,10 @@ def deleteList(request, wishlist_id):
         #return redirect('/create')
 
 
-def add_to_wishlist(request, product_id):
-    if request.user.is_authenticated:
-        product = Product.objects.get(item_id=product_id)
-        wish_item, created = ListItem.objects.get_or_create(user=request.user, product=product)
-        if created:
-            return JsonResponse({'success': True})
-    return JsonResponse({'success': False})
+def add_to_wishlist(request,item_name,item_id,description,price,image):
+
+        details_store=ItemDetails( item_name = item_name,item_id=item_id,description = description, price=price,image=image)
+        details_store.save()
+        
+        return redirect('/')
 

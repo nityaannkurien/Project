@@ -19,4 +19,5 @@ urlpatterns = [
     path('scrape/', scrape_flipkart, name='scrape_flipkart'),
     path('scrape1/', scrape_flipkart1, name='scrape_flipkart1'),
     path('delete/<uuid:wishlist_id>/', views.deleteList, name='delete_list'),
+    path('add-item/<str:item_name>/<int:item_id>/<str:description>/<str:price>/<str:image>',views.add_to_wishlist,name='add_to_wishlist')
 ]

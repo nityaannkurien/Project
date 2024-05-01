@@ -54,13 +54,13 @@
         <div class="container">
             <h1 id="mobiles">Mobile Phones</h1>
             <div class="product-row">
-                {% for product, price, description, image,product_id in products %}
+                {% for product, pri, desc, img,product_id in products %}
                 <div class="product-item">
-                    <img src="{{ image }}" alt="{{ product }}">
+                    <img src="{{ img }}" alt="{{ product }}">
                     <h2>{{ product }}</h2>
-                    <p>Price: {{ price }}</p>
-                    <p>Description: {{ description }}</p>
-                    <button class="wish-button" data-product-id="{{product_id}}">Wish</button>
+                    <p>Price: {{ pri }}</p>
+                    <p>Description: {{ desc }}</p>
+                    <button href="{% url 'add_to_wishlist' item_name=product item_id=product_id description=desc price=pri image=img %}" class="wish-button">Wish</button>
                 </div>
                 {% endfor %}
             </div>
