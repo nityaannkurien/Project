@@ -11,6 +11,7 @@ import requests
 from bs4 import BeautifulSoup
 import urllib.request
 import requests
+from .models import List,ListItem
 
 
 # Create your views here.
@@ -96,7 +97,7 @@ def main(request):
 
         namew=List( wishlist_name = wishname,description = wishdesc, user=request.user)
         namew.save()
-    return render(request, 'main.html')
+    return render(request, 'wishlist_page.html')
 
 def api_view(request):
     return render(request, 'api.html')
@@ -106,7 +107,7 @@ def start_wishing(request):
         return redirect(reverse("home"))  # Redirect to the home page if no wishlist name is provided
     # Redirect to the API URL with the wishlist name as a query parameter
     return redirect(f"https://example.com/api?wishlistName={wishlist_name}")
-    HttpResponseRedirect('/main')
+    HttpResponseRedirect('/wishlist_page')
 
 
 
@@ -493,3 +494,5 @@ def add_to_wishlist(request, product_id):
             return JsonResponse({'success': True})
     return JsonResponse({'success': False})
 
+def wishing_page(request):
+    return render(request, 'wishing_page.html')
