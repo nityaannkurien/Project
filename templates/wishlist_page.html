@@ -1,0 +1,130 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="wish.css">
+    <title>Item List</title>
+   
+</head>
+<body>
+<div class="wrapper">
+<div class="container">
+    <h2>Item List</h2>
+    <div class="input-group">
+        <div class="input-container">
+
+        <input type="text" id="itemInput" placeholder="Enter item...">
+        <button onclick="addItem()">Add</button>
+        
+    </div>
+    <ul class="item-list" id="itemList">
+        <!-- Items will be displayed here -->
+    </ul>
+</div>
+</div>
+</div>
+<script>
+    function addItem() {
+        // Get the value from the input field
+        var newItem = document.getElementById("itemInput").value;
+        if (newItem.trim() === "") {
+                alert("Please enter a wishlist name.");
+                return;
+            }
+        // Create a new list item element
+        var li = document.createElement("li");
+
+        // Create a delete button
+        var deleteBtn = document.createElement("button");
+        deleteBtn.innerHTML = "&#10006;"; // Cross mark symbol
+        deleteBtn.className = "delete-btn";
+        deleteBtn.onclick = function() {
+            // Remove the item from the list
+            li.remove();
+        };
+
+        // Create a status container
+        var statusContainer = document.createElement("div");
+        statusContainer.className = "status-container";
+
+        // Create a "Buy" button
+        var buyBtn = document.createElement("button");
+        buyBtn.textContent = "Buy";
+        buyBtn.className = "buy-btn";
+        buyBtn.onclick = function() {
+            // Implement your buy functionality here
+            buyBtn.classList.add('active');
+            boughtBtn.classList.remove('active');
+            goingToPurchaseBtn.classList.remove('active')
+            
+        };
+
+        // Create a "Bought" button
+        var boughtBtn = document.createElement("button");
+        boughtBtn.textContent = "Bought";
+        boughtBtn.className = "status-btn1";
+        boughtBtn.onclick = function() {
+            // Set status to "Bought"
+           
+            buyBtn.classList.remove('active');
+            boughtBtn.classList.add('active');
+            goingToPurchaseBtn.classList.remove('active');
+        };
+
+        // Create a "Going to Purchase" button
+        var goingToPurchaseBtn = document.createElement("button");
+        goingToPurchaseBtn.textContent = "Going to Purchase";
+        goingToPurchaseBtn.className = "status-btn2";
+        goingToPurchaseBtn.onclick = function() {
+            // Set status to "Going to Purchase"
+            
+            buyBtn.classList.remove('active');
+            boughtBtn.classList.remove('active');
+            goingToPurchaseBtn.classList.add('active');
+        };
+
+        // Create a status text element
+        var statusText = document.createElement("span");
+        statusText.className = "status-text";
+        statusText.textContent = ""; // Initially empty
+
+        // Function to set status
+        function setStatus(status) {
+            statusText.textContent = status;
+            // Reset status buttons background color
+            boughtBtn.classList.remove("bought");
+            goingToPurchaseBtn.classList.remove("going-to-purchase");
+            // Set background color based on status
+            if (status === "Bought") {
+                boughtBtn.classList.add("bought");
+            } else if (status === "Going to Purchase") {
+                goingToPurchaseBtn.classList.add("going-to-purchase");
+            }
+        }
+
+        // Append the delete button, item text, status container to the list item
+        li.appendChild(deleteBtn);
+        li.appendChild(document.createTextNode(newItem));
+        li.appendChild(statusContainer);
+
+        // Append the "Buy" button, "Bought" button, and "Going to Purchase" button to the status container
+        statusContainer.appendChild(buyBtn);
+        statusContainer.appendChild(boughtBtn);
+        statusContainer.appendChild(goingToPurchaseBtn);
+        statusContainer.appendChild(deleteBtn);
+
+        // Append the new item with the status container to the list
+        document.getElementById("itemList").appendChild(li);
+
+        // Clear the input field after adding the item
+        document.getElementById("itemInput").value = "";
+    }
+
+    
+</script>
+
+</body>
+</html>

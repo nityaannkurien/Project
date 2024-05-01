@@ -1,0 +1,158 @@
+/* POPPINS FONT */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+body {
+    background: url("../miniproject/Gift.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+   
+
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 110vh;
+    background: rgba(39, 39, 39, 0.4);
+    width: 100%;
+    padding: 20px;
+}
+
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+  }
+
+  h2 {
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500; /* Reduced boldness */
+    font-size: 50px;
+}
+
+.input-group input[type="text"] 
+ {
+    color: rgb(248, 239, 239); /* Set text color to white */
+    margin-bottom: 10px;
+    border-radius: 30px;
+    border: 1px;
+    margin-top: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    outline: none;
+    transition: .2s ease;
+    height: 50px;
+    width: 500px;
+    padding: 0 10px 0 45px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: rgba(255, 255, 255, 0.7);
+    color: black;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-top: 20px;
+    height: 50px;
+    width: 100px;
+    text-align: center; /* Center align text */
+
+    font-weight: 500; /* Make text slightly more bold */
+}
+
+.delete-btn {
+    background-color: rgb(232, 66, 66); /* Change the background color */
+    color: white; /* Change the text color */
+    font-size: 15px; /* Change the font size */
+    cursor: pointer;
+    padding: 8px; /* Adjust padding as needed */
+    margin-right: 5px; /* Adjust margin as needed */
+    width: 30px;
+    border-radius: 30px;
+    cursor: pointer;
+    width: 50px;
+}
+
+.buy-btn {
+
+    width: 150px;
+    color: rgb(6, 6, 6);
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.status-btn1{
+    width: 150px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.status-btn2 {
+    width: 175px;
+    color: rgb(8, 8, 8);
+    height:50px;
+    margin-right: 10px;
+    margin-left: 10px;
+    
+
+}
+
+.buy-btn:hover,
+.status-btn1:hover,
+.status-btn2:hover {
+    background-color: grey;
+    color: white;
+}
+
+.buy-btn.active,
+.status-btn1.active,
+.status-btn2.active {
+    background-color: black;
+    color: white;
+}
+
+.item-list li {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+  
+    margin-bottom: 5px;
+    background-color: rgb(248, 239, 239, 0.25);
+    border-radius: 30px;
+    color: rgb(0, 0, 0); /* Change the text color */
+    font-weight: 500;
+    width: 700px;
+}
+
+
+
+
+}
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
