@@ -1,133 +1,124 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create WishList</title>
     <link rel="stylesheet" href="{% static 'WishStack/css/Main.css' %}">
-    <title>Item List</title>
-   
+    <style>
+      body {
+        background-image: url("{% static 'WishStack/images/Gift.png' %}");
+      }
+    </style>
+    <style>
+        /* Style for the modal */
+        .modal {
+            display: none; /* Hidden by default */
+            position: absolute; /* Position it relative to the parent container */
+            background-color: #fefefe; /* Modal background color */
+            border: 1px solid #888; /* Modal border */
+            padding: 20px; /* Modal padding */
+            z-index: 1; /* Ensure modal stays on top */
+        }
+    
+        /* Style for the close button */
+        .close {
+            color: #aaa; /* Close button color */
+            float: right; /* Float the button to the right */
+            font-size: 28px; /* Close button font size */
+            font-weight: bold; /* Close button font weight */
+        }
+    
+        /* Style for the modal content */
+        .modal-content {
+            display: flex; /* Display modal content as a flexbox */
+            flex-direction: column; /* Arrange modal content in a column */
+        }
+    
+        /* Style for the input field */
+        #shareUrlInput {
+            margin-bottom: 10px; /* Add some space below the input field */
+        }
+    </style>
 </head>
 <body>
-<div class="wrapper">
-<div class="container">
-    <h2>Item List</h2>
-    <div class="input-group">
-       
-        <div class="input-container">
-        
-        <input type="text" id="itemInput" placeholder="Enter item...">
-        <button onclick=addItem()>Add</button>
-   
+    <div class="wrapper">
+        <nav class="navbar">
+            <ul class="navbar-list">
+                <li style="text-align: center;"><a>Create your WishList</a></li>
+            </ul>
+            <div class="filter-dropdown">
+                Filter
+                <div class="filter-dropdown-content">
+                    <button id="highToLowBtn">High to Low</button>
+                    <button id="lowToHighBtn">Low to High</button>
+                </div>
+            </div>
+            <button class="share-button" id="shareButton">Share</button>
+            <button class="logout-button" onclick="window.location.href='{% url 'logout' %}'">Logout</button>
+        </nav>
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <p>Share this URL:</p>
+                <input type="text" id="shareUrlInput" readonly>
+                <button id="copyButton">Copy</button>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="amazon-button" onclick="window.location.href='{% url 'scrape_flipkart' %}'" data-api-url="{% url 'start_wishing' %}?wishlistName={{ wishlist_name }}">Flipkart</button>
+            <button class="amazon-button" onclick="window.location.href='{% url 'scrape_flipkart1' %}'" data-api-url="{% url 'start_wishing' %}?wishlistName={{ wishlist_name }}">Flipkart Clothing</button>
+        </div>
     </div>
+    <script src="WishStack/js/Main.js"></script>
+    <script>
+    document.getElementById("shareButton").addEventListener("click", function() {
+        // Get the current URL
+        var currentUrl = window.location.href;
+        
+        // Assuming you have a variable containing the wishlist ID or name
+        var wishlistId = "{{ wishlist_id }}"; // Replace "{{ wishlist_id }}" with your actual wishlist ID
+        
+        // Construct the share URL
+        var shareUrl = currentUrl + "?wishlist=" + wishlistId;
+        
+        // Display the modal below the share button
+        var modal = document.getElementById("myModal");
+        var shareButtonRect = document.getElementById("shareButton").getBoundingClientRect();
+        modal.style.top = (shareButtonRect.bottom + window.pageYOffset) + "px";
+        modal.style.left = shareButtonRect.left + "px";
+        modal.style.display = "block";
 
-    <ul class="item-list" id="itemList">
-        <!-- Items will be displayed here -->
-    </ul>
-</div>
-</div>
-</div>
-<script>
-    document.getElementById("addItemForm").addEventListener("submit", function(event) {
-        event.preventDefault(); // Prevent form submission
-        addItem(); // Call your addItem function
+        // Populate and copy the URL when "Copy" button is clicked
+        var shareUrlInput = document.getElementById("shareUrlInput");
+        shareUrlInput.value = shareUrl;
+        
+        // Remove any existing event listener to avoid duplication
+        var copyButton = document.getElementById("copyButton");
+        copyButton.removeEventListener("click", copyUrlToClipboard);
+        
+        // Add event listener to copy URL to clipboard
+        copyButton.addEventListener("click", copyUrlToClipboard);
+
+        // Close the modal when the close button is clicked
+        document.getElementsByClassName("close")[0].addEventListener("click", function() {
+            modal.style.display = "none";
+        });
     });
 
-    function addItem() {
-        // Get the value from the input field
-        var newItem = document.getElementById("itemInput").value;
-        if (newItem.trim() === "") {
-                alert("Please enter a wishlist name.");
-                return;
-            }
-        // Create a new list item element
-        var li = document.createElement("li");
-
-        // Create a delete button
-        var deleteBtn = document.createElement("button");
-        deleteBtn.innerHTML = "&#10006;"; // Cross mark symbol
-        deleteBtn.className = "delete-btn";
-        deleteBtn.onclick = function() {
-            // Remove the item from the list
-            li.remove();
-        };
-
-        // Create a status container
-        var statusContainer = document.createElement("div");
-        statusContainer.className = "status-container";
-
-        // Create a "Buy" button
-        var buyBtn = document.createElement("button");
-        buyBtn.textContent = "Buy";
-        buyBtn.className = "buy-btn";
-        buyBtn.onclick = function() {
-            // Construct the Flipkart URL with the item name as a search query
-            var flipkartURL = "https://www.flipkart.com/search?q=" + newItem;
-            // Redirect to the Flipkart URL
-            window.location.href = flipkartURL;
-        };
-
-        // Create a "Bought" button
-        var boughtBtn = document.createElement("button");
-        boughtBtn.textContent = "Bought";
-        boughtBtn.className = "status-btn1";
-        boughtBtn.onclick = function() {
-            // Set status to "Bought"
-           
-            buyBtn.classList.remove('active');
-            boughtBtn.classList.add('active');
-            goingToPurchaseBtn.classList.remove('active');
-        };
-
-        // Create a "Going to Purchase" button
-        var goingToPurchaseBtn = document.createElement("button");
-        goingToPurchaseBtn.textContent = "Going to Purchase";
-        goingToPurchaseBtn.className = "status-btn2";
-        goingToPurchaseBtn.onclick = function() {
-            // Set status to "Going to Purchase"
-            
-            buyBtn.classList.remove('active');
-            boughtBtn.classList.remove('active');
-            goingToPurchaseBtn.classList.add('active');
-        };
-
-        // Create a status text element
-        var statusText = document.createElement("span");
-        statusText.className = "status-text";
-        statusText.textContent = ""; // Initially empty
-
-        // Function to set status
-        function setStatus(status) {
-            statusText.textContent = status;
-            // Reset status buttons background color
-            boughtBtn.classList.remove("bought");
-            goingToPurchaseBtn.classList.remove("going-to-purchase");
-            // Set background color based on status
-            if (status === "Bought") {
-                boughtBtn.classList.add("bought");
-            } else if (status === "Going to Purchase") {
-                goingToPurchaseBtn.classList.add("going-to-purchase");
-            }
-        }
-
-        // Append the delete button, item text, status container to the list item
-        li.appendChild(deleteBtn);
-        li.appendChild(document.createTextNode(newItem));
-        li.appendChild(statusContainer);
-
-        // Append the "Buy" button, "Bought" button, and "Going to Purchase" button to the status container
-        statusContainer.appendChild(buyBtn);
-        statusContainer.appendChild(boughtBtn);
-        statusContainer.appendChild(goingToPurchaseBtn);
-        statusContainer.appendChild(deleteBtn);
-
-        // Append the new item with the status container to the list
-        document.getElementById("itemList").appendChild(li);
-
-        // Clear the input field after adding the item
-        document.getElementById("itemInput").value = "";
+    // Function to copy URL to clipboard
+    function copyUrlToClipboard() {
+        var shareUrlInput = document.getElementById("shareUrlInput");
+        shareUrlInput.select();
+        document.execCommand("copy");
+        alert("URL copied to clipboard");
     }
 </script>
 
+    
+    
 </body>
 </html>
