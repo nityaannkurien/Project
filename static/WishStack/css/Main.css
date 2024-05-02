@@ -1,267 +1,138 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500&display=swap");
-:root {
-  --primary: #eeeeee;
-  --secondary: #df9953;
-  --green: #82cd47;
-  --secondary-light: rgb(34, 124, 112, 0.2);
-  --secondary-light-2: rgb(127, 183, 126, 0.1);
-  --white: #fff;
-  --black: #393e46;
-
-  --shadow: 0px 2px 8px 0px var(--secondary-light);
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
-}
+/* POPPINS FONT */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 body {
-  background-image: url('images/Gift.png'); /* Replace 'path_to_your_image.jpg' with the actual path to your image */
-  background-size: cover; /* Cover the entire background */
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  
-}
-.wrapper{
+    background: url("../images/Gift.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+   
+
+.wrapper {
+    display: flex;
     justify-content: center;
     align-items: center;
     min-height: 110vh;
     background: rgba(39, 39, 39, 0.4);
-}
-
-.navbar {
-  display: flex;
-  align-items: center;
-  height: 70px;
-  background-color: var(--white);
-  padding: 0 8%;
-  box-shadow: var(--shadow);
+    width: 100%;
+    padding: 20px;
 }
 
 
-.navbar-buttons {
-  display: flex;
-  align-items: center;
+.input-group {
+    margin-bottom: 20px;
 }
 
-.filter-button {
-  margin-right: 10px; /* Add space between the filter button and the share button */
-  padding: 5px 10px;
-  border-radius: 20px;
-  background-color: #ccc;
-  border: none;
-  display: flex;;
-  cursor: pointer;
-  font-size: 0.2px;
+* {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+  }
+
+  h2 {
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500; /* Reduced boldness */
+    font-size: 50px;
 }
 
-.filter-button,
-.share-button,
-.logout-button {
-   /* Add space between the buttons */
-  margin-right: 10px; /* Add space between the filter button and the share button */
-  padding: 5px 10px;
-  border-radius: 20px;
-  background-color: #ccc;
-  border: none;
-  display: flex;
-  font-size: 0.2px;
-  cursor: pointer;
+.input-group input[type="text"] 
+ {
+    color: rgb(248, 239, 239); /* Set text color to white */
+    margin-bottom: 10px;
+    border-radius: 30px;
+    border: 1px;
+    margin-top: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    outline: none;
+    transition: .2s ease;
+    height: 50px;
+    width: 500px;
+    padding: 0 10px 0 45px;
 }
 
-.navbar-logo {
-  cursor: pointer;
+button {
+    padding: 10px 20px;
+    background-color: rgba(255, 255, 255, 0.7);
+    color: black;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-top: 20px;
+    height: 50px;
+    width: 100px;
+    text-align: center; /* Center align text */
+
+    font-weight: 500; /* Make text slightly more bold */
 }
 
-.navbar-list {
-  text-align: center; /* Center-align the text */
-  width: 100%; /* Ensure the list takes up the full width */
-  margin: 0; /* Remove default margin */
-  padding: 0; 
-  margin-left: 15%;
-  justify-content: space-between; /* Align items to the right */
+.delete-btn {
+    background-color: rgb(232, 66, 66); /* Change the background color */
+    color: white; /* Change the text color */
+    font-size: 15px; /* Change the font size */
+    cursor: pointer;
+    padding: 8px; /* Adjust padding as needed */
+    margin-right: 5px; /* Adjust margin as needed */
+    width: 30px;
+    border-radius: 30px;
+    cursor: pointer;
+    width: 50px;
 }
 
-.navbar-list li {
-  display: inline-block; /* Display list items inline */
-  margin-right: 20px; /* Add some spacing between items */
+.buy-btn {
+
+    width: 150px;
+    color: rgb(6, 6, 6);
+    margin-right: 10px;
+    cursor: pointer;
 }
 
-.navbar-list li:last-child {
-  margin-right: 0; /* Remove margin from the last item */
+.status-btn1{
+    width: 150px;
+    margin-right: 10px;
+    cursor: pointer;
 }
 
+.status-btn2 {
+    width: 175px;
+    color: rgb(8, 8, 8);
+    height:50px;
+    margin-right: 10px;
+    margin-left: 10px;
+    
 
-.navbar-list li a {
-  font-size: 24px;
-  font-weight: 500;
-  color: var(--black);
-  text-decoration: none;
-  font-family: Century Gothic;
-}
-
-.button-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-.options-button {
-  display: flex;
 }
 
-
-.filter-dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 80px;
-  top: calc(100%);
+.buy-btn:hover,
+.status-btn1:hover,
+.status-btn2:hover {
+    background-color: grey;
+    color: white;
 }
 
-.filter-dropdown:hover .filter-dropdown-content {
-  display: inline-block;
-}
-.filter-dropdown {
-  position: relative;
-  margin-right: 10px; /* Add space between the filter button and the share button */
-  padding: 5px 10px;
-  border-radius: 20px;
-  background-color: #ccc;
-  border: none;
-  cursor: pointer;
+.buy-btn.active,
+.status-btn1.active,
+.status-btn2.active {
+    background-color: black;
+    color: white;
 }
 
-.filter-dropdown::after {
-  position: absolute;
-  top: 50%;
-  right: 5px;
-  transform: translateY(-50%);
+.item-list li {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+  
+    margin-bottom: 5px;
+    background-color: rgb(248, 239, 239, 0.25);
+    border-radius: 30px;
+    color: rgb(0, 0, 0); /* Change the text color */
+    font-weight: 500;
+    width: 700px;
 }
-.amazon-button {
-  margin-left: 10px; /* Add space between the buttons */
-  padding: 15px 30px; /* Increase padding for a bigger button */
-  font-size: 1.2em; /* Increase padding for a bigger button */
-  background-color: white; /* Set background color to white */
-  color: var(--black); /* Set text color to black */
-  border: none; /* Remove default button border */
-  border-radius: 20px; /* Add border radius for rounded corners */
-  cursor: pointer; /* Set cursor to pointer for clickable appearance */
-  transition: background-color 0.3s, color 0.3s, border 0.3s;
 }
-
-.amazon-button:hover {
-  background-color: #f0f0f0; /* Change background color on hover */
-}
-.amazon-button:hover {
-  background-color: #f0f0f0; /* Change background color on hover */
-}
-
-.logout-button,
-.share-button,
-.filter-dropdown {
-    padding: 8px 16px; /* Increase padding for larger buttons */
-    font-size: 16px;
-    background-color: white;
-     /* Increase font size for larger buttons */
-}
-
-.filter-dropdown-content button {
-    padding: 8px 16px; /* Increase padding for filter dropdown items */
-    font-size: 16px; /* Increase font size for filter dropdown items */
-}
-.filter-dropdown {
-  margin-left: -50px;
-   /* Push the filter dropdown to the right */
-}
-
-.filter-dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f1f1f1;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-  border-radius: 10px;
-  margin-right: 5px; /* Add space to the right of the filter dropdown */
-}
-
-.filter-dropdown-content button {
-  display: block;
-  width: 100%;
-  padding: 5px 10px;
-  margin-bottom: 5px;
-  text-align: left;
-  border: none;
-  background-color: #f1f1f1;
-  cursor: pointer;
-}
-
-.filter-dropdown-content button:hover {
-  background-color: #ddd;
-}
-.logout-button,
-.share-button,
-.filter-dropdown {
-    padding: 8px 16px; /* Increase padding for larger buttons */
-    font-size: 16px; /* Increase font size for larger buttons */
-    background-color: white; /* Set background color */
-    border: 1px solid black; /* Add a small black border */
-    cursor: pointer; /* Change cursor to pointer on hover */
-    transition: background-color 0.3s, color 0.3s, border 0.3s; /* Add smooth transition effects */
-}
-
-.logout-button:hover,
-.share-button:hover,
-.filter-dropdown:hover {
-    background-color:#f0f0f0; /* Change background color on hover */
-    color:  #333; /* Change text color on hover */
-    border-color: #f0f0f0; /* Change border color on hover */
-}
-
-.logout-button {
-    margin-left: auto; /* Move the button to the right */
-}
-
-.share-button {
-    margin-left: 10px; /* Add space between the buttons */
-}
-
-.filter-dropdown {
-    position: relative; /* Set position to relative for dropdown */
-}
-
-.filter-dropdown-content {
-    display: none; /* Hide dropdown content by default */
-    position: absolute; /* Set position to absolute */
-    background-color: white; /* Set background color */
-    min-width: 160px; /* Set minimum width */
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); /* Add shadow */
-    z-index: 1; /* Set z-index to ensure it appears above other elements */
-     /* Add border */
-    border-radius: 5px; /* Add border radius */
-    padding: 5px; /* Add padding */
-    right: 0; /* Align to the right */
-    top: 100%; /* Position below the filter button */
-}
-
-.filter-dropdown:hover .filter-dropdown-content {
-    display: block; /* Show dropdown content on hover */
-}
-
-.filter-dropdown-content button {
-    width: 100%; /* Full width */
-    text-align: left; /* Align text to the left */
-    padding: 8px 16px; /* Add padding */
-    border: none; /* Remove border */
-    background-color: white; /* Set background color */
-    cursor: pointer; /* Change cursor to pointer */
-}
-
-.filter-dropdown-content button:hover {
-    background-color: #f1f1f1; /* Change background color on hover */
-}
-

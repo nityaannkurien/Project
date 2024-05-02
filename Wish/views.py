@@ -522,7 +522,7 @@ def deleteList(request, wishlist_id):
         wishlist.delete()
 
         # Return a success response
-        return redirect('/create')
+        return redirect('/create/')
     #else:
         # Return a failure response if the request is not POST or not AJAX
         #return redirect('/create')
