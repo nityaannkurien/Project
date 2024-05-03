@@ -88,11 +88,13 @@ def edit_profile(request):
 def create_wishlist(request):
     if request.method == 'POST':
         wishlist_name = request.POST.get('wishlistName')
-        if wishlist_name.strip() == '':
+        if wishlist_name.strip() == "":
             messages.error(request, 'Please enter a wishlist name.')
         else:
             messages.success(request, f'Wishlist "{wishlist_name}" created! Start adding your wishes.')
     return render(request, 'wishing.html')
+
+
 
 def index(request):
     return render(request, 'index.html')
@@ -106,8 +108,24 @@ def main(request):
         namew.save()
     return render(request, 'main.html')
 
+
+def main4(request):
+    return render(request, 'main4.html')
+
+def main1(request):
+    return render(request, 'main1.html')
+
+def main2(request):
+    return render(request, 'main2.html')
+
+def main3(request):
+    return render(request, 'main3.html')
+
+
+
 def api_view(request):
     return render(request, 'api.html')
+
 def start_wishing(request):
     wishlist_name = request.GET.get("wishlistName")
     if not wishlist_name:
@@ -119,254 +137,158 @@ def start_wishing(request):
 
 
 def scrape_flipkart(request):
+    if request.method=="POST":
+        username = request.POST.get("username")
+        print("US",username)
+    print("test")
     Product_name = []
     Prices = []
     Description = []
     Images = []
-    Product_id=[]
-    j=1
     url = "https://www.flipkart.com/search?q=mobiles+under+50000&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page="+str(1)
     r = requests.get(url)
-    soup = BeautifulSoup(r.text, "lxml")
+    soup = BeautifulSoup(r.text, "html.parser")
     names = soup.find_all("div", class_="KzDlHZ")
-    for i in names:
-        name = i.text
-        Product_name.append(name)
-        Product_id.append(j)
-        j= j+1
-    # Indian Rupee symbol
+    for name in names:
+        Product_name.append(name.text)
+
+    # Scrape product prices
     prices = soup.find_all("div", class_="Nx9bqj _4b5DiR")
-    for i in prices:
-        price = i.text  # Add the Indian Rupee symbol to each price
-        Prices.append(price)
+    for price in prices:
+        Prices.append(price.text)
     desc = soup.find_all("ul", class_="G4BRas")
-    for i in desc:
-        description = i.text
+    for d in desc:
+        description = d.text
         Description.append(description)
-    print(Product_name)
-    print(Prices)
-    print(Description)
-    # The rest of your code for processing images
-    url = "https://www.flipkart.com/search?q=mobiles+under+50000&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page="+str(1)
-    page = urllib.request.urlopen(url)
-    page_soup = BeautifulSoup(page, "html.parser")
-    img_items = page_soup.find("div", {"class": "DOjaWF gdgoEp"})
-    img_div = img_items.find_all(class_="_4WELSP")
-    i=0
-    for img in img_div:
-        img_tag = img.find("img")
+   
+     # Scrape images
+    img_items = soup.find_all("div", class_="_4WELSP")
+    for img_item in img_items:
+        img_tag = img_item.find("img")
         img_src = img_tag.get('src')
-        if img_src[:1] == '/':
-            image = 'https:' + img_src
-        else:
-            image = img_src
-        Images.append(image)
+        Images.append(img_src)
     
 
     # Define Images1 for the second set of products
     Images1 = []
     Product_name1=[]
     Prices1=[]
-    Product_id1=[]
-    j=0
+    Description1 = []
     url1 = "https://www.flipkart.com/search?q=bedsheet&sid=jra%2Cknw%2Cqcw&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_2_9_na_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_2_9_na_na_na&as-pos=2&as-type=RECENT&suggestionId=bedsheet%7CBedsheets&requestId=04de54c5-e4a5-4e25-af98-1629d4706010&as-backfill=on&page=2"
-    r1 = requests.get(url1)
-    soup1 = BeautifulSoup(r1.text, "lxml")
-    names1 = soup1.find_all("a", class_="wjcEIp")
-    for i in names1:
-        name1 = i.text
-        Product_name1.append(name1)
-        Product_id1.append(j)
-        j=j+1
-    # Indian Rupee symbol
-    prices1 = soup1.find_all("div", class_="Nx9bqj")
-    for i in prices1:
-        price1 = i.text  # Add the Indian Rupee symbol to each price
-        Prices1.append(price1)
+    r = requests.get(url1)
+    soup = BeautifulSoup(r.text, "html.parser")
+     # Scrape product names
+    names = soup.find_all("a", class_="wjcEIp")
+    for name in names:
+        Product_name1.append(name.text)
+    # Scrape product prices
+    prices = soup.find_all("div", class_="Nx9bqj")
+    for price in prices:
+        Prices1.append(price.text)
 
-    url1 = "https://www.flipkart.com/search?q=bedsheet&sid=jra%2Cknw%2Cqcw&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_2_9_na_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_2_9_na_na_na&as-pos=2&as-type=RECENT&suggestionId=bedsheet%7CBedsheets&requestId=04de54c5-e4a5-4e25-af98-1629d4706010&as-backfill=on&page=2"
-    page1 = urllib.request.urlopen(url1)
-    page_soup1 = BeautifulSoup(page1, "html.parser")
-    img_items1 = page_soup1.find("div", {"class": "DOjaWF gdgoEp"})
-    img_div1 = img_items1.find_all(class_="_4WELSP WH5SS-")
-    i=0
-    for img in img_div1:
-        img_tag1 = img.find("img")
-        img_src1 = img_tag1.get('src')
-        if img_src1[:1] == '/':
-            image1 = 'https:' + img_src1
-        else:
-            image1 = img_src1
-        Images1.append(image1)
+    # Scrape product descriptions
+    desc = soup.find_all("div", class_="NqpwHC")
+    for d in desc:
+        Description1.append(d.text)
+
+    # Scrape images
+    img_items = soup.find_all("div", class_="_4WELSP WH5SS-")
+    for img_item in img_items:
+        img_tag = img_item.find("img")
+        img_src = img_tag.get('src')
+        Images1.append(img_src)
         
         
+    
+# #Home Decor 
+
     Product_name2 = []
     Prices2 = []
     Images2=[]
-    Product_id2=[]
-    j=0
     url2 = "https://www.flipkart.com/search?q=home+decorate+items&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page=5"
     r2 = requests.get(url2)
     soup2 = BeautifulSoup(r2.text, "lxml")
+     # Scrape product names
     names2 = soup2.find_all("a", class_="wjcEIp")
-    for i in names2:
-        name2 = i.text
-        Product_name2.append(name2)
-        Product_id2.append(j)
-        j=j+1
-    # Indian Rupee symbol
+    for name in names2:
+        Product_name2.append(name.text)
+        print("Home Decor",name.text,"\n")
+
+    # Scrape product prices
     prices2 = soup2.find_all("div", class_="Nx9bqj")
-    for i in prices2:
-        price2 = i.text  # Add the Indian Rupee symbol to each price
-        Prices2.append(price2)
+    for price in prices2:
+        Prices2.append(price.text)
 
-    print(Product_name2)
-    print(Prices2)
-
-    # The rest of your code for processing images
-    url2 = "https://www.flipkart.com/search?q=home+decorate+items&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page=5"
-    page2 = urllib.request.urlopen(url2)
-    page_soup2 = BeautifulSoup(page2, "html.parser")
-    img_items2 = page_soup2.find("div", {"class": "DOjaWF gdgoEp"})
-    img_div2 = img_items2.find_all(class_="_4WELSP WH5SS-")
-    i=0
-    for img in img_div2:
-        img_tag2 = img.find("img")
-        img_src2 = img_tag2.get('src')
-        if img_src2[:1] == '/':
-            image2 = 'https:' + img_src2
-        else:
-            image2 = img_src2
-        Images2.append(image2)
+    # Scrape images
+    img_items2 = soup2.find_all("div", class_="_4WELSP WH5SS-")
+    for img_item in img_items2:
+        img_tag = img_item.find("img")
+        img_src = img_tag.get('src')
+        Images2.append(img_src)
         
+   #Earphones        
     Product_name4 = []
     Prices4 = []
     Images4=[]
-    Product_id4=[]
-    j=0
     url4 = "https://www.flipkart.com/search?q=earphone+with+power+bank&sid=0pm%2Cfcn%2C821%2Ca7x%2C2si&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&as-pos=2&as-type=RECENT&suggestionId=earphone+with+power+bank%7CTrue+Wireless&requestId=1c7ae1bd-ed21-4897-9fb6-ebadcee2fabf&as-searchtext=powerbank%20and%20earphones"
     r4 = requests.get(url4)
     soup4 = BeautifulSoup(r4.text, "lxml")
-    names4 = soup4.find_all("a", class_="wjcEIp")
-    for i in names4:
-        name4 = i.text
-        Product_name4.append(name4)
-        Product_id4.append(j)
-        j=j+1
-        # Indian Rupee symbol
+    names4 = soup.find_all("a", class_="wjcEIp")
+    for name in names4:
+        Product_name4.append(name.text)
+        print("Earbuds",name.text,"\n")
     prices4 = soup4.find_all("div", class_="Nx9bqj")
-    for i in prices4:
-         price4 = i.text  # Add the Indian Rupee symbol to each price
-         Prices4.append(price4)
+    for price in prices4:
+        Prices4.append(price.text)
 
-    print(Product_name4)
-    print(Prices4)
-
-        # The rest of your code for processing images
-    url4 = "https://www.flipkart.com/search?q=earphone+with+power+bank&sid=0pm%2Cfcn%2C821%2Ca7x%2C2si&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&as-pos=2&as-type=RECENT&suggestionId=earphone+with+power+bank%7CTrue+Wireless&requestId=1c7ae1bd-ed21-4897-9fb6-ebadcee2fabf&as-searchtext=powerbank%20and%20earphones"
-    page4 = urllib.request.urlopen(url4)
-    page_soup4 = BeautifulSoup(page4, "html.parser")
-    img_items4 = page_soup4.find("div", {"class": "DOjaWF YJG4Cf"})
-    img_div4 = img_items4.find_all(class_="_4WELSP")
-    i=0
-    for img in img_div4:
-        img_tag4 = img.find("img")
-        img_src4 = img_tag4.get('src')
-        if img_src4[:1] == '/':
-            image4 = 'https:' + img_src4
-        else:
-            image4 = img_src4
-        Images4.append(image4)
+    img_items4 = soup4.find_all("div", class_="_4WELSP")
+    for img_item in img_items4:
+        img_tag = img_item.find("img")
+        img_src = img_tag.get('src')
+        Images4.append(img_src)
 
     context = {
-        'products': zip(Product_name, Prices, Description, Images, Product_id),
-        'products1': zip(Product_name1, Prices1, Images1, Product_id2),
-        'products2': zip(Product_name2, Prices2, Images2, Product_id2),
-        'products4': zip(Product_name4, Prices4, Images4, Product_id4),
+        'products': zip(Product_name, Prices, Description, Images),
+        'products1': zip(Product_name1, Prices1,Description1, Images1),
+        'products2': zip(Product_name2, Prices2, Images2),
+        'products4': zip(Product_name4, Prices4, Images4),
     }
     
     return render(request, 'scraped_data.html', context)
     
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def scrape_flipkart1(request):
+def scrape_clothing(request):
+    if request.method=="POST":
+        username = request.POST.get("username")
+        print("US",username)
+    print("test")
     Product_name = []
     Prices = []
     Description = []
     Images = []
-    Product_id=[]
-    j=1
     url = "https://www.flipkart.com/search?q=tops+for+women&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page=4"
     r = requests.get(url)
-    soup = BeautifulSoup(r.text, "lxml")
+    soup = BeautifulSoup(r.text, "html.parser")
     names = soup.find_all("div", class_="syl9yP")
-    for i in names:
-        name = i.text
-        Product_name.append(name)
-        Product_id.append(j)
-        j=j+1
+    for name in names:
+        Product_name.append(name.text)
     # Indian Rupee symbol
     prices = soup.find_all("div", class_="Nx9bqj")
-    for i in prices:
-        price = i.text  # Add the Indian Rupee symbol to each price
-        Prices.append(price)
+    for price in prices:
+        Prices.append(price.text)
     desc = soup.find_all("a", class_="WKTcLC")
-    for i in desc:
-        description = i.text
+    for d in desc:
+        description = d.text
         Description.append(description)
-    print(Product_name)
-    print(Prices)
-    print(Description)
-    # The rest of your code for processing images
-    url = "https://www.flipkart.com/search?q=tops+for+women&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page=4"
-    page = urllib.request.urlopen(url)
-    page_soup = BeautifulSoup(page, "html.parser")
-    img_items = page_soup.find("div", {"class": "DOjaWF YJG4Cf"})
-    img_div = img_items.find_all(class_="gqcSqV YGE0gZ")
-    i=0
+   
+    # The rest of your code for processing imagespage = urllib.request.urlopen(url)
+    
+    img_div = soup.find_all(class_="gqcSqV YGE0gZ")
     for img in img_div:
         img_tag = img.find("img")
         img_src = img_tag.get('src')
-        if img_src[:1] == '/':
-            image = 'https:' + img_src
-        else:
-            image = img_src
-        Images.append(image)
+        Images.append(img_src)
     
 
     # Define Images1 for the second set of products
@@ -374,142 +296,85 @@ def scrape_flipkart1(request):
     Product_name1=[]
     Prices1=[]
     Description1=[]
-    Product_id1=[]
-    j=0
     url1 = "https://www.flipkart.com/search?q=men%20t%20shirt%20stylish&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off"
     r1 = requests.get(url1)
-    soup1 = BeautifulSoup(r1.text, "lxml")
+    soup1 = BeautifulSoup(r1.text, "html.parser")
     names1 = soup1.find_all("div", class_="syl9yP")
-    for i in names1:
-        name1 = i.text
-        Product_name1.append(name1)
-        Product_id1.append(j)
-        j=j+1
+    for name in names1:
+        Product_name1.append(name.text)
     # Indian Rupee symbol
     prices1 = soup1.find_all("div", class_="Nx9bqj")
-    for i in prices1:
-        price1 = i.text  # Add the Indian Rupee symbol to each price
-        Prices1.append(price1)
+    for price in prices1:
+        Prices1.append(price.text)
     desc1 = soup1.find_all("a", class_="WKTcLC")
-    for i in desc1:
-        description1 = i.text
-        Description1.append(description1)
-    print(Product_name1)
-    print(Prices1)
-    print(Description1)
-
-    url1 = "https://www.flipkart.com/search?q=men%20t%20shirt%20stylish&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off"
-    page1 = urllib.request.urlopen(url1)
-    page_soup1 = BeautifulSoup(page1, "html.parser")
-    img_items1 = page_soup1.find("div", {"class": "DOjaWF YJG4Cf"})
-    img_div1 = img_items1.find_all(class_="gqcSqV YGE0gZ")
-    i=0
+    for d in desc1:
+        Description1.append(d.text)
+    
+    img_div1 = soup1.find_all(class_="gqcSqV YGE0gZ")
     for img in img_div1:
         img_tag1 = img.find("img")
         img_src1 = img_tag1.get('src')
-        if img_src1[:1] == '/':
-            image1 = 'https:' + img_src1
-        else:
-            image1 = img_src1
-        Images1.append(image1)
+        Images1.append(img_src1)
         
         
     Product_name2 = []
     Prices2 = []
     Images2=[]
     Description2=[]
-    Product_id2=[]
-    j=0
     url2 = "https://www.flipkart.com/search?q=boys+t+shirt+12%2F13+years&sid=clo%2Cash%2Cank%2Cpgi&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_1_13_na_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_1_13_na_na_na&as-pos=1&as-type=RECENT&suggestionId=boys+t+shirt+12%2F13+years%7CKids%27+T-shirts&requestId=4760a67d-8bf7-4c4e-adab-d9accf664d73&as-searchtext=boys%20t%20shirt%20"
     r2 = requests.get(url2)
     soup2 = BeautifulSoup(r2.text, "lxml")
     names2 = soup2.find_all("div", class_="syl9yP")
-    for i in names2:
-        name2 = i.text
-        Product_name2.append(name2)
-        Product_id2.append(j)
-        j=j+1
+    for name in names2:
+        Product_name2.append(name.text)
+        print("Boys Clothing",name.text,"\n")
     # Indian Rupee symbol
     prices2 = soup2.find_all("div", class_="Nx9bqj")
-    for i in prices2:
-        price2 = i.text  # Add the Indian Rupee symbol to each price
-        Prices2.append(price2)
+    for price in prices2:
+        Prices2.append(price.text)
     desc2 = soup2.find_all("a", class_="WKTcLC")
-    for i in desc2:
-        description2 = i.text
-        Description2.append(description2)
-    print(Product_name2)
-    print(Prices2)
-    print(Description2)
+    for d in desc2:
+        Description2.append(d.text)
+        
 
-    # The rest of your code for processing images
-    url2 = "https://www.flipkart.com/search?q=boys+t+shirt+12%2F13+years&sid=clo%2Cash%2Cank%2Cpgi&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_1_13_na_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_1_13_na_na_na&as-pos=1&as-type=RECENT&suggestionId=boys+t+shirt+12%2F13+years%7CKids%27+T-shirts&requestId=4760a67d-8bf7-4c4e-adab-d9accf664d73&as-searchtext=boys%20t%20shirt%20"
-    page2 = urllib.request.urlopen(url2)
-    page_soup2 = BeautifulSoup(page2, "html.parser")
-    img_items2 = page_soup2.find("div", {"class": "DOjaWF YJG4Cf"})
-    img_div2 = img_items2.find_all(class_="gqcSqV YGE0gZ")
-    i=0
+    img_div2 = soup2.find_all(class_="gqcSqV YGE0gZ")
     for img in img_div2:
         img_tag2 = img.find("img")
         img_src2 = img_tag2.get('src')
-        if img_src2[:1] == '/':
-            image2 = 'https:' + img_src2
-        else:
-            image2 = img_src2
-        Images2.append(image2)
+        Images2.append(img_src2)
         
     Product_name4 = []
     Prices4 = []
     Images4=[]
     Description4=[]
-    Product_id4=[]
-    j=0
     url4 = "https://www.flipkart.com/search?q=girls%20dress%2011%2F12years%20frock%20stylish&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off"
     r4 = requests.get(url4)
     soup4 = BeautifulSoup(r4.text, "lxml")
     names4 = soup4.find_all("div", class_="syl9yP")
-    for i in names4:
-        name4 = i.text
-        Product_name4.append(name4)
-        Product_id4.append(j)
-        j=j+1
+    for name in names4:
+        Product_name4.append(name.text)
         # Indian Rupee symbol
     prices4 = soup4.find_all("div", class_="Nx9bqj")
-    for i in prices4:
-         price4 = i.text  # Add the Indian Rupee symbol to each price
-         Prices4.append(price4)
+    for price in prices4:
+        Prices4.append(price.text)
     desc4 = soup4.find_all("a", class_="WKTcLC BwBZTg")
-    for i in desc4:
-        description4 = i.text
-        Description4.append(description4)
-    print(Product_name4)
-    print(Prices4)
-    print(Description4)
-
-    # The rest of your code for processing images
-    url4 = "https://www.flipkart.com/search?q=girls%20dress%2011%2F12years%20frock%20stylish&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off"
-    page4 = urllib.request.urlopen(url4)
-    page_soup4 = BeautifulSoup(page4, "html.parser")
-    img_items4 = page_soup4.find("div", {"class": "DOjaWF YJG4Cf"})
-    img_div4 = img_items4.find_all(class_="gqcSqV YGE0gZ")
-    i=0
+    for d in desc4:
+        Description4.append(d.text)
+   
+    img_div4 = soup4.find_all(class_="gqcSqV YGE0gZ")
     for img in img_div4:
         img_tag4 = img.find("img")
         img_src4 = img_tag4.get('src')
-        if img_src4[:1] == '/':
-            image4 = 'https:' + img_src4
-        else:
-            image4 = img_src4
-        Images4.append(image4)
+        Images4.append(img_src4)
 
     context = {
-        'products': zip(Product_name, Prices, Description, Images, Product_id),
-        'products1': zip(Product_name1, Prices1, Description1, Images1, Product_id1),
-        'products2': zip(Product_name2, Prices2, Description2, Images2, Product_id2),
-        'products4': zip(Product_name4, Prices4, Description4, Images4, Product_id4),
+        'products': zip(Product_name, Prices, Description, Images,),
+        'products1': zip(Product_name1, Prices1, Description1, Images1,),
+        'products2': zip(Product_name2, Prices2, Description2, Images2,),
+        'products4': zip(Product_name4, Prices4, Description4, Images4,),
     }
     
-    return render(request, 'scraped_data1.html', context)
+    return render(request, 'scraped_clothing.html', context)
 
 
 def deleteList(request, wishlist_id):
@@ -528,10 +393,966 @@ def deleteList(request, wishlist_id):
         #return redirect('/create')
 
 
-def add_to_wishlist(request,item_name,item_id,description,price,image):
+def scrape_flipkart1(request):
+    if request.method=="POST":
+        username = request.POST.get("username")
+        print("US",username)
+    print("test")
+    Product_name = []
+    Prices = []
+    Description = []
+    Images = []
+    url = "https://www.flipkart.com/search?q=mobiles+under+50000&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page="+str(1)
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, "html.parser")
+    names = soup.find_all("div", class_="KzDlHZ")
+    for name in names:
+        Product_name.append(name.text)
 
-        details_store=ItemDetails( item_name = item_name,item_id=item_id,description = description, price=price,image=image)
-        details_store.save()
+    # Scrape product prices
+    prices = soup.find_all("div", class_="Nx9bqj _4b5DiR")
+    for price in prices:
+        Prices.append(price.text)
+    desc = soup.find_all("ul", class_="G4BRas")
+    for d in desc:
+        description = d.text
+        Description.append(description)
+   
+     # Scrape images
+    img_items = soup.find_all("div", class_="_4WELSP")
+    for img_item in img_items:
+        img_tag = img_item.find("img")
+        img_src = img_tag.get('src')
+        Images.append(img_src)
+    
+
+    # Define Images1 for the second set of products
+    Images1 = []
+    Product_name1=[]
+    Prices1=[]
+    Description1 = []
+    url1 = "https://www.flipkart.com/search?q=bedsheet&sid=jra%2Cknw%2Cqcw&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_2_9_na_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_2_9_na_na_na&as-pos=2&as-type=RECENT&suggestionId=bedsheet%7CBedsheets&requestId=04de54c5-e4a5-4e25-af98-1629d4706010&as-backfill=on&page=2"
+    r = requests.get(url1)
+    soup = BeautifulSoup(r.text, "html.parser")
+     # Scrape product names
+    names = soup.find_all("a", class_="wjcEIp")
+    for name in names:
+        Product_name1.append(name.text)
+    # Scrape product prices
+    prices = soup.find_all("div", class_="Nx9bqj")
+    for price in prices:
+        Prices1.append(price.text)
+
+    # Scrape product descriptions
+    desc = soup.find_all("div", class_="NqpwHC")
+    for d in desc:
+        Description1.append(d.text)
+
+    # Scrape images
+    img_items = soup.find_all("div", class_="_4WELSP WH5SS-")
+    for img_item in img_items:
+        img_tag = img_item.find("img")
+        img_src = img_tag.get('src')
+        Images1.append(img_src)
         
-        return redirect('/')
+        
+    
+# #Home Decor 
 
+    Product_name2 = []
+    Prices2 = []
+    Images2=[]
+    url2 = "https://www.flipkart.com/search?q=home+decorate+items&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page=5"
+    r2 = requests.get(url2)
+    soup2 = BeautifulSoup(r2.text, "lxml")
+     # Scrape product names
+    names2 = soup2.find_all("a", class_="wjcEIp")
+    for name in names2:
+        Product_name2.append(name.text)
+        print("Home Decor",name.text,"\n")
+
+    # Scrape product prices
+    prices2 = soup2.find_all("div", class_="Nx9bqj")
+    for price in prices2:
+        Prices2.append(price.text)
+
+    # Scrape images
+    img_items2 = soup2.find_all("div", class_="_4WELSP WH5SS-")
+    for img_item in img_items2:
+        img_tag = img_item.find("img")
+        img_src = img_tag.get('src')
+        Images2.append(img_src)
+        
+   #Earphones        
+    Product_name4 = []
+    Prices4 = []
+    Images4=[]
+    url4 = "https://www.flipkart.com/search?q=earphone+with+power+bank&sid=0pm%2Cfcn%2C821%2Ca7x%2C2si&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&as-pos=2&as-type=RECENT&suggestionId=earphone+with+power+bank%7CTrue+Wireless&requestId=1c7ae1bd-ed21-4897-9fb6-ebadcee2fabf&as-searchtext=powerbank%20and%20earphones"
+    r4 = requests.get(url4)
+    soup4 = BeautifulSoup(r4.text, "lxml")
+    names4 = soup.find_all("a", class_="wjcEIp")
+    for name in names4:
+        Product_name4.append(name.text)
+        print("Earbuds",name.text,"\n")
+    prices4 = soup4.find_all("div", class_="Nx9bqj")
+    for price in prices4:
+        Prices4.append(price.text)
+
+    img_items4 = soup4.find_all("div", class_="_4WELSP")
+    for img_item in img_items4:
+        img_tag = img_item.find("img")
+        img_src = img_tag.get('src')
+        Images4.append(img_src)
+
+    context = {
+        'products': zip(Product_name, Prices, Description, Images),
+        'products1': zip(Product_name1, Prices1,Description1, Images1),
+        'products2': zip(Product_name2, Prices2, Images2),
+        'products4': zip(Product_name4, Prices4, Images4),
+    }
+    
+    return render(request, 'scraped_data1.html', context)
+    
+
+
+def scrape_clothing1(request):
+    if request.method=="POST":
+        username = request.POST.get("username")
+        print("US",username)
+    print("test")
+    Product_name = []
+    Prices = []
+    Description = []
+    Images = []
+    url = "https://www.flipkart.com/search?q=tops+for+women&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page=4"
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, "html.parser")
+    names = soup.find_all("div", class_="syl9yP")
+    for name in names:
+        Product_name.append(name.text)
+    # Indian Rupee symbol
+    prices = soup.find_all("div", class_="Nx9bqj")
+    for price in prices:
+        Prices.append(price.text)
+    desc = soup.find_all("a", class_="WKTcLC")
+    for d in desc:
+        description = d.text
+        Description.append(description)
+   
+    # The rest of your code for processing imagespage = urllib.request.urlopen(url)
+    
+    img_div = soup.find_all(class_="gqcSqV YGE0gZ")
+    for img in img_div:
+        img_tag = img.find("img")
+        img_src = img_tag.get('src')
+        Images.append(img_src)
+    
+
+    # Define Images1 for the second set of products
+    Images1 = []
+    Product_name1=[]
+    Prices1=[]
+    Description1=[]
+    url1 = "https://www.flipkart.com/search?q=men%20t%20shirt%20stylish&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off"
+    r1 = requests.get(url1)
+    soup1 = BeautifulSoup(r1.text, "html.parser")
+    names1 = soup1.find_all("div", class_="syl9yP")
+    for name in names1:
+        Product_name1.append(name.text)
+    # Indian Rupee symbol
+    prices1 = soup1.find_all("div", class_="Nx9bqj")
+    for price in prices1:
+        Prices1.append(price.text)
+    desc1 = soup1.find_all("a", class_="WKTcLC")
+    for d in desc1:
+        Description1.append(d.text)
+    
+    img_div1 = soup1.find_all(class_="gqcSqV YGE0gZ")
+    for img in img_div1:
+        img_tag1 = img.find("img")
+        img_src1 = img_tag1.get('src')
+        Images1.append(img_src1)
+        
+        
+    Product_name2 = []
+    Prices2 = []
+    Images2=[]
+    Description2=[]
+    url2 = "https://www.flipkart.com/search?q=boys+t+shirt+12%2F13+years&sid=clo%2Cash%2Cank%2Cpgi&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_1_13_na_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_1_13_na_na_na&as-pos=1&as-type=RECENT&suggestionId=boys+t+shirt+12%2F13+years%7CKids%27+T-shirts&requestId=4760a67d-8bf7-4c4e-adab-d9accf664d73&as-searchtext=boys%20t%20shirt%20"
+    r2 = requests.get(url2)
+    soup2 = BeautifulSoup(r2.text, "lxml")
+    names2 = soup2.find_all("div", class_="syl9yP")
+    for name in names2:
+        Product_name2.append(name.text)
+        print("Boys Clothing",name.text,"\n")
+    # Indian Rupee symbol
+    prices2 = soup2.find_all("div", class_="Nx9bqj")
+    for price in prices2:
+        Prices2.append(price.text)
+    desc2 = soup2.find_all("a", class_="WKTcLC")
+    for d in desc2:
+        Description2.append(d.text)
+        
+
+    img_div2 = soup2.find_all(class_="gqcSqV YGE0gZ")
+    for img in img_div2:
+        img_tag2 = img.find("img")
+        img_src2 = img_tag2.get('src')
+        Images2.append(img_src2)
+        
+    Product_name4 = []
+    Prices4 = []
+    Images4=[]
+    Description4=[]
+    url4 = "https://www.flipkart.com/search?q=girls%20dress%2011%2F12years%20frock%20stylish&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off"
+    r4 = requests.get(url4)
+    soup4 = BeautifulSoup(r4.text, "lxml")
+    names4 = soup4.find_all("div", class_="syl9yP")
+    for name in names4:
+        Product_name4.append(name.text)
+        # Indian Rupee symbol
+    prices4 = soup4.find_all("div", class_="Nx9bqj")
+    for price in prices4:
+        Prices4.append(price.text)
+    desc4 = soup4.find_all("a", class_="WKTcLC BwBZTg")
+    for d in desc4:
+        Description4.append(d.text)
+   
+    img_div4 = soup4.find_all(class_="gqcSqV YGE0gZ")
+    for img in img_div4:
+        img_tag4 = img.find("img")
+        img_src4 = img_tag4.get('src')
+        Images4.append(img_src4)
+
+    context = {
+        'products': zip(Product_name, Prices, Description, Images,),
+        'products1': zip(Product_name1, Prices1, Description1, Images1,),
+        'products2': zip(Product_name2, Prices2, Description2, Images2,),
+        'products4': zip(Product_name4, Prices4, Description4, Images4,),
+    }
+    
+    return render(request, 'scraped_clothing1.html', context)
+
+
+def scrape_flipkart2(request):
+    if request.method=="POST":
+        username = request.POST.get("username")
+        print("US",username)
+    print("test")
+    Product_name = []
+    Prices = []
+    Description = []
+    Images = []
+    url = "https://www.flipkart.com/search?q=mobiles+under+50000&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page="+str(1)
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, "html.parser")
+    names = soup.find_all("div", class_="KzDlHZ")
+    for name in names:
+        Product_name.append(name.text)
+
+    # Scrape product prices
+    prices = soup.find_all("div", class_="Nx9bqj _4b5DiR")
+    for price in prices:
+        Prices.append(price.text)
+    desc = soup.find_all("ul", class_="G4BRas")
+    for d in desc:
+        description = d.text
+        Description.append(description)
+   
+     # Scrape images
+    img_items = soup.find_all("div", class_="_4WELSP")
+    for img_item in img_items:
+        img_tag = img_item.find("img")
+        img_src = img_tag.get('src')
+        Images.append(img_src)
+    
+
+    # Define Images1 for the second set of products
+    Images1 = []
+    Product_name1=[]
+    Prices1=[]
+    Description1 = []
+    url1 = "https://www.flipkart.com/search?q=bedsheet&sid=jra%2Cknw%2Cqcw&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_2_9_na_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_2_9_na_na_na&as-pos=2&as-type=RECENT&suggestionId=bedsheet%7CBedsheets&requestId=04de54c5-e4a5-4e25-af98-1629d4706010&as-backfill=on&page=2"
+    r = requests.get(url1)
+    soup = BeautifulSoup(r.text, "html.parser")
+     # Scrape product names
+    names = soup.find_all("a", class_="wjcEIp")
+    for name in names:
+        Product_name1.append(name.text)
+    # Scrape product prices
+    prices = soup.find_all("div", class_="Nx9bqj")
+    for price in prices:
+        Prices1.append(price.text)
+
+    # Scrape product descriptions
+    desc = soup.find_all("div", class_="NqpwHC")
+    for d in desc:
+        Description1.append(d.text)
+
+    # Scrape images
+    img_items = soup.find_all("div", class_="_4WELSP WH5SS-")
+    for img_item in img_items:
+        img_tag = img_item.find("img")
+        img_src = img_tag.get('src')
+        Images1.append(img_src)
+        
+        
+    
+# #Home Decor 
+
+    Product_name2 = []
+    Prices2 = []
+    Images2=[]
+    url2 = "https://www.flipkart.com/search?q=home+decorate+items&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page=5"
+    r2 = requests.get(url2)
+    soup2 = BeautifulSoup(r2.text, "lxml")
+     # Scrape product names
+    names2 = soup2.find_all("a", class_="wjcEIp")
+    for name in names2:
+        Product_name2.append(name.text)
+        print("Home Decor",name.text,"\n")
+
+    # Scrape product prices
+    prices2 = soup2.find_all("div", class_="Nx9bqj")
+    for price in prices2:
+        Prices2.append(price.text)
+
+    # Scrape images
+    img_items2 = soup2.find_all("div", class_="_4WELSP WH5SS-")
+    for img_item in img_items2:
+        img_tag = img_item.find("img")
+        img_src = img_tag.get('src')
+        Images2.append(img_src)
+        
+   #Earphones        
+    Product_name4 = []
+    Prices4 = []
+    Images4=[]
+    url4 = "https://www.flipkart.com/search?q=earphone+with+power+bank&sid=0pm%2Cfcn%2C821%2Ca7x%2C2si&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&as-pos=2&as-type=RECENT&suggestionId=earphone+with+power+bank%7CTrue+Wireless&requestId=1c7ae1bd-ed21-4897-9fb6-ebadcee2fabf&as-searchtext=powerbank%20and%20earphones"
+    r4 = requests.get(url4)
+    soup4 = BeautifulSoup(r4.text, "lxml")
+    names4 = soup.find_all("a", class_="wjcEIp")
+    for name in names4:
+        Product_name4.append(name.text)
+        print("Earbuds",name.text,"\n")
+    prices4 = soup4.find_all("div", class_="Nx9bqj")
+    for price in prices4:
+        Prices4.append(price.text)
+
+    img_items4 = soup4.find_all("div", class_="_4WELSP")
+    for img_item in img_items4:
+        img_tag = img_item.find("img")
+        img_src = img_tag.get('src')
+        Images4.append(img_src)
+
+    context = {
+        'products': zip(Product_name, Prices, Description, Images),
+        'products1': zip(Product_name1, Prices1,Description1, Images1),
+        'products2': zip(Product_name2, Prices2, Images2),
+        'products4': zip(Product_name4, Prices4, Images4),
+    }
+    
+    return render(request, 'scraped_data2.html', context)
+    
+
+
+def scrape_clothing2(request):
+    if request.method=="POST":
+        username = request.POST.get("username")
+        print("US",username)
+    print("test")
+    Product_name = []
+    Prices = []
+    Description = []
+    Images = []
+    url = "https://www.flipkart.com/search?q=tops+for+women&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page=4"
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, "html.parser")
+    names = soup.find_all("div", class_="syl9yP")
+    for name in names:
+        Product_name.append(name.text)
+    # Indian Rupee symbol
+    prices = soup.find_all("div", class_="Nx9bqj")
+    for price in prices:
+        Prices.append(price.text)
+    desc = soup.find_all("a", class_="WKTcLC")
+    for d in desc:
+        description = d.text
+        Description.append(description)
+   
+    # The rest of your code for processing imagespage = urllib.request.urlopen(url)
+    
+    img_div = soup.find_all(class_="gqcSqV YGE0gZ")
+    for img in img_div:
+        img_tag = img.find("img")
+        img_src = img_tag.get('src')
+        Images.append(img_src)
+    
+
+    # Define Images1 for the second set of products
+    Images1 = []
+    Product_name1=[]
+    Prices1=[]
+    Description1=[]
+    url1 = "https://www.flipkart.com/search?q=men%20t%20shirt%20stylish&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off"
+    r1 = requests.get(url1)
+    soup1 = BeautifulSoup(r1.text, "html.parser")
+    names1 = soup1.find_all("div", class_="syl9yP")
+    for name in names1:
+        Product_name1.append(name.text)
+    # Indian Rupee symbol
+    prices1 = soup1.find_all("div", class_="Nx9bqj")
+    for price in prices1:
+        Prices1.append(price.text)
+    desc1 = soup1.find_all("a", class_="WKTcLC")
+    for d in desc1:
+        Description1.append(d.text)
+    
+    img_div1 = soup1.find_all(class_="gqcSqV YGE0gZ")
+    for img in img_div1:
+        img_tag1 = img.find("img")
+        img_src1 = img_tag1.get('src')
+        Images1.append(img_src1)
+        
+        
+    Product_name2 = []
+    Prices2 = []
+    Images2=[]
+    Description2=[]
+    url2 = "https://www.flipkart.com/search?q=boys+t+shirt+12%2F13+years&sid=clo%2Cash%2Cank%2Cpgi&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_1_13_na_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_1_13_na_na_na&as-pos=1&as-type=RECENT&suggestionId=boys+t+shirt+12%2F13+years%7CKids%27+T-shirts&requestId=4760a67d-8bf7-4c4e-adab-d9accf664d73&as-searchtext=boys%20t%20shirt%20"
+    r2 = requests.get(url2)
+    soup2 = BeautifulSoup(r2.text, "lxml")
+    names2 = soup2.find_all("div", class_="syl9yP")
+    for name in names2:
+        Product_name2.append(name.text)
+        print("Boys Clothing",name.text,"\n")
+    # Indian Rupee symbol
+    prices2 = soup2.find_all("div", class_="Nx9bqj")
+    for price in prices2:
+        Prices2.append(price.text)
+    desc2 = soup2.find_all("a", class_="WKTcLC")
+    for d in desc2:
+        Description2.append(d.text)
+        
+
+    img_div2 = soup2.find_all(class_="gqcSqV YGE0gZ")
+    for img in img_div2:
+        img_tag2 = img.find("img")
+        img_src2 = img_tag2.get('src')
+        Images2.append(img_src2)
+        
+    Product_name4 = []
+    Prices4 = []
+    Images4=[]
+    Description4=[]
+    url4 = "https://www.flipkart.com/search?q=girls%20dress%2011%2F12years%20frock%20stylish&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off"
+    r4 = requests.get(url4)
+    soup4 = BeautifulSoup(r4.text, "lxml")
+    names4 = soup4.find_all("div", class_="syl9yP")
+    for name in names4:
+        Product_name4.append(name.text)
+        # Indian Rupee symbol
+    prices4 = soup4.find_all("div", class_="Nx9bqj")
+    for price in prices4:
+        Prices4.append(price.text)
+    desc4 = soup4.find_all("a", class_="WKTcLC BwBZTg")
+    for d in desc4:
+        Description4.append(d.text)
+   
+    img_div4 = soup4.find_all(class_="gqcSqV YGE0gZ")
+    for img in img_div4:
+        img_tag4 = img.find("img")
+        img_src4 = img_tag4.get('src')
+        Images4.append(img_src4)
+
+    context = {
+        'products': zip(Product_name, Prices, Description, Images,),
+        'products1': zip(Product_name1, Prices1, Description1, Images1,),
+        'products2': zip(Product_name2, Prices2, Description2, Images2,),
+        'products4': zip(Product_name4, Prices4, Description4, Images4,),
+    }
+    
+    return render(request, 'scraped_clothing2.html', context)
+
+
+
+def scrape_flipkart3(request):
+    if request.method=="POST":
+        username = request.POST.get("username")
+        print("US",username)
+    print("test")
+    Product_name = []
+    Prices = []
+    Description = []
+    Images = []
+    url = "https://www.flipkart.com/search?q=mobiles+under+50000&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page="+str(1)
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, "html.parser")
+    names = soup.find_all("div", class_="KzDlHZ")
+    for name in names:
+        Product_name.append(name.text)
+
+    # Scrape product prices
+    prices = soup.find_all("div", class_="Nx9bqj _4b5DiR")
+    for price in prices:
+        Prices.append(price.text)
+    desc = soup.find_all("ul", class_="G4BRas")
+    for d in desc:
+        description = d.text
+        Description.append(description)
+   
+     # Scrape images
+    img_items = soup.find_all("div", class_="_4WELSP")
+    for img_item in img_items:
+        img_tag = img_item.find("img")
+        img_src = img_tag.get('src')
+        Images.append(img_src)
+    
+
+    # Define Images1 for the second set of products
+    Images1 = []
+    Product_name1=[]
+    Prices1=[]
+    Description1 = []
+    url1 = "https://www.flipkart.com/search?q=bedsheet&sid=jra%2Cknw%2Cqcw&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_2_9_na_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_2_9_na_na_na&as-pos=2&as-type=RECENT&suggestionId=bedsheet%7CBedsheets&requestId=04de54c5-e4a5-4e25-af98-1629d4706010&as-backfill=on&page=2"
+    r = requests.get(url1)
+    soup = BeautifulSoup(r.text, "html.parser")
+     # Scrape product names
+    names = soup.find_all("a", class_="wjcEIp")
+    for name in names:
+        Product_name1.append(name.text)
+    # Scrape product prices
+    prices = soup.find_all("div", class_="Nx9bqj")
+    for price in prices:
+        Prices1.append(price.text)
+
+    # Scrape product descriptions
+    desc = soup.find_all("div", class_="NqpwHC")
+    for d in desc:
+        Description1.append(d.text)
+
+    # Scrape images
+    img_items = soup.find_all("div", class_="_4WELSP WH5SS-")
+    for img_item in img_items:
+        img_tag = img_item.find("img")
+        img_src = img_tag.get('src')
+        Images1.append(img_src)
+        
+        
+    
+# #Home Decor 
+
+    Product_name2 = []
+    Prices2 = []
+    Images2=[]
+    url2 = "https://www.flipkart.com/search?q=home+decorate+items&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page=5"
+    r2 = requests.get(url2)
+    soup2 = BeautifulSoup(r2.text, "lxml")
+     # Scrape product names
+    names2 = soup2.find_all("a", class_="wjcEIp")
+    for name in names2:
+        Product_name2.append(name.text)
+        print("Home Decor",name.text,"\n")
+
+    # Scrape product prices
+    prices2 = soup2.find_all("div", class_="Nx9bqj")
+    for price in prices2:
+        Prices2.append(price.text)
+
+    # Scrape images
+    img_items2 = soup2.find_all("div", class_="_4WELSP WH5SS-")
+    for img_item in img_items2:
+        img_tag = img_item.find("img")
+        img_src = img_tag.get('src')
+        Images2.append(img_src)
+        
+   #Earphones        
+    Product_name4 = []
+    Prices4 = []
+    Images4=[]
+    url4 = "https://www.flipkart.com/search?q=earphone+with+power+bank&sid=0pm%2Cfcn%2C821%2Ca7x%2C2si&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&as-pos=2&as-type=RECENT&suggestionId=earphone+with+power+bank%7CTrue+Wireless&requestId=1c7ae1bd-ed21-4897-9fb6-ebadcee2fabf&as-searchtext=powerbank%20and%20earphones"
+    r4 = requests.get(url4)
+    soup4 = BeautifulSoup(r4.text, "lxml")
+    names4 = soup.find_all("a", class_="wjcEIp")
+    for name in names4:
+        Product_name4.append(name.text)
+        print("Earbuds",name.text,"\n")
+    prices4 = soup4.find_all("div", class_="Nx9bqj")
+    for price in prices4:
+        Prices4.append(price.text)
+
+    img_items4 = soup4.find_all("div", class_="_4WELSP")
+    for img_item in img_items4:
+        img_tag = img_item.find("img")
+        img_src = img_tag.get('src')
+        Images4.append(img_src)
+
+    context = {
+        'products': zip(Product_name, Prices, Description, Images),
+        'products1': zip(Product_name1, Prices1,Description1, Images1),
+        'products2': zip(Product_name2, Prices2, Images2),
+        'products4': zip(Product_name4, Prices4, Images4),
+    }
+    
+    return render(request, 'scraped_data3.html', context)
+    
+
+
+def scrape_clothing3(request):
+    if request.method=="POST":
+        username = request.POST.get("username")
+        print("US",username)
+    print("test")
+    Product_name = []
+    Prices = []
+    Description = []
+    Images = []
+    url = "https://www.flipkart.com/search?q=tops+for+women&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page=4"
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, "html.parser")
+    names = soup.find_all("div", class_="syl9yP")
+    for name in names:
+        Product_name.append(name.text)
+    # Indian Rupee symbol
+    prices = soup.find_all("div", class_="Nx9bqj")
+    for price in prices:
+        Prices.append(price.text)
+    desc = soup.find_all("a", class_="WKTcLC")
+    for d in desc:
+        description = d.text
+        Description.append(description)
+   
+    # The rest of your code for processing imagespage = urllib.request.urlopen(url)
+    
+    img_div = soup.find_all(class_="gqcSqV YGE0gZ")
+    for img in img_div:
+        img_tag = img.find("img")
+        img_src = img_tag.get('src')
+        Images.append(img_src)
+    
+
+    # Define Images1 for the second set of products
+    Images1 = []
+    Product_name1=[]
+    Prices1=[]
+    Description1=[]
+    url1 = "https://www.flipkart.com/search?q=men%20t%20shirt%20stylish&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off"
+    r1 = requests.get(url1)
+    soup1 = BeautifulSoup(r1.text, "html.parser")
+    names1 = soup1.find_all("div", class_="syl9yP")
+    for name in names1:
+        Product_name1.append(name.text)
+    # Indian Rupee symbol
+    prices1 = soup1.find_all("div", class_="Nx9bqj")
+    for price in prices1:
+        Prices1.append(price.text)
+    desc1 = soup1.find_all("a", class_="WKTcLC")
+    for d in desc1:
+        Description1.append(d.text)
+    
+    img_div1 = soup1.find_all(class_="gqcSqV YGE0gZ")
+    for img in img_div1:
+        img_tag1 = img.find("img")
+        img_src1 = img_tag1.get('src')
+        Images1.append(img_src1)
+        
+        
+    Product_name2 = []
+    Prices2 = []
+    Images2=[]
+    Description2=[]
+    url2 = "https://www.flipkart.com/search?q=boys+t+shirt+12%2F13+years&sid=clo%2Cash%2Cank%2Cpgi&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_1_13_na_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_1_13_na_na_na&as-pos=1&as-type=RECENT&suggestionId=boys+t+shirt+12%2F13+years%7CKids%27+T-shirts&requestId=4760a67d-8bf7-4c4e-adab-d9accf664d73&as-searchtext=boys%20t%20shirt%20"
+    r2 = requests.get(url2)
+    soup2 = BeautifulSoup(r2.text, "lxml")
+    names2 = soup2.find_all("div", class_="syl9yP")
+    for name in names2:
+        Product_name2.append(name.text)
+        print("Boys Clothing",name.text,"\n")
+    # Indian Rupee symbol
+    prices2 = soup2.find_all("div", class_="Nx9bqj")
+    for price in prices2:
+        Prices2.append(price.text)
+    desc2 = soup2.find_all("a", class_="WKTcLC")
+    for d in desc2:
+        Description2.append(d.text)
+        
+
+    img_div2 = soup2.find_all(class_="gqcSqV YGE0gZ")
+    for img in img_div2:
+        img_tag2 = img.find("img")
+        img_src2 = img_tag2.get('src')
+        Images2.append(img_src2)
+        
+    Product_name4 = []
+    Prices4 = []
+    Images4=[]
+    Description4=[]
+    url4 = "https://www.flipkart.com/search?q=girls%20dress%2011%2F12years%20frock%20stylish&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off"
+    r4 = requests.get(url4)
+    soup4 = BeautifulSoup(r4.text, "lxml")
+    names4 = soup4.find_all("div", class_="syl9yP")
+    for name in names4:
+        Product_name4.append(name.text)
+        # Indian Rupee symbol
+    prices4 = soup4.find_all("div", class_="Nx9bqj")
+    for price in prices4:
+        Prices4.append(price.text)
+    desc4 = soup4.find_all("a", class_="WKTcLC BwBZTg")
+    for d in desc4:
+        Description4.append(d.text)
+   
+    img_div4 = soup4.find_all(class_="gqcSqV YGE0gZ")
+    for img in img_div4:
+        img_tag4 = img.find("img")
+        img_src4 = img_tag4.get('src')
+        Images4.append(img_src4)
+
+    context = {
+        'products': zip(Product_name, Prices, Description, Images,),
+        'products1': zip(Product_name1, Prices1, Description1, Images1,),
+        'products2': zip(Product_name2, Prices2, Description2, Images2,),
+        'products4': zip(Product_name4, Prices4, Description4, Images4,),
+    }
+    
+    return render(request, 'scraped_clothing3.html', context)
+
+
+def scrape_flipkart4(request):
+    if request.method=="POST":
+        username = request.POST.get("username")
+        print("US",username)
+    print("test")
+    Product_name = []
+    Prices = []
+    Description = []
+    Images = []
+    url = "https://www.flipkart.com/search?q=mobiles+under+50000&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page="+str(1)
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, "html.parser")
+    names = soup.find_all("div", class_="KzDlHZ")
+    for name in names:
+        Product_name.append(name.text)
+
+    # Scrape product prices
+    prices = soup.find_all("div", class_="Nx9bqj _4b5DiR")
+    for price in prices:
+        Prices.append(price.text)
+    desc = soup.find_all("ul", class_="G4BRas")
+    for d in desc:
+        description = d.text
+        Description.append(description)
+   
+     # Scrape images
+    img_items = soup.find_all("div", class_="_4WELSP")
+    for img_item in img_items:
+        img_tag = img_item.find("img")
+        img_src = img_tag.get('src')
+        Images.append(img_src)
+    
+
+    # Define Images1 for the second set of products
+    Images1 = []
+    Product_name1=[]
+    Prices1=[]
+    Description1 = []
+    url1 = "https://www.flipkart.com/search?q=bedsheet&sid=jra%2Cknw%2Cqcw&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_2_9_na_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_2_9_na_na_na&as-pos=2&as-type=RECENT&suggestionId=bedsheet%7CBedsheets&requestId=04de54c5-e4a5-4e25-af98-1629d4706010&as-backfill=on&page=2"
+    r = requests.get(url1)
+    soup = BeautifulSoup(r.text, "html.parser")
+     # Scrape product names
+    names = soup.find_all("a", class_="wjcEIp")
+    for name in names:
+        Product_name1.append(name.text)
+    # Scrape product prices
+    prices = soup.find_all("div", class_="Nx9bqj")
+    for price in prices:
+        Prices1.append(price.text)
+
+    # Scrape product descriptions
+    desc = soup.find_all("div", class_="NqpwHC")
+    for d in desc:
+        Description1.append(d.text)
+
+    # Scrape images
+    img_items = soup.find_all("div", class_="_4WELSP WH5SS-")
+    for img_item in img_items:
+        img_tag = img_item.find("img")
+        img_src = img_tag.get('src')
+        Images1.append(img_src)
+        
+        
+    
+# #Home Decor 
+
+    Product_name2 = []
+    Prices2 = []
+    Images2=[]
+    url2 = "https://www.flipkart.com/search?q=home+decorate+items&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page=5"
+    r2 = requests.get(url2)
+    soup2 = BeautifulSoup(r2.text, "lxml")
+     # Scrape product names
+    names2 = soup2.find_all("a", class_="wjcEIp")
+    for name in names2:
+        Product_name2.append(name.text)
+        print("Home Decor",name.text,"\n")
+
+    # Scrape product prices
+    prices2 = soup2.find_all("div", class_="Nx9bqj")
+    for price in prices2:
+        Prices2.append(price.text)
+
+    # Scrape images
+    img_items2 = soup2.find_all("div", class_="_4WELSP WH5SS-")
+    for img_item in img_items2:
+        img_tag = img_item.find("img")
+        img_src = img_tag.get('src')
+        Images2.append(img_src)
+        
+   #Earphones        
+    Product_name4 = []
+    Prices4 = []
+    Images4=[]
+    url4 = "https://www.flipkart.com/search?q=earphone+with+power+bank&sid=0pm%2Cfcn%2C821%2Ca7x%2C2si&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&as-pos=2&as-type=RECENT&suggestionId=earphone+with+power+bank%7CTrue+Wireless&requestId=1c7ae1bd-ed21-4897-9fb6-ebadcee2fabf&as-searchtext=powerbank%20and%20earphones"
+    r4 = requests.get(url4)
+    soup4 = BeautifulSoup(r4.text, "lxml")
+    names4 = soup.find_all("a", class_="wjcEIp")
+    for name in names4:
+        Product_name4.append(name.text)
+        print("Earbuds",name.text,"\n")
+    prices4 = soup4.find_all("div", class_="Nx9bqj")
+    for price in prices4:
+        Prices4.append(price.text)
+
+    img_items4 = soup4.find_all("div", class_="_4WELSP")
+    for img_item in img_items4:
+        img_tag = img_item.find("img")
+        img_src = img_tag.get('src')
+        Images4.append(img_src)
+
+    context = {
+        'products': zip(Product_name, Prices, Description, Images),
+        'products1': zip(Product_name1, Prices1,Description1, Images1),
+        'products2': zip(Product_name2, Prices2, Images2),
+        'products4': zip(Product_name4, Prices4, Images4),
+    }
+    
+    return render(request, 'scraped_data4.html', context)
+    
+
+
+def scrape_clothing4(request):
+    if request.method=="POST":
+        username = request.POST.get("username")
+        print("US",username)
+    print("test")
+    Product_name = []
+    Prices = []
+    Description = []
+    Images = []
+    url = "https://www.flipkart.com/search?q=tops+for+women&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page=4"
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, "html.parser")
+    names = soup.find_all("div", class_="syl9yP")
+    for name in names:
+        Product_name.append(name.text)
+    # Indian Rupee symbol
+    prices = soup.find_all("div", class_="Nx9bqj")
+    for price in prices:
+        Prices.append(price.text)
+    desc = soup.find_all("a", class_="WKTcLC")
+    for d in desc:
+        description = d.text
+        Description.append(description)
+   
+    # The rest of your code for processing imagespage = urllib.request.urlopen(url)
+    
+    img_div = soup.find_all(class_="gqcSqV YGE0gZ")
+    for img in img_div:
+        img_tag = img.find("img")
+        img_src = img_tag.get('src')
+        Images.append(img_src)
+    
+
+    # Define Images1 for the second set of products
+    Images1 = []
+    Product_name1=[]
+    Prices1=[]
+    Description1=[]
+    url1 = "https://www.flipkart.com/search?q=men%20t%20shirt%20stylish&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off"
+    r1 = requests.get(url1)
+    soup1 = BeautifulSoup(r1.text, "html.parser")
+    names1 = soup1.find_all("div", class_="syl9yP")
+    for name in names1:
+        Product_name1.append(name.text)
+    # Indian Rupee symbol
+    prices1 = soup1.find_all("div", class_="Nx9bqj")
+    for price in prices1:
+        Prices1.append(price.text)
+    desc1 = soup1.find_all("a", class_="WKTcLC")
+    for d in desc1:
+        Description1.append(d.text)
+    
+    img_div1 = soup1.find_all(class_="gqcSqV YGE0gZ")
+    for img in img_div1:
+        img_tag1 = img.find("img")
+        img_src1 = img_tag1.get('src')
+        Images1.append(img_src1)
+        
+        
+    Product_name2 = []
+    Prices2 = []
+    Images2=[]
+    Description2=[]
+    url2 = "https://www.flipkart.com/search?q=boys+t+shirt+12%2F13+years&sid=clo%2Cash%2Cank%2Cpgi&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_1_13_na_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_1_13_na_na_na&as-pos=1&as-type=RECENT&suggestionId=boys+t+shirt+12%2F13+years%7CKids%27+T-shirts&requestId=4760a67d-8bf7-4c4e-adab-d9accf664d73&as-searchtext=boys%20t%20shirt%20"
+    r2 = requests.get(url2)
+    soup2 = BeautifulSoup(r2.text, "lxml")
+    names2 = soup2.find_all("div", class_="syl9yP")
+    for name in names2:
+        Product_name2.append(name.text)
+        print("Boys Clothing",name.text,"\n")
+    # Indian Rupee symbol
+    prices2 = soup2.find_all("div", class_="Nx9bqj")
+    for price in prices2:
+        Prices2.append(price.text)
+    desc2 = soup2.find_all("a", class_="WKTcLC")
+    for d in desc2:
+        Description2.append(d.text)
+        
+
+    img_div2 = soup2.find_all(class_="gqcSqV YGE0gZ")
+    for img in img_div2:
+        img_tag2 = img.find("img")
+        img_src2 = img_tag2.get('src')
+        Images2.append(img_src2)
+        
+    Product_name4 = []
+    Prices4 = []
+    Images4=[]
+    Description4=[]
+    url4 = "https://www.flipkart.com/search?q=girls%20dress%2011%2F12years%20frock%20stylish&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off"
+    r4 = requests.get(url4)
+    soup4 = BeautifulSoup(r4.text, "lxml")
+    names4 = soup4.find_all("div", class_="syl9yP")
+    for name in names4:
+        Product_name4.append(name.text)
+        # Indian Rupee symbol
+    prices4 = soup4.find_all("div", class_="Nx9bqj")
+    for price in prices4:
+        Prices4.append(price.text)
+    desc4 = soup4.find_all("a", class_="WKTcLC BwBZTg")
+    for d in desc4:
+        Description4.append(d.text)
+   
+    img_div4 = soup4.find_all(class_="gqcSqV YGE0gZ")
+    for img in img_div4:
+        img_tag4 = img.find("img")
+        img_src4 = img_tag4.get('src')
+        Images4.append(img_src4)
+
+    context = {
+        'products': zip(Product_name, Prices, Description, Images,),
+        'products1': zip(Product_name1, Prices1, Description1, Images1,),
+        'products2': zip(Product_name2, Prices2, Description2, Images2,),
+        'products4': zip(Product_name4, Prices4, Description4, Images4,),
+    }
+    
+    return render(request, 'scraped_clothing4.html', context)

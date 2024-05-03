@@ -49,14 +49,13 @@
 </head>
 <body>
     <div class="navigation">
-        <a href="/main">Main</a>
-        <a href="#mobiles">Mobile Phone</a>
-        <a href="#bedsheets">Bedsheet</a>
-        <a href="#homedecor">Home Decor</a>
-        <a href="#earbuds">Earbuds</a>
+        <a href="#mobiles">Women Clothing</a>
+        <a href="#bedsheets">Men clothing</a>
+        <a href="#homedecor">Boy Clothing</a>
+        <a href="#earbuds">Girl Clothing</a>
     </div>
     <div class="container">
-        <h1 id="mobiles">Mobile Phones</h1>
+        <h1 id="mobiles">Women Clothing</h1>
         <div class="product-row">
             {% for product, price, description, image in products %}
             <div class="product-item">
@@ -69,7 +68,7 @@
             </div>
             {% endfor %}
         </div>
-        <h1 id="bedsheets">Bedsheets</h1>
+        <h1 id="bedsheets">Men Clothing</h1>
         <div class="product-row">
             {% for product, price,description, image in products1 %}
             <div class="product-item">
@@ -82,42 +81,45 @@
             </div>
             {% endfor %}
         </div>
-        <h1 id="homedecor">Home Decor</h1>
+        <h1 id="homedecor">Boy Clothing</h1>
         <div class="product-row">
-            {% for product, price, image in products2 %}
+            {% for product, price, description, image in products2 %}
             <div class="product-item">
                 <img src="{{ image }}" alt="{{ product }}">
                 <h2>{{ product }}</h2>
                 <p>Price: {{ price }}</p>
+                <p>Description: {{ description }}</p>
                 <button class="wish-button"
-                onclick="myFunction('{{ product }}', '{{ price }}','{{ image }}','{{name}}')">Wish</button>
+                onclick="myFunction('{{ product }}', '{{ price }}','{{ description }}','{{ image }}','{{name}}')">Wish</button>
             </div>
             {% endfor %}
         </div>
-        <h1 id="earbuds">Earbuds</h1>
+        <h1 id="earbuds">Girl Clothing</h1>
         <div class="product-row">
-            {% for product, price, image in products4 %}
+            {% for product, price, description, image in products4 %}
             <div class="product-item">
                 <img src="{{ image }}" alt="{{ product }}">
                 <h2>{{ product }}</h2>
                 <p>Price: {{ price }}</p>
+                <p>Description: {{ description }}</p>
                 <button class="wish-button"
-                onclick="myFunction('{{ product }}', '{{ price }}','{{ image }}','{{name}}')">Wish</button>
+                onclick="myFunction('{{ product }}', '{{ price }}','{{ description }}','{{ image }}','{{name}}')">Wish</button>
             </div>
             {% endfor %}
         </div>
     </div>
 </body>
 <script>
-    var userName = localStorage.getItem("userName")
-    var wishid = 2;
+    var userName = localStorage.getItem("userName");
+    var wishid = localStorage.getItem("wishlistId");
     var productData = localStorage.getItem(`${userName}${wishid}WishListItems`);
     const wishListItem = JSON.parse(productData)||[];
-    
+
     function myFunction(product, price, description,image,name) {
         const item = { product, price, description,image }
         wishListItem.push(item);
         localStorage.setItem(`${userName}${wishid}WishListItems`, JSON.stringify(wishListItem));
+        console.log(`${userName}${wishid}WishListItems`);
     }
 </script>
 

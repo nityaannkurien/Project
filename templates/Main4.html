@@ -1,0 +1,234 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create WishList</title>
+    <link rel="stylesheet" href="{% static 'WishStack/css/Main.css' %}">
+    <style>
+        body {
+            background-image: url("{% static 'WishStack/images/Gift.png' %}");
+        }
+    </style>
+    <style>
+        /* Style for the modal */
+        .modal {
+            display: none;
+            /* Hidden by default */
+            position: absolute;
+            /* Position it relative to the parent container */
+            background-color: #fefefe;
+            /* Modal background color */
+            border: 1px solid #888;
+            /* Modal border */
+            padding: 20px;
+            /* Modal padding */
+            z-index: 1;
+            /* Ensure modal stays on top */
+        }
+    
+        /* Style for the close button */
+        .close {
+            color: #aaa;
+            /* Close button color */
+            float: right;
+            /* Float the button to the right */
+            font-size: 28px;
+            /* Close button font size */
+            font-weight: bold;
+            /* Close button font weight */
+        
+        }
+    
+        /* Style for the modal content */
+        .modal-content {
+            display: flex;
+            /* Display modal content as a flexbox */
+            flex-direction: column;
+            /* Arrange modal content in a column */
+        }
+    
+        /* Style for the input field */
+        #shareUrlInput {
+            margin-bottom: 10px;
+            /* Add some space below the input field */
+        }
+
+        /* Style for product container */
+        #productDetails {
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        /* Style for individual product item */
+        .product-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: antiquewhite;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            width: 30%;
+            height: 40%;
+        }
+
+        /* Style for product title */
+        .product-item h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        /* Style for product price and description */
+        .product-item p {
+            font-size: 1em;
+            margin-bottom: 5px;
+        }
+
+        /* Style for product image */
+        .product-item img {
+            max-width: 100%;
+            height: 200px;
+            width: 200px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar">
+            <ul class="navbar-list">
+                <li style="text-align: center;"><a>Anniversary Wishlist</a></li>
+            </ul>
+            <div class="filter-dropdown">
+                Filter
+                <div class="filter-dropdown-content">
+                    <button id="highToLowBtn">High to Low</button>
+                    <button id="lowToHighBtn">Low to High</button>
+                </div>
+            </div>
+            <button class="share-button" id="shareButton">Share</button>
+            <button class="logout-button" onclick="window.location.href='{% url 'logout' %}'">Logout</button>
+        </nav>
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <p>Share this URL:</p>
+                <input type="text" id="shareUrlInput" readonly>
+                <button id="copyButton">Copy</button>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="amazon-button" onclick="window.location.href='{% url 'scrape_flipkart4' %}'"
+            data-api-url="{% url 'start_wishing' %}?wishlistName={{ wishlist_name }}">Flipkart</button>
+        <button class="amazon-button" onclick="window.location.href='{% url 'scrape_clothing4' %}'"
+            data-api-url="{% url 'start_wishing' %}?wishlistName={{ wishlist_name }}">Amazon</button>
+    </div>
+    <div id="productDetails">
+        <!-- Product details will be populated here -->
+    </div>
+</div>
+<script src="WishStack/js/Main.js"></script>
+<script>
+    document.getElementById("shareButton").addEventListener("click", function () {
+        // Get the current URL
+        var currentUrl = window.location.href;
+
+        // Assuming you have a variable containing the wishlist ID or name
+        var wishlistId = "{{ wishlist_id }}"; // Replace "{{ wishlist_id }}" with your actual wishlist ID
+
+        // Construct the share URL
+        var shareUrl = currentUrl + "?wishlist=" + wishlistId;
+
+        // Display the modal below the share button
+        var modal = document.getElementById("myModal");
+        var shareButtonRect = document.getElementById("shareButton").getBoundingClientRect();
+        modal.style.top = (shareButtonRect.bottom + window.pageYOffset) + "px";
+        modal.style.left = shareButtonRect.left + "px";
+        modal.style.display = "block";
+
+        // Populate and copy the URL when "Copy" button is clicked
+        var shareUrlInput = document.getElementById("shareUrlInput");
+        shareUrlInput.value = shareUrl;
+
+        // Remove any existing event listener to avoid duplication
+        var copyButton = document.getElementById("copyButton");
+        copyButton.removeEventListener("click", copyUrlToClipboard);
+
+        // Add event listener to copy URL to clipboard
+        copyButton.addEventListener("click", copyUrlToClipboard);
+
+        // Close the modal when the close button is clicked
+        document.getElementsByClassName("close")[0].addEventListener("click", function () {
+            modal.style.display = "none";
+        });
+    });
+
+    // Function to copy URL to clipboard
+    function copyUrlToClipboard() {
+        var shareUrlInput = document.getElementById("shareUrlInput");
+        shareUrlInput.select();
+        document.execCommand("copy");
+        alert("URL copied to clipboard");
+    }
+    var wishid = 5;
+    var userName = localStorage.getItem("userName")
+    // Retrieve the JSON string from local storage
+    var productData = localStorage.getItem(`${userName}${wishid}WishListItems`);
+
+    // Parse the JSON string into a JavaScript object
+    var products = JSON.parse(productData);
+
+    // Create HTML elements to display the product information
+    var productDetailsDiv = document.getElementById('productDetails');
+
+    // Iterate over each product object in the array
+    products.forEach(function (product) {
+        // Create HTML elements for each product
+        var productDiv = document.createElement('div');
+        productDiv.classList.add('product-item');
+
+        var productImg = document.createElement('img');
+        productImg.classList.add('product-img');
+        productImg.src = product.image
+
+        var productTitle = document.createElement('h2');
+        productTitle.textContent = product.product;
+
+        var productPrice = document.createElement('p');
+        productPrice.textContent = 'Price: ' + product.price;
+
+        var productDescription = document.createElement('p');
+        productDescription.textContent = 'Description: ' + product.description;
+
+        // Append the elements to the productDiv
+        productDiv.appendChild(productImg);
+        productDiv.appendChild(productTitle);
+        productDiv.appendChild(productPrice);
+        productDiv.appendChild(productDescription);
+
+        // Append the productDiv to the container
+        productDetailsDiv.appendChild(productDiv);
+    });
+    function sortPricesLowToHigh(products) {
+        return products.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+    }
+    
+    
+    
+    
+
+    
+</script>
+</body>
+</html>

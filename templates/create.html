@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create WishList</title>
-    <link rel="stylesheet" href="{% static 'WishStack/css/create.css' %}">
+    <link rel="stylesheet" href="{% static 'WishStack/css/create1.css' %}">
     <style>
       body {
         background-image: url("{% static 'WishStack/images/Gift.png' %}");
@@ -36,41 +36,71 @@
     <div id="wishlist-container" class="wishlist-container">
       <div class="wishlist-item" onclick="redirectToWishing()">
         <div class="button-container">
-          <span>Create a wishlist</span>
-          <a href="/wishing/"><button class="add-button" onclick="addBox()">+</button></a>
+            <a href="/main/"><button class="add-button" onclick="setId(1)">Birthday</button></a>
           <div class="options-dropdown">
             <img class="options-button" src="{% static 'WishStack/images/dots.jpeg' %}" alt="Options" />
             <div class="options-dropdown-content">
-              <a href="">Edit</a>
-              <a href="" onclick="deleteList('{{ wishlist_id }}')">Delete</a>
+              <a href="">Share</a>
             </div>
-          </div>
+          </div> 
         </div>
       </div>
     </div>
-
-    {% for j in listname %}
-    <div id="wishlist-container" class="wishlist-container">
-      <div class="wishlist-item" onclick="redirectToWishing()">
-        <div class="button-container">
-          <span>{{ j.wishlist_name }}</span>
-          <div class="options-dropdown">
-            <img class="options-button" src="{% static 'WishStack/images/dots.jpeg' %}" alt="Options" />
-            <div class="options-dropdown-content">
-              <a href="">Edit</a>
-             <!-- Update the href attribute to include the wishlist ID -->
-              <a href="{% url 'delete_list' wishlist_id=j.wishlist_id %}">Delete</a>
-
-
-            </div>
+  <div id="wishlist-container" class="wishlist-container">
+    <div class="wishlist-item" onclick="redirectToWishing()">
+      <div class="button-container">
+          <a href="/main1/"><button class="add-button" onclick="setId(2)">House Warming</button></a>
+        <div class="options-dropdown">
+          <img class="options-button" src="{% static 'WishStack/images/dots.jpeg' %}" alt="Options" />
+          <div class="options-dropdown-content">
+            <a href="">Share</a>
           </div>
-        </div>
+        </div> 
       </div>
     </div>
-    {% endfor %}
   </div>
-
+  <div id="wishlist-container" class="wishlist-container">
+    <div class="wishlist-item" onclick="redirectToWishing()">
+      <div class="button-container">
+          <a href="/main2/"><button class="add-button" onclick="setId(3)">Wedding</button></a>
+        <div class="options-dropdown">
+          <img class="options-button" src="{% static 'WishStack/images/dots.jpeg' %}" alt="Options" />
+          <div class="options-dropdown-content">
+            <a href="">Share</a>
+          </div>
+        </div> 
+      </div>
+    </div>
+  <div id="wishlist-container" class="wishlist-container">
+    <div class="wishlist-item" onclick="redirectToWishing()">
+      <div class="button-container">
+          <a href="/main3/"><button class="add-button" onclick="setId(4)">Baptism</button></a>
+        <div class="options-dropdown">
+          <img class="options-button" src="{% static 'WishStack/images/dots.jpeg' %}" alt="Options" />
+          <div class="options-dropdown-content">
+            <a href="">Share</a>
+          </div>
+        </div> 
+      </div>
+    </div>
+  </div>
+  <div id="wishlist-container" class="wishlist-container">
+    <div class="wishlist-item" onclick="redirectToWishing()">
+      <div class="button-container">
+          <a href="/main4/"><button class="add-button" onclick="setId(5)" >Anniversary</button></a>
+        <div class="options-dropdown">
+          <img class="options-button" src="{% static 'WishStack/images/dots.jpeg' %}" alt="Options" />
+          <div class="options-dropdown-content">
+            <a href="">Share</a>
+          </div>
+        </div> 
+      </div>
+    </div>
+  </div>
+ 
+  </div>
   <script>
+    localStorage.setItem("userName",'{{user.first_name}}')
     let dropdownBtn = document.querySelector(".profile-dropdown-btn");
 
     dropdownBtn.addEventListener("click", function() {
@@ -99,7 +129,9 @@
       }
     });
 
-
+    function setId(wishlistId) {
+      localStorage.setItem("wishlistId", wishlistId);
+  }
 
     function addBox() {
     let existingWishlistContainer = document.getElementById('wishlist-container');

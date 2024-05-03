@@ -35,9 +35,7 @@ class ListItem(models.Model):
     item_name = models.CharField(max_length=255,)
     item_id = models.ForeignKey(ItemDetails, on_delete=models.CASCADE, blank=True,default=None)
 
-    
-    
-    # Add more fields if needed 
+    # Add more fields if needed
 
     def __str__(self):
         return self.item_name

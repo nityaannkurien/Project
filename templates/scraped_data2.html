@@ -49,7 +49,6 @@
 </head>
 <body>
     <div class="navigation">
-        <a href="/main">Main</a>
         <a href="#mobiles">Mobile Phone</a>
         <a href="#bedsheets">Bedsheet</a>
         <a href="#homedecor">Home Decor</a>
@@ -109,15 +108,16 @@
     </div>
 </body>
 <script>
-    var userName = localStorage.getItem("userName")
-    var wishid = 2;
+    var userName = localStorage.getItem("userName");
+    var wishid = localStorage.getItem("wishlistId");
     var productData = localStorage.getItem(`${userName}${wishid}WishListItems`);
     const wishListItem = JSON.parse(productData)||[];
-    
+
     function myFunction(product, price, description,image,name) {
         const item = { product, price, description,image }
         wishListItem.push(item);
         localStorage.setItem(`${userName}${wishid}WishListItems`, JSON.stringify(wishListItem));
+        console.log(`${userName}${wishid}WishListItems`);
     }
 </script>
 

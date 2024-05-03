@@ -11,7 +11,8 @@
         }
 
         .container {
-            padding-top: 60px; /* Adjust based on the height of your fixed navigation */
+            padding-top: 60px;
+            /* Adjust based on the height of your fixed navigation */
         }
 
         .navigation {
@@ -38,69 +39,86 @@
         }
 
         h1 {
-            margin-top: 40px; /* Adjust based on the height of your fixed navigation */
-            padding-top: 20px; /* Add some space above the heading */
+            margin-top: 40px;
+            /* Adjust based on the height of your fixed navigation */
+            padding-top: 20px;
+            /* Add some space above the heading */
             border-top: 1px solid #ddd;
         }
     </style>
 </head>
 <body>
-        <div class="navigation">
-            <a href="#mobiles">Mobile Phone</a>
-            <a href="#bedsheets">Bedsheet</a>
-            <a href="#homedecor">Home Decor</a>
-            <a href="#earbuds">Earbuds</a>
+    <div class="navigation">
+        <a href="#mobiles">Mobile Phone</a>
+        <a href="#bedsheets">Bedsheet</a>
+        <a href="#homedecor">Home Decor</a>
+        <a href="#earbuds">Earbuds</a>
+    </div>
+    <div class="container">
+        <h1 id="mobiles">Mobile Phones</h1>
+        <div class="product-row">
+            {% for product, price, description, image in products %}
+            <div class="product-item">
+                <img src="{{ image }}" alt="{{ product }}">
+                <h2>{{ product }}</h2>
+                <p>Price: {{ price }}</p>
+                <p>Description: {{ description }}</p>
+                <button class="wish-button"
+                    onclick="myFunction('{{ product }}', '{{ price }}','{{ description }}','{{ image }}')">Wish</button>
+            </div>
+            {% endfor %}
         </div>
-        <div class="container">
-            <h1 id="mobiles">Mobile Phones</h1>
-            <div class="product-row">
-                {% for product, pri, desc, img,product_id in products %}
-                <div class="product-item">
-                    <img src="{{ img }}" alt="{{ product }}">
-                    <h2>{{ product }}</h2>
-                    <p>Price: {{ pri }}</p>
-                    <p>Description: {{ desc }}</p>
-                    <button href="{% url 'add_to_wishlist' item_name=product item_id=product_id description=desc price=pri image=img %}" class="wish-button">Wish</button>
-                </div>
-                {% endfor %}
+        <h1 id="bedsheets">Bedsheets</h1>
+        <div class="product-row">
+            {% for product, price,description, image in products1 %}
+            <div class="product-item">
+                <img src="{{ image }}" alt="{{ product }}">
+                <h2>{{ product }}</h2>
+                <p>Price: {{ price }}</p>
+                <p>Description: {{ description }}</p>
+                <button class="wish-button"
+                onclick="myFunction('{{ product }}', '{{ price }}','{{ description }}','{{ image }}','{{name}}')">Wish</button>
             </div>
-            <h1 id="bedsheets">Bedsheets</h1>
-            <div class="product-row">
-                {% for product, price, image, product_id in products1 %}
-                <div class="product-item">
-                    <img src="{{ image }}" alt="{{ product }}">
-                    <h2>{{ product }}</h2>
-                    <p>Price: {{ price }}</p>
-                    <button class="wish-button"  data-product-id="{{product_id}}">Wish</button>
-                </div>
-                {% endfor %}
-            </div>
-            <h1 id="homedecor">Home Decor</h1>
-            <div class="product-row">
-                {% for product, price, image, product_id in products2 %}
-                <div class="product-item">
-                    <img src="{{ image }}" alt="{{ product }}">
-                    <h2>{{ product }}</h2>
-                    <p>Price: {{ price }}</p>
-                    <button class="wish-button"  data-product-id="{{product_id}}">Wish</button>
-                </div>
-                {% endfor %}
-            </div>
-            <h1 id="earbuds">Earbuds</h1>
-            <div class="product-row">
-                {% for product, price, image, product_id in products4 %}
-                <div class="product-item">
-                    <img src="{{ image }}" alt="{{ product }}">
-                    <h2>{{ product }}</h2>
-                    <p>Price: {{ price }}</p>
-                    <button class="wish-button" data-product-id="{{product_id}}">Wish</button>
-                </div>
-                {% endfor %}
-            </div>
+            {% endfor %}
         </div>
-        <!-- In your HTML template -->
+        <h1 id="homedecor">Home Decor</h1>
+        <div class="product-row">
+            {% for product, price, image in products2 %}
+            <div class="product-item">
+                <img src="{{ image }}" alt="{{ product }}">
+                <h2>{{ product }}</h2>
+                <p>Price: {{ price }}</p>
+                <button class="wish-button"
+                onclick="myFunction('{{ product }}', '{{ price }}','{{ image }}','{{name}}')">Wish</button>
+            </div>
+            {% endfor %}
+        </div>
+        <h1 id="earbuds">Earbuds</h1>
+        <div class="product-row">
+            {% for product, price, image in products4 %}
+            <div class="product-item">
+                <img src="{{ image }}" alt="{{ product }}">
+                <h2>{{ product }}</h2>
+                <p>Price: {{ price }}</p>
+                <button class="wish-button"
+                onclick="myFunction('{{ product }}', '{{ price }}','{{ image }}','{{name}}')">Wish</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+<script>
+    var userName = localStorage.getItem("userName");
+    var wishid = localStorage.getItem("wishlistId");
+    var productData = localStorage.getItem(`${userName}${wishid}WishListItems`);
+    const wishListItem = JSON.parse(productData)||[];
 
+    function myFunction(product, price, description,image,name) {
+        const item = { product, price, description,image }
+        wishListItem.push(item);
+        localStorage.setItem(`${userName}${wishid}WishListItems`, JSON.stringify(wishListItem));
+        console.log(`${userName}${wishid}WishListItems`);
+    }
+</script>
 
-
-</body> 
 </html>
