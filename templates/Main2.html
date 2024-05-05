@@ -142,8 +142,9 @@
                     <button id="lowToHighBtn">Low to High</button>
                 </div>
             </div>
-        {% if user.is_authenticated %}
+      
             <button class="share-button" id="shareButton">Share</button>
+            {% if user.is_authenticated %}
             <button class="logout-button" onclick="window.location.href='{% url 'logout' %}'">Logout</button>
         {% endif%}
             

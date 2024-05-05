@@ -180,10 +180,10 @@ body {
   transition: margin-right 0.3s;
 }
 
-.logout-button{
+.logout-button1{
   padding: 8px 16px; /* Increase padding for larger buttons */
   font-size: 16px;
-  background-color: rgb(255, 255, 255);
+  background-color: white;
   margin-right: 10px; /* Add space between the filter button and the share button */
   padding: 5px 10px;
   border-radius: 20px;
@@ -191,8 +191,23 @@ body {
   display: flex;
   font-size: 0.2px;
   cursor: pointer;
+  color:black;
+  margin-left: auto;
+ 
+    padding: 8px 16px; /* Increase padding for larger buttons */
+    font-size: 16px; /* Increase font size for larger buttons */
+    background-color: white; /* Set background color */
+    border: 1px solid black; /* Add a small black border */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    transition: background-color 0.3s, color 0.3s, border 0.3s; /* Add smooth transition effects */
 }
 
+
+.logout-button:hover {
+    background-color:#f0f0f0; /* Change background color on hover */
+    color:  #333; /* Change text color on hover */
+    border-color: #f0f0f0; /* Change border color on hover */
+}
 
 
 /* .wishlist-item {
