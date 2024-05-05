@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create WishList</title>
     <link rel="stylesheet" href="{% static 'WishStack/css/Main.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
             background-image: url("{% static 'WishStack/images/Gift.png' %}");
@@ -101,6 +102,30 @@
             object-fit: contain;
             margin-bottom: 10px;
         }
+        .product-item button {
+            margin-left: auto;
+        }
+
+        .button-container {
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .button-container button {
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: white;
+            border-radius: inherit;
+            cursor: pointer;
+            border: none;
+        }
+
+        .delete-button {
+            background: none !important;
+            color: red;
+            font-size: 20px;
+        }
         
     </style>
 </head>
@@ -117,8 +142,11 @@
                     <button id="lowToHighBtn">Low to High</button>
                 </div>
             </div>
+        {% if user.is_authenticated %}
             <button class="share-button" id="shareButton">Share</button>
             <button class="logout-button" onclick="window.location.href='{% url 'logout' %}'">Logout</button>
+        {% endif%}
+            
         </nav>
         <div id="myModal" class="modal">
             <div class="modal-content">
@@ -129,10 +157,12 @@
             </div>
         </div>
         <div style="text-align: center; margin-top: 20px;">
+            {% if user.is_authenticated and user == username  %}
             <button class="amazon-button" onclick="window.location.href='{% url 'scrape_flipkart2' %}'"
             data-api-url="{% url 'start_wishing' %}?wishlistName={{ wishlist_name }}">Flipkart</button>
         <button class="amazon-button" onclick="window.location.href='{% url 'scrape_clothing2' %}'"
             data-api-url="{% url 'start_wishing' %}?wishlistName={{ wishlist_name }}">Amazon</button>
+            {% endif%}
     </div>
     <div id="productDetails">
         <!-- Product details will be populated here -->
@@ -148,7 +178,7 @@
         var wishlistId = "{{ wishlist_id }}"; // Replace "{{ wishlist_id }}" with your actual wishlist ID
 
         // Construct the share URL
-        var shareUrl = currentUrl + "?wishlist=" + wishlistId;
+        var shareUrl = currentUrl + "?wishlist=" +"3";
 
         // Display the modal below the share button
         var modal = document.getElementById("myModal");
@@ -182,9 +212,8 @@
         alert("URL copied to clipboard");
     }
     var wishid = 3;
-    var userName = localStorage.getItem("userName")
     // Retrieve the JSON string from local storage
-    var productData = localStorage.getItem(`${userName}${wishid}WishListItems`);
+    var productData = localStorage.getItem(`${wishid}WishListItems`);
 
     // Parse the JSON string into a JavaScript object
     var products = JSON.parse(productData);
@@ -211,24 +240,206 @@
         var productDescription = document.createElement('p');
         productDescription.textContent = 'Description: ' + product.description;
 
+        var buttonDiv = document.createElement('div');
+            buttonDiv.classList.add('button-container');
+
+            var buyButton = document.createElement('button')
+            buyButton.textContent = "BUY"
+
+            var boughtButton = document.createElement('button')
+            boughtButton.textContent = "Bought"
+
+            var wishToBuyButton = document.createElement('button')
+            wishToBuyButton.textContent = "Wish to Buy"
+
+            // Create delete button with trash icon
+            var deleteButton = document.createElement('button');
+            deleteButton.classList.add('delete-button');
+            var trashIcon = document.createElement('i');
+            trashIcon.classList.add('fas', 'fa-trash-alt'); // Font Awesome trash icon
+            deleteButton.appendChild(trashIcon);
+
+
+            // Event listener for the "Bought" button
+            boughtButton.addEventListener("click", function () {
+                // Disable the "Buy" and "Wish to Buy" buttons
+                buyButton.disabled = true;
+                wishToBuyButton.style.backgroundColor = "white";
+                wishToBuyButton.style.color = "lightgrey";
+                wishToBuyButton.disabled = true;
+            });
+
+            // Event listener for the "Wish to Buy" button
+            wishToBuyButton.addEventListener("click", function () {
+                // Change the color of the "Wish to Buy" button when clicked
+                wishToBuyButton.style.backgroundColor = "red";
+                wishToBuyButton.style.color = "white";
+            });
+
+            // Event listener for the "Delete" button
+            deleteButton.addEventListener("click", function () {
+                console.log("Products", products)
+                console.log("Product", product)
+                products = products.filter(function (p) {
+                    return p.product !== product.product;
+                });
+                productDiv.remove();
+                localStorage.setItem("3WishListItems", JSON.stringify(products))
+            });
+
         // Append the elements to the productDiv
         productDiv.appendChild(productImg);
         productDiv.appendChild(productTitle);
         productDiv.appendChild(productPrice);
         productDiv.appendChild(productDescription);
+        buttonDiv.appendChild(buyButton);
+        buttonDiv.appendChild(boughtButton);
+        buttonDiv.appendChild(wishToBuyButton);
+        buttonDiv.appendChild(deleteButton); // Append delete button
+        productDiv.appendChild(buttonDiv);
 
         // Append the productDiv to the container
         productDetailsDiv.appendChild(productDiv);
-    });
-    function sortPricesLowToHigh(products) {
-        return products.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-    }
-    
-    
-    
-    
+    });    
 
-    
+    var productData = localStorage.getItem(`3WishListItems`);
+// Parse the JSON string into a JavaScript object
+var products = JSON.parse(productData);
+console.log(products)
+
+// Function to sort products by price in ascending order
+function sortProductsByPriceAscending() {
+    console.log("Before sorting:", products);
+    products.sort((a, b) => {
+        // Remove the currency symbol and commas, then parse as a number
+        const priceA = parseFloat(a.price.replace(/[^\d.]/g, ''));
+        const priceB = parseFloat(b.price.replace(/[^\d.]/g, ''));
+        return priceA - priceB;
+    });
+
+    console.log("After sorting:", products);
+    updateLocalStorage();
+    renderProducts();
+}
+
+// Function to sort products by price in descending order
+function sortProductsByPriceDescending() {
+    console.log("hiiiiiii")
+    products.sort((a, b) => {
+        const priceA = parseFloat(a.price.replace(/[^\d.]/g, ''));
+        const priceB = parseFloat(b.price.replace(/[^\d.]/g, ''));
+        return priceB - priceA; // Sort in descending order
+    });
+
+    updateLocalStorage();
+    renderProducts();
+}
+
+// Function to update local storage with sorted data
+function updateLocalStorage() {
+
+    console.log("prod......",products)
+    localStorage.setItem(`3WishListItems`, JSON.stringify(products));
+    console.log("After updating localStorage:", JSON.parse(localStorage.getItem(`3WishListItems`)));
+}
+
+// Function to render products on the page
+function renderProducts() {
+    // Clear existing products
+    productDetailsDiv.innerHTML = "";
+
+    // Iterate over each product object in the array
+    products.forEach(function (product) {
+        // Create HTML elements for each product (similar to your existing code)
+         // Create HTML elements for each product
+         var productDiv = document.createElement('div');
+         productDiv.classList.add('product-item');
+
+         var productImg = document.createElement('img');
+         productImg.classList.add('product-img');
+         productImg.src = product.image
+
+         var productTitle = document.createElement('h2');
+         productTitle.textContent = product.product;
+
+         var productPrice = document.createElement('p');
+         productPrice.textContent = 'Price: ' + product.price;
+
+         var productDescription = document.createElement('p');
+         productDescription.textContent = 'Description: ' + product.description;
+
+
+         var buttonDiv = document.createElement('div');
+         buttonDiv.classList.add('button-container');
+
+         var buyButton = document.createElement('button')
+         buyButton.textContent = "BUY"
+
+         var boughtButton = document.createElement('button')
+         boughtButton.textContent = "Bought"
+
+         var wishToBuyButton = document.createElement('button')
+         wishToBuyButton.textContent = "Wish to Buy"
+
+         // Create delete button with trash icon
+         var deleteButton = document.createElement('button');
+         deleteButton.classList.add('delete-button');
+         var trashIcon = document.createElement('i');
+         trashIcon.classList.add('fas', 'fa-trash-alt'); // Font Awesome trash icon
+         deleteButton.appendChild(trashIcon);
+
+
+         // Event listener for the "Bought" button
+         boughtButton.addEventListener("click", function () {
+             // Disable the "Buy" and "Wish to Buy" buttons
+             buyButton.disabled = true;
+             wishToBuyButton.style.backgroundColor = "white";
+             wishToBuyButton.style.color = "lightgrey";
+             wishToBuyButton.disabled = true;
+         });
+
+         // Event listener for the "Wish to Buy" button
+         wishToBuyButton.addEventListener("click", function () {
+             // Change the color of the "Wish to Buy" button when clicked
+             wishToBuyButton.style.backgroundColor = "red";
+             wishToBuyButton.style.color = "white";
+         });
+
+         // Event listener for the "Delete" button
+         deleteButton.addEventListener("click", function () {
+             console.log("Products", products)
+             console.log("Product", product)
+             products = products.filter(function (p) {
+                 return p.product !== product.product;
+             });
+             productDiv.remove();
+             localStorage.setItem("3WishListItems", JSON.stringify(products))
+         });
+
+         // Append the elements to the productDiv
+         productDiv.appendChild(productImg);
+         productDiv.appendChild(productTitle);
+         productDiv.appendChild(productPrice);
+         productDiv.appendChild(productDescription);
+         buttonDiv.appendChild(buyButton);
+         buttonDiv.appendChild(boughtButton);
+         buttonDiv.appendChild(wishToBuyButton);
+         buttonDiv.appendChild(deleteButton); // Append delete button
+         productDiv.appendChild(buttonDiv);
+
+         // Append the productDiv to the container
+         productDetailsDiv.appendChild(productDiv);
+    });
+}
+
+// Event listener for the "High to Low" button
+document.getElementById("highToLowBtn").addEventListener("click", sortProductsByPriceDescending);
+
+// Event listener for the "Low to High" button
+document.getElementById("lowToHighBtn").addEventListener("click", sortProductsByPriceAscending);
+
+// Initial render of products
+//renderProducts();
 </script>
 </body>
 </html>

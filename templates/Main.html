@@ -1,13 +1,14 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create WishList</title>
     <link rel="stylesheet" href="{% static 'WishStack/css/Main.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
             background-image: url("{% static 'WishStack/images/Gift.png' %}");
@@ -29,7 +30,7 @@
             z-index: 1;
             /* Ensure modal stays on top */
         }
-    
+
         /* Style for the close button */
         .close {
             color: #aaa;
@@ -40,9 +41,8 @@
             /* Close button font size */
             font-weight: bold;
             /* Close button font weight */
-        
         }
-    
+
         /* Style for the modal content */
         .modal-content {
             display: flex;
@@ -50,7 +50,7 @@
             flex-direction: column;
             /* Arrange modal content in a column */
         }
-    
+
         /* Style for the input field */
         #shareUrlInput {
             margin-bottom: 10px;
@@ -101,9 +101,34 @@
             object-fit: contain;
             margin-bottom: 10px;
         }
-        
+
+        .product-item button {
+            margin-left: auto;
+        }
+
+        .button-container {
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .button-container button {
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: white;
+            border-radius: inherit;
+            cursor: pointer;
+            border: none;
+        }
+
+        .delete-button {
+            background: none !important;
+            color: red;
+            font-size: 20px;
+        }
     </style>
 </head>
+
 <body>
     <div class="wrapper">
         <nav class="navbar">
@@ -113,12 +138,15 @@
             <div class="filter-dropdown">
                 Filter
                 <div class="filter-dropdown-content">
-                    <button id="highToLowBtn">High to Low</button>
-                    <button id="lowToHighBtn">Low to High</button>
+                    <button id="sortHighToLowBtn">High to Low</button>
+                     <button id="sortLowToHighBtn">Low to High</button>
                 </div>
             </div>
-            <button class="share-button" id="shareButton">Share</button>
-            <button class="logout-button" onclick="window.location.href='{% url 'logout' %}'">Logout</button>
+    
+               <button class="share-button" id="shareButton">Share</button>
+               {% if user.is_authenticated %}
+               <button class="logout-button" onclick="window.location.href='{% url 'logout' %}'">Logout</button>
+              {% endif%} 
         </nav>
         <div id="myModal" class="modal">
             <div class="modal-content">
@@ -129,102 +157,294 @@
             </div>
         </div>
         <div style="text-align: center; margin-top: 20px;">
+            {% if user.is_authenticated %}
             <button class="amazon-button" onclick="window.location.href='{% url 'scrape_flipkart' %}'"
                 data-api-url="{% url 'start_wishing' %}?wishlistName={{ wishlist_name }}">Flipkart</button>
             <button class="amazon-button" onclick="window.location.href='{% url 'scrape_clothing' %}'"
                 data-api-url="{% url 'start_wishing' %}?wishlistName={{ wishlist_name }}">Amazon</button>
+            {% endif%}
         </div>
         <div id="productDetails">
-        <!-- Product details will be populated here -->
+            <!-- Product details will be populated here -->
+        </div>
     </div>
-</div>
-<script src="WishStack/js/Main.js"></script>
-<script>
-    document.getElementById("shareButton").addEventListener("click", function () {
-        // Get the current URL
-        var currentUrl = window.location.href;
+    <script src="WishStack/js/Main.js"></script>
+    <script>
+        document.getElementById("shareButton").addEventListener("click", function () {
+            // Get the current URL
+            var currentUrl = window.location.href;
 
-        // Assuming you have a variable containing the wishlist ID or name
-        var wishlistId = "{{ wishlist_id }}"; // Replace "{{ wishlist_id }}" with your actual wishlist ID
+            // Assuming you have a variable containing the wishlist ID or name
+            var wishlistId = "{{ wishlist_id }}"; // Replace "{{ wishlist_id }}" with your actual wishlist ID
 
-        // Construct the share URL
-        var shareUrl = currentUrl + "?wishlist=" + wishlistId;
+            // Construct the share URL
+            var shareUrl = currentUrl + "?wishlist=" +"1";
 
-        // Display the modal below the share button
-        var modal = document.getElementById("myModal");
-        var shareButtonRect = document.getElementById("shareButton").getBoundingClientRect();
-        modal.style.top = (shareButtonRect.bottom + window.pageYOffset) + "px";
-        modal.style.left = shareButtonRect.left + "px";
-        modal.style.display = "block";
+            // Display the modal below the share button
+            var modal = document.getElementById("myModal");
+            var shareButtonRect = document.getElementById("shareButton").getBoundingClientRect();
+            modal.style.top = (shareButtonRect.bottom + window.pageYOffset) + "px";
+            modal.style.left = shareButtonRect.left + "px";
+            modal.style.display = "block";
 
-        // Populate and copy the URL when "Copy" button is clicked
-        var shareUrlInput = document.getElementById("shareUrlInput");
-        shareUrlInput.value = shareUrl;
+            // Populate and copy the URL when "Copy" button is clicked
+            var shareUrlInput = document.getElementById("shareUrlInput");
+            shareUrlInput.value = shareUrl;
 
-        // Remove any existing event listener to avoid duplication
-        var copyButton = document.getElementById("copyButton");
-        copyButton.removeEventListener("click", copyUrlToClipboard);
+            // Remove any existing event listener to avoid duplication
+            var copyButton = document.getElementById("copyButton");
+            copyButton.removeEventListener("click", copyUrlToClipboard);
 
-        // Add event listener to copy URL to clipboard
-        copyButton.addEventListener("click", copyUrlToClipboard);
+            // Add event listener to copy URL to clipboard
+            copyButton.addEventListener("click", copyUrlToClipboard);
 
-        // Close the modal when the close button is clicked
-        document.getElementsByClassName("close")[0].addEventListener("click", function () {
-            modal.style.display = "none";
+            // Close the modal when the close button is clicked
+            document.getElementsByClassName("close")[0].addEventListener("click", function () {
+                modal.style.display = "none";
+            });
         });
+
+        // Function to copy URL to clipboard
+        function copyUrlToClipboard() {
+            var shareUrlInput = document.getElementById("shareUrlInput");
+            shareUrlInput.select();
+            document.execCommand("copy");
+            alert("URL copied to clipboard");
+        }
+        var wishid = 1;
+        // Retrieve the JSON string from local storage
+        var productData = localStorage.getItem(`${wishid}WishListItems`);
+
+        // Parse the JSON string into a JavaScript object
+        var products = JSON.parse(productData);
+
+        // Create HTML elements to display the product information
+        var productDetailsDiv = document.getElementById('productDetails');
+
+        // Iterate over each product object in the array
+        products.forEach(function (product) {
+            // Create HTML elements for each product
+            var productDiv = document.createElement('div');
+            productDiv.classList.add('product-item');
+
+            var productImg = document.createElement('img');
+            productImg.classList.add('product-img');
+            productImg.src = product.image
+
+            var productTitle = document.createElement('h2');
+            productTitle.textContent = product.product;
+
+            var productPrice = document.createElement('p');
+            productPrice.textContent = 'Price: ' + product.price;
+
+            var productDescription = document.createElement('p');
+            productDescription.textContent = 'Description: ' + product.description;
+
+
+            var buttonDiv = document.createElement('div');
+            buttonDiv.classList.add('button-container');
+
+            var buyButton = document.createElement('button')
+            buyButton.textContent = "BUY"
+
+            var boughtButton = document.createElement('button')
+            boughtButton.textContent = "Bought"
+
+            var wishToBuyButton = document.createElement('button')
+            wishToBuyButton.textContent = "Wish to Buy"
+
+            // Create delete button with trash icon
+            var deleteButton = document.createElement('button');
+            deleteButton.classList.add('delete-button');
+            var trashIcon = document.createElement('i');
+            trashIcon.classList.add('fas', 'fa-trash-alt'); // Font Awesome trash icon
+            deleteButton.appendChild(trashIcon);
+
+
+            // Event listener for the "Bought" button
+            boughtButton.addEventListener("click", function () {
+                // Disable the "Buy" and "Wish to Buy" buttons
+                buyButton.disabled = true;
+                wishToBuyButton.style.backgroundColor = "white";
+                wishToBuyButton.style.color = "lightgrey";
+                wishToBuyButton.disabled = true;
+
+            });
+
+            // Event listener for the "Wish to Buy" button
+            wishToBuyButton.addEventListener("click", function () {
+                // Change the color of the "Wish to Buy" button when clicked
+                wishToBuyButton.style.backgroundColor = "red";
+                wishToBuyButton.style.color = "white";
+            });
+
+            // Event listener for the "Delete" button
+            deleteButton.addEventListener("click", function () {
+                console.log("Products", products)
+                console.log("Product", product)
+                products = products.filter(function (p) {
+                    return p.product !== product.product;
+                });
+                productDiv.remove();
+                localStorage.setItem("1WishListItems", JSON.stringify(products))
+            });
+
+            // Append the elements to the productDiv
+            productDiv.appendChild(productImg);
+            productDiv.appendChild(productTitle);
+            productDiv.appendChild(productPrice);
+            productDiv.appendChild(productDescription);
+            buttonDiv.appendChild(buyButton);
+            buttonDiv.appendChild(boughtButton);
+            buttonDiv.appendChild(wishToBuyButton);
+            buttonDiv.appendChild(deleteButton); // Append delete button
+            productDiv.appendChild(buttonDiv);
+
+            // Append the productDiv to the container
+            productDetailsDiv.appendChild(productDiv);
+        });
+// Retrieve the JSON string from local storage
+var productData = localStorage.getItem(`1WishListItems`);
+// Parse the JSON string into a JavaScript object
+var products = JSON.parse(productData);
+console.log(products)
+
+// Function to sort products by price in ascending order
+function sortProductsByPriceAscending() {
+    console.log("Before sorting:", products);
+    products.sort((a, b) => {
+        // Remove the currency symbol and commas, then parse as a number
+        const priceA = parseFloat(a.price.replace(/[^\d.]/g, ''));
+        const priceB = parseFloat(b.price.replace(/[^\d.]/g, ''));
+        return priceA - priceB;
     });
 
-    // Function to copy URL to clipboard
-    function copyUrlToClipboard() {
-        var shareUrlInput = document.getElementById("shareUrlInput");
-        shareUrlInput.select();
-        document.execCommand("copy");
-        alert("URL copied to clipboard");
-    }
-    var wishid = 1;
-    console.log(wishid)
-    var userName = localStorage.getItem("userName")
-    // Retrieve the JSON string from local storage
-    var productData = localStorage.getItem(`${userName}${wishid}WishListItems`);
+    console.log("After sorting:", products);
+    updateLocalStorage();
+    renderProducts();
+}
 
-    // Parse the JSON string into a JavaScript object
-    var products = JSON.parse(productData);
+// Function to sort products by price in descending order
+function sortProductsByPriceDescending() {
+    products.sort((a, b) => {
+        const priceA = parseFloat(a.price.replace(/[^\d.]/g, ''));
+        const priceB = parseFloat(b.price.replace(/[^\d.]/g, ''));
+        return priceB - priceA; // Sort in descending order
+    });
 
-    // Create HTML elements to display the product information
-    var productDetailsDiv = document.getElementById('productDetails');
+    updateLocalStorage();
+    renderProducts();
+}
+
+// Function to update local storage with sorted data
+function updateLocalStorage() {
+    console.log("prod......",products)
+    localStorage.setItem(`1WishListItems`, JSON.stringify(products));
+    console.log("After updating localStorage:", JSON.parse(localStorage.getItem(`1WishListItems`)));
+}
+
+// Function to render products on the page
+function renderProducts() {
+    // Clear existing products
+    productDetailsDiv.innerHTML = "";
 
     // Iterate over each product object in the array
     products.forEach(function (product) {
-        // Create HTML elements for each product
-        var productDiv = document.createElement('div');
-        productDiv.classList.add('product-item');
+        // Create HTML elements for each product (similar to your existing code)
+         // Create HTML elements for each product
+         var productDiv = document.createElement('div');
+         productDiv.classList.add('product-item');
 
-        var productImg = document.createElement('img');
-        productImg.classList.add('product-img');
-        productImg.src = product.image
+         var productImg = document.createElement('img');
+         productImg.classList.add('product-img');
+         productImg.src = product.image
 
-        var productTitle = document.createElement('h2');
-        productTitle.textContent = product.product;
+         var productTitle = document.createElement('h2');
+         productTitle.textContent = product.product;
 
-        var productPrice = document.createElement('p');
-        productPrice.textContent = 'Price: ' + product.price;
+         var productPrice = document.createElement('p');
+         productPrice.textContent = 'Price: ' + product.price;
 
-        var productDescription = document.createElement('p');
-        productDescription.textContent = 'Description: ' + product.description;
+         var productDescription = document.createElement('p');
+         productDescription.textContent = 'Description: ' + product.description;
 
-        // Append the elements to the productDiv
-        productDiv.appendChild(productImg);
-        productDiv.appendChild(productTitle);
-        productDiv.appendChild(productPrice);
-        productDiv.appendChild(productDescription);
 
-        // Append the productDiv to the container
-        productDetailsDiv.appendChild(productDiv);
+         var buttonDiv = document.createElement('div');
+         buttonDiv.classList.add('button-container');
+
+         var buyButton = document.createElement('button')
+         buyButton.textContent = "BUY"
+
+         var boughtButton = document.createElement('button')
+         boughtButton.textContent = "Bought"
+
+         var wishToBuyButton = document.createElement('button')
+         wishToBuyButton.textContent = "Wish to Buy"
+
+         // Create delete button with trash icon
+         var deleteButton = document.createElement('button');
+         deleteButton.classList.add('delete-button');
+         var trashIcon = document.createElement('i');
+         trashIcon.classList.add('fas', 'fa-trash-alt'); // Font Awesome trash icon
+         deleteButton.appendChild(trashIcon);
+
+
+         // Event listener for the "Bought" button
+         boughtButton.addEventListener("click", function () {
+             // Disable the "Buy" and "Wish to Buy" buttons
+             buyButton.disabled = true;
+             wishToBuyButton.style.backgroundColor = "white";
+             wishToBuyButton.style.color = "lightgrey";
+             wishToBuyButton.disabled = true;
+         });
+
+         // Event listener for the "Wish to Buy" button
+         wishToBuyButton.addEventListener("click", function () {
+             // Change the color of the "Wish to Buy" button when clicked
+             wishToBuyButton.style.backgroundColor = "red";
+             wishToBuyButton.style.color = "white";
+         });
+
+         // Event listener for the "Delete" button
+         deleteButton.addEventListener("click", function () {
+             console.log("Products", products)
+             console.log("Product", product)
+             products = products.filter(function (p) {
+                 return p.product !== product.product;
+             });
+             productDiv.remove();
+             localStorage.setItem("1WishListItems", JSON.stringify(products))
+         });
+
+         // Append the elements to the productDiv
+         productDiv.appendChild(productImg);
+         productDiv.appendChild(productTitle);
+         productDiv.appendChild(productPrice);
+         productDiv.appendChild(productDescription);
+         buttonDiv.appendChild(buyButton);
+         buttonDiv.appendChild(boughtButton);
+         buttonDiv.appendChild(wishToBuyButton);
+         buttonDiv.appendChild(deleteButton); // Append delete button
+         productDiv.appendChild(buttonDiv);
+
+         // Append the productDiv to the container
+         productDetailsDiv.appendChild(productDiv);
     });
-    function sortPricesLowToHigh(products) {
-        return products.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-    }
-    
-</script>
+}
+
+// Event listener for the "High to Low" button
+document.getElementById("sortHighToLowBtn").addEventListener("click", sortProductsByPriceDescending);
+
+// Event listener for the "Low to High" button
+document.getElementById("sortLowToHighBtn").addEventListener("click", sortProductsByPriceAscending);
+
+// Initial render of products
+//renderProducts();
+
+    </script>
+
+
+
 </body>
+
 </html>

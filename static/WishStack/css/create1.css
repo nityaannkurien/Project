@@ -74,7 +74,6 @@ body {
 
 .profile-dropdown {
   position: relative;
-  width: fit-content;
   margin-left: auto;
 }
 
@@ -181,6 +180,18 @@ body {
   transition: margin-right 0.3s;
 }
 
+.logout-button{
+  padding: 8px 16px; /* Increase padding for larger buttons */
+  font-size: 16px;
+  background-color: rgb(255, 255, 255);
+  margin-right: 10px; /* Add space between the filter button and the share button */
+  padding: 5px 10px;
+  border-radius: 20px;
+  border: none;
+  display: flex;
+  font-size: 0.2px;
+  cursor: pointer;
+}
 
 
 
@@ -318,4 +329,33 @@ body {
   height: 40px;
 }
 
+.share-button
+{
+   /* Add space between the buttons */
+  margin-right: 10px; /* Add space between the filter button and the share button */
+  padding: 5px 10px;
+  border-radius: 20px;
+  background-color: #ccc;
+  border: none;
+  display: flex;
+  font-size: 0.2px;
+  cursor: pointer;
+}
 
+.share-button
+ {
+    padding: 8px 16px; /* Increase padding for larger buttons */
+    font-size: 16px; /* Increase font size for larger buttons */
+    background-color: white; /* Set background color */
+    border: 1px solid black; /* Add a small black border */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    transition: background-color 0.3s, color 0.3s, border 0.3s;
+}
+.share-button:hover {
+    background-color:#f0f0f0; /* Change background color on hover */
+    color:  #333; /* Change text color on hover */
+    border-color: #f0f0f0; /* Change border color on hover */
+}
+.share-button {
+  margin-left: 10px; /* Add space between the buttons */
+}

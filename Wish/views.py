@@ -106,20 +106,50 @@ def main(request):
 
         namew=List( wishlist_name = wishname,description = wishdesc, user=request.user)
         namew.save()
-    return render(request, 'main.html')
+    variable = {'username': request.user}
+    return render(request, 'main.html',variable)
 
 
 def main4(request):
-    return render(request, 'main4.html')
+    if request.method=="POST":
+        wishname = request.POST.get('wishname')
+        wishdesc = request.POST.get('wishdesc')
+
+        namew=List( wishlist_name = wishname,description = wishdesc, user=request.user)
+        namew.save()
+    variable = {'username': request.user}
+    return render(request, 'main4.html',variable)
 
 def main1(request):
-    return render(request, 'main1.html')
+    if request.method=="POST":
+        wishname = request.POST.get('wishname')
+        wishdesc = request.POST.get('wishdesc')
+        
+        namew=List( wishlist_name = wishname,description = wishdesc, user=request.user)
+        namew.save()
+    variable = {'username': request.user}
+    return render(request, 'main1.html',variable)
+    
 
 def main2(request):
-    return render(request, 'main2.html')
+    if request.method=="POST":
+        wishname = request.POST.get('wishname')
+        wishdesc = request.POST.get('wishdesc')
+
+        namew=List( wishlist_name = wishname,description = wishdesc, user=request.user)
+        namew.save()
+    variable = {'username': request.user}
+    return render(request, 'main2.html',variable)
 
 def main3(request):
-    return render(request, 'main3.html')
+    if request.method=="POST":
+        wishname = request.POST.get('wishname')
+        wishdesc = request.POST.get('wishdesc')
+
+        namew=List( wishlist_name = wishname,description = wishdesc, user=request.user)
+        namew.save()
+    variable = {'username': request.user}
+    return render(request, 'main3.html',variable)
 
 
 

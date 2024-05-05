@@ -111,15 +111,15 @@
 </body>
 <script>
     var userName = localStorage.getItem("userName");
-    var wishid = localStorage.getItem("wishlistId");
-    var productData = localStorage.getItem(`${userName}${wishid}WishListItems`);
+    var wishid = 5;
+    var productData = localStorage.getItem(`${wishid}WishListItems`);
     const wishListItem = JSON.parse(productData)||[];
 
     function myFunction(product, price, description,image,name) {
         const item = { product, price, description,image }
         wishListItem.push(item);
-        localStorage.setItem(`${userName}${wishid}WishListItems`, JSON.stringify(wishListItem));
-        console.log(`${userName}${wishid}WishListItems`);
+        localStorage.setItem(`${wishid}WishListItems`, JSON.stringify(wishListItem));
+        console.log(`${wishid}WishListItems`);
     }
 </script>
 
