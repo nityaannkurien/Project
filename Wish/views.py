@@ -235,6 +235,7 @@ def scrape_flipkart(request):
     Product_name2 = []
     Prices2 = []
     Images2=[]
+    Description2=[]
     url2 = "https://www.flipkart.com/search?q=home+decorate+items&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page=5"
     r2 = requests.get(url2)
     soup2 = BeautifulSoup(r2.text, "lxml")
@@ -248,6 +249,9 @@ def scrape_flipkart(request):
     prices2 = soup2.find_all("div", class_="Nx9bqj")
     for price in prices2:
         Prices2.append(price.text)
+    desc = soup.find_all("div", class_="NqpwHC")
+    for d in desc:
+        Description2.append(d.text)
 
     # Scrape images
     img_items2 = soup2.find_all("div", class_="_4WELSP WH5SS-")
@@ -260,6 +264,7 @@ def scrape_flipkart(request):
     Product_name4 = []
     Prices4 = []
     Images4=[]
+    Description4=[]
     url4 = "https://www.flipkart.com/search?q=earphone+with+power+bank&sid=0pm%2Cfcn%2C821%2Ca7x%2C2si&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&as-pos=2&as-type=RECENT&suggestionId=earphone+with+power+bank%7CTrue+Wireless&requestId=1c7ae1bd-ed21-4897-9fb6-ebadcee2fabf&as-searchtext=powerbank%20and%20earphones"
     r4 = requests.get(url4)
     soup4 = BeautifulSoup(r4.text, "lxml")
@@ -270,6 +275,9 @@ def scrape_flipkart(request):
     prices4 = soup4.find_all("div", class_="Nx9bqj")
     for price in prices4:
         Prices4.append(price.text)
+    desc = soup.find_all("div", class_="UkUFwK")
+    for d in desc:
+        Description4.append(d.text)
 
     img_items4 = soup4.find_all("div", class_="_4WELSP")
     for img_item in img_items4:
@@ -280,8 +288,8 @@ def scrape_flipkart(request):
     context = {
         'products': zip(Product_name, Prices, Description, Images),
         'products1': zip(Product_name1, Prices1,Description1, Images1),
-        'products2': zip(Product_name2, Prices2, Images2),
-        'products4': zip(Product_name4, Prices4, Images4),
+        'products2': zip(Product_name2, Prices2, Description2, Images2),
+        'products4': zip(Product_name4, Prices4,Description4, Images4),
     }
     
     return render(request, 'scraped_data.html', context)
@@ -492,6 +500,7 @@ def scrape_flipkart1(request):
     Product_name2 = []
     Prices2 = []
     Images2=[]
+    Description2=[]
     url2 = "https://www.flipkart.com/search?q=home+decorate+items&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page=5"
     r2 = requests.get(url2)
     soup2 = BeautifulSoup(r2.text, "lxml")
@@ -505,6 +514,9 @@ def scrape_flipkart1(request):
     prices2 = soup2.find_all("div", class_="Nx9bqj")
     for price in prices2:
         Prices2.append(price.text)
+    desc = soup.find_all("div", class_="NqpwHC")
+    for d in desc:
+        Description2.append(d.text)
 
     # Scrape images
     img_items2 = soup2.find_all("div", class_="_4WELSP WH5SS-")
@@ -517,6 +529,7 @@ def scrape_flipkart1(request):
     Product_name4 = []
     Prices4 = []
     Images4=[]
+    Description4=[]
     url4 = "https://www.flipkart.com/search?q=earphone+with+power+bank&sid=0pm%2Cfcn%2C821%2Ca7x%2C2si&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&as-pos=2&as-type=RECENT&suggestionId=earphone+with+power+bank%7CTrue+Wireless&requestId=1c7ae1bd-ed21-4897-9fb6-ebadcee2fabf&as-searchtext=powerbank%20and%20earphones"
     r4 = requests.get(url4)
     soup4 = BeautifulSoup(r4.text, "lxml")
@@ -527,6 +540,9 @@ def scrape_flipkart1(request):
     prices4 = soup4.find_all("div", class_="Nx9bqj")
     for price in prices4:
         Prices4.append(price.text)
+    desc = soup.find_all("div", class_="UkUFwK")
+    for d in desc:
+        Description4.append(d.text)
 
     img_items4 = soup4.find_all("div", class_="_4WELSP")
     for img_item in img_items4:
@@ -537,8 +553,8 @@ def scrape_flipkart1(request):
     context = {
         'products': zip(Product_name, Prices, Description, Images),
         'products1': zip(Product_name1, Prices1,Description1, Images1),
-        'products2': zip(Product_name2, Prices2, Images2),
-        'products4': zip(Product_name4, Prices4, Images4),
+        'products2': zip(Product_name2, Prices2,Description2, Images2),
+        'products4': zip(Product_name4, Prices4,Description4, Images4),
     }
     
     return render(request, 'scraped_data1.html', context)
@@ -733,6 +749,7 @@ def scrape_flipkart2(request):
     Product_name2 = []
     Prices2 = []
     Images2=[]
+    Description2=[]
     url2 = "https://www.flipkart.com/search?q=home+decorate+items&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page=5"
     r2 = requests.get(url2)
     soup2 = BeautifulSoup(r2.text, "lxml")
@@ -746,6 +763,9 @@ def scrape_flipkart2(request):
     prices2 = soup2.find_all("div", class_="Nx9bqj")
     for price in prices2:
         Prices2.append(price.text)
+    desc = soup.find_all("div", class_="NqpwHC")
+    for d in desc:
+        Description2.append(d.text)
 
     # Scrape images
     img_items2 = soup2.find_all("div", class_="_4WELSP WH5SS-")
@@ -758,6 +778,7 @@ def scrape_flipkart2(request):
     Product_name4 = []
     Prices4 = []
     Images4=[]
+    Description4=[]
     url4 = "https://www.flipkart.com/search?q=earphone+with+power+bank&sid=0pm%2Cfcn%2C821%2Ca7x%2C2si&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&as-pos=2&as-type=RECENT&suggestionId=earphone+with+power+bank%7CTrue+Wireless&requestId=1c7ae1bd-ed21-4897-9fb6-ebadcee2fabf&as-searchtext=powerbank%20and%20earphones"
     r4 = requests.get(url4)
     soup4 = BeautifulSoup(r4.text, "lxml")
@@ -768,6 +789,9 @@ def scrape_flipkart2(request):
     prices4 = soup4.find_all("div", class_="Nx9bqj")
     for price in prices4:
         Prices4.append(price.text)
+    desc = soup.find_all("div", class_="UkUFwK")
+    for d in desc:
+        Description4.append(d.text)
 
     img_items4 = soup4.find_all("div", class_="_4WELSP")
     for img_item in img_items4:
@@ -778,8 +802,8 @@ def scrape_flipkart2(request):
     context = {
         'products': zip(Product_name, Prices, Description, Images),
         'products1': zip(Product_name1, Prices1,Description1, Images1),
-        'products2': zip(Product_name2, Prices2, Images2),
-        'products4': zip(Product_name4, Prices4, Images4),
+        'products2': zip(Product_name2, Prices2,Description2, Images2),
+        'products4': zip(Product_name4, Prices4,Description1, Images4),
     }
     
     return render(request, 'scraped_data2.html', context)
@@ -975,6 +999,7 @@ def scrape_flipkart3(request):
     Product_name2 = []
     Prices2 = []
     Images2=[]
+    Description2=[]
     url2 = "https://www.flipkart.com/search?q=home+decorate+items&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page=5"
     r2 = requests.get(url2)
     soup2 = BeautifulSoup(r2.text, "lxml")
@@ -988,6 +1013,9 @@ def scrape_flipkart3(request):
     prices2 = soup2.find_all("div", class_="Nx9bqj")
     for price in prices2:
         Prices2.append(price.text)
+    desc = soup.find_all("div", class_="NqpwHC")
+    for d in desc:
+        Description2.append(d.text)
 
     # Scrape images
     img_items2 = soup2.find_all("div", class_="_4WELSP WH5SS-")
@@ -1000,6 +1028,7 @@ def scrape_flipkart3(request):
     Product_name4 = []
     Prices4 = []
     Images4=[]
+    Description4=[]
     url4 = "https://www.flipkart.com/search?q=earphone+with+power+bank&sid=0pm%2Cfcn%2C821%2Ca7x%2C2si&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&as-pos=2&as-type=RECENT&suggestionId=earphone+with+power+bank%7CTrue+Wireless&requestId=1c7ae1bd-ed21-4897-9fb6-ebadcee2fabf&as-searchtext=powerbank%20and%20earphones"
     r4 = requests.get(url4)
     soup4 = BeautifulSoup(r4.text, "lxml")
@@ -1010,6 +1039,9 @@ def scrape_flipkart3(request):
     prices4 = soup4.find_all("div", class_="Nx9bqj")
     for price in prices4:
         Prices4.append(price.text)
+    desc = soup.find_all("div", class_="UkUFwK")
+    for d in desc:
+        Description4.append(d.text)
 
     img_items4 = soup4.find_all("div", class_="_4WELSP")
     for img_item in img_items4:
@@ -1020,8 +1052,8 @@ def scrape_flipkart3(request):
     context = {
         'products': zip(Product_name, Prices, Description, Images),
         'products1': zip(Product_name1, Prices1,Description1, Images1),
-        'products2': zip(Product_name2, Prices2, Images2),
-        'products4': zip(Product_name4, Prices4, Images4),
+        'products2': zip(Product_name2, Prices2, Description2, Images2),
+        'products4': zip(Product_name4, Prices4,Description4, Images4),
     }
     
     return render(request, 'scraped_data3.html', context)
@@ -1216,6 +1248,7 @@ def scrape_flipkart4(request):
     Product_name2 = []
     Prices2 = []
     Images2=[]
+    Description2=[]
     url2 = "https://www.flipkart.com/search?q=home+decorate+items&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page=5"
     r2 = requests.get(url2)
     soup2 = BeautifulSoup(r2.text, "lxml")
@@ -1229,6 +1262,9 @@ def scrape_flipkart4(request):
     prices2 = soup2.find_all("div", class_="Nx9bqj")
     for price in prices2:
         Prices2.append(price.text)
+    desc = soup.find_all("div", class_="NqpwHC")
+    for d in desc:
+        Description2.append(d.text)
 
     # Scrape images
     img_items2 = soup2.find_all("div", class_="_4WELSP WH5SS-")
@@ -1241,6 +1277,7 @@ def scrape_flipkart4(request):
     Product_name4 = []
     Prices4 = []
     Images4=[]
+    Description4=[]
     url4 = "https://www.flipkart.com/search?q=earphone+with+power+bank&sid=0pm%2Cfcn%2C821%2Ca7x%2C2si&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&as-pos=2&as-type=RECENT&suggestionId=earphone+with+power+bank%7CTrue+Wireless&requestId=1c7ae1bd-ed21-4897-9fb6-ebadcee2fabf&as-searchtext=powerbank%20and%20earphones"
     r4 = requests.get(url4)
     soup4 = BeautifulSoup(r4.text, "lxml")
@@ -1251,6 +1288,9 @@ def scrape_flipkart4(request):
     prices4 = soup4.find_all("div", class_="Nx9bqj")
     for price in prices4:
         Prices4.append(price.text)
+    desc = soup.find_all("div", class_="UkUFwK")
+    for d in desc:
+        Description4.append(d.text)
 
     img_items4 = soup4.find_all("div", class_="_4WELSP")
     for img_item in img_items4:
@@ -1261,8 +1301,8 @@ def scrape_flipkart4(request):
     context = {
         'products': zip(Product_name, Prices, Description, Images),
         'products1': zip(Product_name1, Prices1,Description1, Images1),
-        'products2': zip(Product_name2, Prices2, Images2),
-        'products4': zip(Product_name4, Prices4, Images4),
+        'products2': zip(Product_name2, Prices2, Description2, Images2),
+        'products4': zip(Product_name4, Prices4, Description4, Images4),
     }
     
     return render(request, 'scraped_data4.html', context)

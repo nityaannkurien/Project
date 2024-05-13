@@ -83,41 +83,42 @@
         </div>
         <h1 id="homedecor">Home Decor</h1>
         <div class="product-row">
-            {% for product, price, image in products2 %}
+            {% for product, price,description, image in products2 %}
             <div class="product-item">
                 <img src="{{ image }}" alt="{{ product }}">
                 <h2>{{ product }}</h2>
                 <p>Price: {{ price }}</p>
+                <p>Description: {{ description }}</p>
                 <button class="wish-button"
-                onclick="myFunction('{{ product }}', '{{ price }}','{{ image }}','{{name}}')">Wish</button>
-            </div>
+                onclick="myFunction('{{ product }}', '{{ price }}','{{ description }}','{{ image }}','{{name}}')">Wish</button>            </div>
             {% endfor %}
         </div>
         <h1 id="earbuds">Earbuds</h1>
         <div class="product-row">
-            {% for product, price, image in products4 %}
+            {% for product, price, description,image in products4 %}
             <div class="product-item">
                 <img src="{{ image }}" alt="{{ product }}">
                 <h2>{{ product }}</h2>
                 <p>Price: {{ price }}</p>
+                <p>Description: {{ description }}</p>
                 <button class="wish-button"
-                onclick="myFunction('{{ product }}', '{{ price }}','{{ image }}','{{name}}')">Wish</button>
-            </div>
+                onclick="myFunction('{{ product }}', '{{ price }}','{{ description }}','{{ image }}','{{name}}')">Wish</button>            </div>
             {% endfor %}
         </div>
     </div>
+    <input type="hidden" id="user-username" value="{{ request.user.username }}">
 </body>
 <script>
-    var userName = localStorage.getItem("userName");
+    var userName = document.getElementById("user-username").value;
     var wishid = 3;
-    var productData = localStorage.getItem(`${wishid}WishListItems`);
+    var productData = localStorage.getItem(`${userName}${wishid}WishListItems`);
     const wishListItem = JSON.parse(productData)||[];
 
     function myFunction(product, price, description,image,name) {
         const item = { product, price, description,image }
         wishListItem.push(item);
-        localStorage.setItem(`${wishid}WishListItems`, JSON.stringify(wishListItem));
-        console.log(`${wishid}WishListItems`);
+        localStorage.setItem(`${userName}${wishid}WishListItems`, JSON.stringify(wishListItem));
+        console.log(`${userName}${wishid}WishListItems`);
     }
 </script>
 

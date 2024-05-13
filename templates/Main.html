@@ -168,6 +168,7 @@
             <!-- Product details will be populated here -->
         </div>
     </div>
+    <input type="hidden" id="user-username" value="{{ request.user.username }}">
     <script src="WishStack/js/Main.js"></script>
     <script>
         document.getElementById("shareButton").addEventListener("click", function () {
@@ -211,9 +212,10 @@
             document.execCommand("copy");
             alert("URL copied to clipboard");
         }
+        var userName = document.getElementById("user-username").value;
         var wishid = 1;
         // Retrieve the JSON string from local storage
-        var productData = localStorage.getItem(`${wishid}WishListItems`);
+        var productData = localStorage.getItem(`${userName}${wishid}WishListItems`);
 
         // Parse the JSON string into a JavaScript object
         var products = JSON.parse(productData);
@@ -286,7 +288,7 @@
                     return p.product !== product.product;
                 });
                 productDiv.remove();
-                localStorage.setItem("1WishListItems", JSON.stringify(products))
+                localStorage.setItem(`${userName}1WishListItems`, JSON.stringify(products))
             });
 
             // Append the elements to the productDiv
@@ -304,7 +306,7 @@
             productDetailsDiv.appendChild(productDiv);
         });
 // Retrieve the JSON string from local storage
-var productData = localStorage.getItem(`1WishListItems`);
+var productData = localStorage.getItem(`${userName}1WishListItems`);
 // Parse the JSON string into a JavaScript object
 var products = JSON.parse(productData);
 console.log(products)
@@ -339,8 +341,8 @@ function sortProductsByPriceDescending() {
 // Function to update local storage with sorted data
 function updateLocalStorage() {
     console.log("prod......",products)
-    localStorage.setItem(`1WishListItems`, JSON.stringify(products));
-    console.log("After updating localStorage:", JSON.parse(localStorage.getItem(`1WishListItems`)));
+    localStorage.setItem(`${userName}1WishListItems`, JSON.stringify(products));
+    console.log("After updating localStorage:", JSON.parse(localStorage.getItem(`${userName}1WishListItems`)));
 }
 
 // Function to render products on the page
@@ -413,7 +415,7 @@ function renderProducts() {
                  return p.product !== product.product;
              });
              productDiv.remove();
-             localStorage.setItem("1WishListItems", JSON.stringify(products))
+             localStorage.setItem(`${userName}1WishListItems`, JSON.stringify(products))
          });
 
          // Append the elements to the productDiv

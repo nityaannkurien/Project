@@ -106,17 +106,18 @@
             {% endfor %}
         </div>
     </div>
+    <input type="hidden" id="user-username" value="{{ request.user.username }}">
 </body>
 <script>
-    var userName = localStorage.getItem("userName");
+    var userName = document.getElementById("user-username").value;
     var wishid = 1;
-    var productData = localStorage.getItem(`${wishid}WishListItems`);
+    var productData = localStorage.getItem(`${userName}${wishid}WishListItems`);
     const wishListItem = JSON.parse(productData)||[];
 
     function myFunction(product, price, description,image,name) {
         const item = { product, price, description,image }
         wishListItem.push(item);
-        localStorage.setItem(`${wishid}WishListItems`, JSON.stringify(wishListItem));
+        localStorage.setItem(`${userName}${wishid}WishListItems`, JSON.stringify(wishListItem));
         console.log(`${userName}${wishid}WishListItems`);
     }
 </script>

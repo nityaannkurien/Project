@@ -166,6 +166,7 @@
         <!-- Product details will be populated here -->
     </div>
 </div>
+<input type="hidden" id="user-username" value="{{ request.user.username }}">
 <script src="WishStack/js/Main.js"></script>
 <script>
     document.getElementById("shareButton").addEventListener("click", function () {
@@ -176,7 +177,7 @@
         var wishlistId = "{{ wishlist_id }}"; // Replace "{{ wishlist_id }}" with your actual wishlist ID
 
         // Construct the share URL
-        var shareUrl = currentUrl + "?wishlist=" + "2";
+        var shareUrl = currentUrl + "?wishlist=" +"3";
 
         // Display the modal below the share button
         var modal = document.getElementById("myModal");
@@ -209,10 +210,10 @@
         document.execCommand("copy");
         alert("URL copied to clipboard");
     }
+    var userName = document.getElementById("user-username").value;
     var wishid = 2;
-    var userName = localStorage.getItem("userName")
     // Retrieve the JSON string from local storage
-    var productData = localStorage.getItem(`${wishid}WishListItems`);
+    var productData = localStorage.getItem(`${userName}${wishid}WishListItems`);
 
     // Parse the JSON string into a JavaScript object
     var products = JSON.parse(productData);
@@ -240,50 +241,51 @@
         productDescription.textContent = 'Description: ' + product.description;
 
         var buttonDiv = document.createElement('div');
-        buttonDiv.classList.add('button-container');
+            buttonDiv.classList.add('button-container');
 
-        var buyButton = document.createElement('button')
-        buyButton.textContent = "BUY"
+            var buyButton = document.createElement('button')
+            buyButton.textContent = "BUY"
 
-        var boughtButton = document.createElement('button')
-        boughtButton.textContent = "Bought"
+            var boughtButton = document.createElement('button')
+            boughtButton.textContent = "Bought"
 
-        var wishToBuyButton = document.createElement('button')
-        wishToBuyButton.textContent = "Wish to Buy"
+            var wishToBuyButton = document.createElement('button')
+            wishToBuyButton.textContent = "Wish to Buy"
 
-        // Create delete button with trash icon
-        var deleteButton = document.createElement('button');
-        deleteButton.classList.add('delete-button');
-        var trashIcon = document.createElement('i');
-        trashIcon.classList.add('fas', 'fa-trash-alt'); // Font Awesome trash icon
-        deleteButton.appendChild(trashIcon);
+            // Create delete button with trash icon
+            var deleteButton = document.createElement('button');
+            deleteButton.classList.add('delete-button');
+            var trashIcon = document.createElement('i');
+            trashIcon.classList.add('fas', 'fa-trash-alt'); // Font Awesome trash icon
+            deleteButton.appendChild(trashIcon);
 
 
-        // Event listener for the "Bought" button
-        boughtButton.addEventListener("click", function () {
-            // Disable the "Buy" and "Wish to Buy" buttons
-            buyButton.disabled = true;
-            wishToBuyButton.disabled = true;
-        });
-
-        // Event listener for the "Wish to Buy" button
-        wishToBuyButton.addEventListener("click", function () {
-            // Change the color of the "Wish to Buy" button when clicked
-            wishToBuyButton.style.backgroundColor = "red";
-            wishToBuyButton.style.color = "white";
-        });
-
-        // Event listener for the "Delete" button
-        deleteButton.addEventListener("click", function () {
-            console.log("Products", products)
-            console.log("Product", product)
-            products = products.filter(function (p) {
-                return p.product !== product.product;
+            // Event listener for the "Bought" button
+            boughtButton.addEventListener("click", function () {
+                // Disable the "Buy" and "Wish to Buy" buttons
+                buyButton.disabled = true;
+                wishToBuyButton.style.backgroundColor = "white";
+                wishToBuyButton.style.color = "lightgrey";
+                wishToBuyButton.disabled = true;
             });
-            productDiv.remove();
-            localStorage.setItem("2WishListItems", JSON.stringify(products))
-        });
 
+            // Event listener for the "Wish to Buy" button
+            wishToBuyButton.addEventListener("click", function () {
+                // Change the color of the "Wish to Buy" button when clicked
+                wishToBuyButton.style.backgroundColor = "red";
+                wishToBuyButton.style.color = "white";
+            });
+
+            // Event listener for the "Delete" button
+            deleteButton.addEventListener("click", function () {
+                console.log("Products", products)
+                console.log("Product", product)
+                products = products.filter(function (p) {
+                    return p.product !== product.product;
+                });
+                productDiv.remove();
+                localStorage.setItem(`${userName}2WishListItems`, JSON.stringify(products))
+            });
 
         // Append the elements to the productDiv
         productDiv.appendChild(productImg);
@@ -298,8 +300,9 @@
 
         // Append the productDiv to the container
         productDetailsDiv.appendChild(productDiv);
-    });
-var productData = localStorage.getItem(`2WishListItems`);
+    });    
+
+    var productData = localStorage.getItem(`${userName}2WishListItems`);
 // Parse the JSON string into a JavaScript object
 var products = JSON.parse(productData);
 console.log(products)
@@ -321,6 +324,7 @@ function sortProductsByPriceAscending() {
 
 // Function to sort products by price in descending order
 function sortProductsByPriceDescending() {
+    console.log("hiiiiiii")
     products.sort((a, b) => {
         const priceA = parseFloat(a.price.replace(/[^\d.]/g, ''));
         const priceB = parseFloat(b.price.replace(/[^\d.]/g, ''));
@@ -333,9 +337,10 @@ function sortProductsByPriceDescending() {
 
 // Function to update local storage with sorted data
 function updateLocalStorage() {
+
     console.log("prod......",products)
-    localStorage.setItem(`2WishListItems`, JSON.stringify(products));
-    console.log("After updating localStorage:", JSON.parse(localStorage.getItem(`2WishListItems`)));
+    localStorage.setItem(`${userName}2WishListItems`, JSON.stringify(products));
+    console.log("After updating localStorage:", JSON.parse(localStorage.getItem(`${userName}2WishListItems`)));
 }
 
 // Function to render products on the page
@@ -388,6 +393,8 @@ function renderProducts() {
          boughtButton.addEventListener("click", function () {
              // Disable the "Buy" and "Wish to Buy" buttons
              buyButton.disabled = true;
+             wishToBuyButton.style.backgroundColor = "white";
+             wishToBuyButton.style.color = "lightgrey";
              wishToBuyButton.disabled = true;
          });
 
@@ -406,7 +413,7 @@ function renderProducts() {
                  return p.product !== product.product;
              });
              productDiv.remove();
-             localStorage.setItem("2WishListItems", JSON.stringify(products))
+             localStorage.setItem(`${userName}2WishListItems`, JSON.stringify(products))
          });
 
          // Append the elements to the productDiv
@@ -418,7 +425,7 @@ function renderProducts() {
          buttonDiv.appendChild(boughtButton);
          buttonDiv.appendChild(wishToBuyButton);
          buttonDiv.appendChild(deleteButton); // Append delete button
-         productDiv.appendChild(buttonDiv)
+         productDiv.appendChild(buttonDiv);
 
          // Append the productDiv to the container
          productDetailsDiv.appendChild(productDiv);
@@ -433,7 +440,6 @@ document.getElementById("lowToHighBtn").addEventListener("click", sortProductsBy
 
 // Initial render of products
 //renderProducts();
-
 </script>
 </body>
 </html>
