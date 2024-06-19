@@ -1,7 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -30,7 +29,7 @@
             z-index: 1;
             /* Ensure modal stays on top */
         }
-
+    
         /* Style for the close button */
         .close {
             color: #aaa;
@@ -41,8 +40,9 @@
             /* Close button font size */
             font-weight: bold;
             /* Close button font weight */
+        
         }
-
+    
         /* Style for the modal content */
         .modal-content {
             display: flex;
@@ -50,7 +50,7 @@
             flex-direction: column;
             /* Arrange modal content in a column */
         }
-
+    
         /* Style for the input field */
         #shareUrlInput {
             margin-bottom: 10px;
@@ -101,7 +101,6 @@
             object-fit: contain;
             margin-bottom: 10px;
         }
-
         .product-item button {
             margin-left: auto;
         }
@@ -126,9 +125,9 @@
             color: red;
             font-size: 20px;
         }
+        
     </style>
 </head>
-
 <body>
     <div class="wrapper">
         <nav class="navbar">
@@ -138,15 +137,14 @@
             <div class="filter-dropdown">
                 Filter
                 <div class="filter-dropdown-content">
-                    <button id="sortHighToLowBtn">High to Low</button>
-                     <button id="sortLowToHighBtn">Low to High</button>
+                    <button id="highToLowBtn">High to Low</button>
+                    <button id="lowToHighBtn">Low to High</button>
                 </div>
             </div>
-    
-               <button class="share-button" id="shareButton">Share</button>
-               {% if user.is_authenticated %}
-               <button class="logout-button" onclick="window.location.href='{% url 'logout' %}'">Logout</button>
-              {% endif%} 
+                <button class="share-button" id="shareButton">Share</button>
+            {% if user.is_authenticated %}
+                <button class="logout-button" onclick="window.location.href='{% url 'logout' %}'">Logout</button>
+            {% endif%}
         </nav>
         <div id="myModal" class="modal">
             <div class="modal-content">
@@ -157,93 +155,92 @@
             </div>
         </div>
         <div style="text-align: center; margin-top: 20px;">
-            {% if user.is_authenticated %}
+            {% if user.is_authenticated and user == username  %}
             <button class="amazon-button" onclick="window.location.href='{% url 'scrape_flipkart' %}'"
                 data-api-url="{% url 'start_wishing' %}?wishlistName={{ wishlist_name }}">Flipkart</button>
             <button class="amazon-button" onclick="window.location.href='{% url 'scrape_clothing' %}'"
                 data-api-url="{% url 'start_wishing' %}?wishlistName={{ wishlist_name }}">Amazon</button>
             {% endif%}
         </div>
-        <div id="productDetails">
-            <!-- Product details will be populated here -->
-        </div>
+    <div id="productDetails">
+        <!-- Product details will be populated here -->
     </div>
-    <input type="hidden" id="user-username" value="{{ request.user.username }}">
-    <script src="WishStack/js/Main.js"></script>
-    <script>
-        document.getElementById("shareButton").addEventListener("click", function () {
-            // Get the current URL
-            var currentUrl = window.location.href;
+</div>
+<input type="hidden" id="user-username" value="{{ request.user.username }}">
+<script src="WishStack/js/Main.js"></script>
+<script>
+    document.getElementById("shareButton").addEventListener("click", function () {
+        // Get the current URL
+        var currentUrl = window.location.href;
 
-            // Assuming you have a variable containing the wishlist ID or name
-            var wishlistId = "{{ wishlist_id }}"; // Replace "{{ wishlist_id }}" with your actual wishlist ID
-
-            // Construct the share URL
-            var shareUrl = currentUrl + "?wishlist=" +"1";
-
-            // Display the modal below the share button
-            var modal = document.getElementById("myModal");
-            var shareButtonRect = document.getElementById("shareButton").getBoundingClientRect();
-            modal.style.top = (shareButtonRect.bottom + window.pageYOffset) + "px";
-            modal.style.left = shareButtonRect.left + "px";
-            modal.style.display = "block";
-
-            // Populate and copy the URL when "Copy" button is clicked
-            var shareUrlInput = document.getElementById("shareUrlInput");
-            shareUrlInput.value = shareUrl;
-
-            // Remove any existing event listener to avoid duplication
-            var copyButton = document.getElementById("copyButton");
-            copyButton.removeEventListener("click", copyUrlToClipboard);
-
-            // Add event listener to copy URL to clipboard
-            copyButton.addEventListener("click", copyUrlToClipboard);
-
-            // Close the modal when the close button is clicked
-            document.getElementsByClassName("close")[0].addEventListener("click", function () {
-                modal.style.display = "none";
-            });
-        });
-
-        // Function to copy URL to clipboard
-        function copyUrlToClipboard() {
-            var shareUrlInput = document.getElementById("shareUrlInput");
-            shareUrlInput.select();
-            document.execCommand("copy");
-            alert("URL copied to clipboard");
-        }
+        // Assuming you have a variable containing the wishlist ID or name
+        var wishlistId = "{{ wishlist_id }}"; // Replace "{{ wishlist_id }}" with your actual wishlist ID
         var userName = document.getElementById("user-username").value;
-        var wishid = 1;
-        // Retrieve the JSON string from local storage
-        var productData = localStorage.getItem(`${userName}${wishid}WishListItems`);
+        // Construct the share URL
+        var shareUrl = currentUrl + "?wishlist=" + "1/" + "?username=" + userName +"/";
 
-        // Parse the JSON string into a JavaScript object
-        var products = JSON.parse(productData);
+        // Display the modal below the share button
+        var modal = document.getElementById("myModal");
+        var shareButtonRect = document.getElementById("shareButton").getBoundingClientRect();
+        modal.style.top = (shareButtonRect.bottom + window.pageYOffset) + "px";
+        modal.style.left = shareButtonRect.left + "px";
+        modal.style.display = "block";
 
-        // Create HTML elements to display the product information
-        var productDetailsDiv = document.getElementById('productDetails');
+        // Populate and copy the URL when "Copy" button is clicked
+        var shareUrlInput = document.getElementById("shareUrlInput");
+        shareUrlInput.value = shareUrl;
 
-        // Iterate over each product object in the array
-        products.forEach(function (product) {
-            // Create HTML elements for each product
-            var productDiv = document.createElement('div');
-            productDiv.classList.add('product-item');
+        // Remove any existing event listener to avoid duplication
+        var copyButton = document.getElementById("copyButton");
+        copyButton.removeEventListener("click", copyUrlToClipboard);
 
-            var productImg = document.createElement('img');
-            productImg.classList.add('product-img');
-            productImg.src = product.image
+        // Add event listener to copy URL to clipboard
+        copyButton.addEventListener("click", copyUrlToClipboard);
 
-            var productTitle = document.createElement('h2');
-            productTitle.textContent = product.product;
+        // Close the modal when the close button is clicked
+        document.getElementsByClassName("close")[0].addEventListener("click", function () {
+            modal.style.display = "none";
+        });
+    });
 
-            var productPrice = document.createElement('p');
-            productPrice.textContent = 'Price: ' + product.price;
+    // Function to copy URL to clipboard
+    function copyUrlToClipboard() {
+        var shareUrlInput = document.getElementById("shareUrlInput");
+        shareUrlInput.select();
+        document.execCommand("copy");
+        alert("URL copied to clipboard");
+    }
+    var userName = document.getElementById("user-username").value;
+    var wishid = 1;
+    // Retrieve the JSON string from local storage
+    var productData = localStorage.getItem(`${userName}${wishid}WishListItems`);
 
-            var productDescription = document.createElement('p');
-            productDescription.textContent = 'Description: ' + product.description;
+    // Parse the JSON string into a JavaScript object
+    var products = JSON.parse(productData);
 
+    // Create HTML elements to display the product information
+    var productDetailsDiv = document.getElementById('productDetails');
 
-            var buttonDiv = document.createElement('div');
+    // Iterate over each product object in the array
+    products.forEach(function (product) {
+        // Create HTML elements for each product
+        var productDiv = document.createElement('div');
+        productDiv.classList.add('product-item');
+
+        var productImg = document.createElement('img');
+        productImg.classList.add('product-img');
+        productImg.src = product.image
+
+        var productTitle = document.createElement('h2');
+        productTitle.textContent = product.product;
+
+        var productPrice = document.createElement('p');
+        productPrice.textContent = 'Price: ' + product.price;
+
+        var productDescription = document.createElement('p');
+        productDescription.textContent = 'Description: ' + product.description;
+
+        var buttonDiv = document.createElement('div');
             buttonDiv.classList.add('button-container');
 
             var buyButton = document.createElement('button')
@@ -270,7 +267,6 @@
                 wishToBuyButton.style.backgroundColor = "white";
                 wishToBuyButton.style.color = "lightgrey";
                 wishToBuyButton.disabled = true;
-
             });
 
             // Event listener for the "Wish to Buy" button
@@ -291,22 +287,22 @@
                 localStorage.setItem(`${userName}1WishListItems`, JSON.stringify(products))
             });
 
-            // Append the elements to the productDiv
-            productDiv.appendChild(productImg);
-            productDiv.appendChild(productTitle);
-            productDiv.appendChild(productPrice);
-            productDiv.appendChild(productDescription);
-            buttonDiv.appendChild(buyButton);
-            buttonDiv.appendChild(boughtButton);
-            buttonDiv.appendChild(wishToBuyButton);
-            buttonDiv.appendChild(deleteButton); // Append delete button
-            productDiv.appendChild(buttonDiv);
+        // Append the elements to the productDiv
+        productDiv.appendChild(productImg);
+        productDiv.appendChild(productTitle);
+        productDiv.appendChild(productPrice);
+        productDiv.appendChild(productDescription);
+        buttonDiv.appendChild(buyButton);
+        buttonDiv.appendChild(boughtButton);
+        buttonDiv.appendChild(wishToBuyButton);
+        buttonDiv.appendChild(deleteButton); // Append delete button
+        productDiv.appendChild(buttonDiv);
 
-            // Append the productDiv to the container
-            productDetailsDiv.appendChild(productDiv);
-        });
-// Retrieve the JSON string from local storage
-var productData = localStorage.getItem(`${userName}1WishListItems`);
+        // Append the productDiv to the container
+        productDetailsDiv.appendChild(productDiv);
+    });    
+
+    var productData = localStorage.getItem(`${userName}1WishListItems`);
 // Parse the JSON string into a JavaScript object
 var products = JSON.parse(productData);
 console.log(products)
@@ -328,6 +324,7 @@ function sortProductsByPriceAscending() {
 
 // Function to sort products by price in descending order
 function sortProductsByPriceDescending() {
+    console.log("hiiiiiii")
     products.sort((a, b) => {
         const priceA = parseFloat(a.price.replace(/[^\d.]/g, ''));
         const priceB = parseFloat(b.price.replace(/[^\d.]/g, ''));
@@ -340,6 +337,7 @@ function sortProductsByPriceDescending() {
 
 // Function to update local storage with sorted data
 function updateLocalStorage() {
+
     console.log("prod......",products)
     localStorage.setItem(`${userName}1WishListItems`, JSON.stringify(products));
     console.log("After updating localStorage:", JSON.parse(localStorage.getItem(`${userName}1WishListItems`)));
@@ -435,18 +433,13 @@ function renderProducts() {
 }
 
 // Event listener for the "High to Low" button
-document.getElementById("sortHighToLowBtn").addEventListener("click", sortProductsByPriceDescending);
+document.getElementById("highToLowBtn").addEventListener("click", sortProductsByPriceDescending);
 
 // Event listener for the "Low to High" button
-document.getElementById("sortLowToHighBtn").addEventListener("click", sortProductsByPriceAscending);
+document.getElementById("lowToHighBtn").addEventListener("click", sortProductsByPriceAscending);
 
 // Initial render of products
 //renderProducts();
-
-    </script>
-
-
-
+</script>
 </body>
-
 </html>

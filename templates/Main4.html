@@ -176,9 +176,9 @@
 
         // Assuming you have a variable containing the wishlist ID or name
         var wishlistId = "{{ wishlist_id }}"; // Replace "{{ wishlist_id }}" with your actual wishlist ID
-
+        var userName = document.getElementById("user-username").value;
         // Construct the share URL
-        var shareUrl = currentUrl + "?wishlist=" +"5";
+        var shareUrl = currentUrl + "?wishlist=" + "5/" + "?username=" + userName +"/";
 
         // Display the modal below the share button
         var modal = document.getElementById("myModal");
