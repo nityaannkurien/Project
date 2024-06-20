@@ -22,7 +22,6 @@
             </ul>
         </div>
         <div class="nav-button">
-
         </div>
         <div class="nav-menu-btn">
             <i class="bx bx-menu" onclick="myMenuFunction()"></i>
@@ -30,12 +29,10 @@
     </nav>
     
    
-
 <!----------------------------- Form box ----------------------------------->    
     <div class="form-box">
         
         <!------------------- login form -------------------------->
-
                <div class="login-container" id="login">
             <div class="top">
                 <span>Don't have an account? <a href="#" onclick="register()">Sign Up</a></span>
@@ -65,7 +62,6 @@
             </form>
         </div>
 
-
         <!------------------- registration form -------------------------->
         <div class="register-container" id="register">
             <div class="top">
@@ -76,24 +72,24 @@
                 {% csrf_token %}
                 <div class="two-forms">
                     <div class="input-box">
-                        <input type="text" class="input-field" placeholder="Firstname" name="firstname" required>
+                        <input type="text" class="input-field" placeholder="Firstname" name="firstname" id="fname" required>
                         <i class="bx bx-user"></i>
                     </div>
                     <div class="input-box">
-                        <input type="text" class="input-field" placeholder="Lastname" name="lastname" required>
+                        <input type="text" class="input-field" placeholder="Lastname" name="lastname" id="lname" required>
                         <i class="bx bx-user"></i>
                     </div>
                 </div>
                 <div class="input-box">
-                    <input type="text" class="input-field" placeholder="Email" name="email" required>
+                    <input type="text" class="input-field" placeholder="Email" name="email" id="email" required>
                     <i class="bx bx-envelope"></i>
                 </div>
                 <div class="input-box">
-                    <input type="password" class="input-field" placeholder="Password" name="pass" required>
+                    <input type="password" class="input-field" placeholder="Password" name="pass" id="pass" required>
                     <i class="bx bx-lock-alt"></i>
                 </div>
                 <div class="input-box">
-                    <input type="submit" class="submit" value="Register">
+                    <button id="submit" onclick="save()">R</button>
                 </div>
                 {% if messages %}
                 <div class="success-message" style="color: white; font-weight: bold; margin-top: 10px; text-align: center;">
@@ -102,55 +98,55 @@
                 {% endfor %}
                 </div>
                 {% endif %}
-
             </form>
         </div>
     </div>
 </div>   
-
-
 <script>
    
-   function myMenuFunction() {
-    var i = document.getElementById("navMenu");
-
-    if(i.className === "nav-menu") {
-        i.className += " responsive";
-    } else {
-        i.className = "nav-menu";
-    }
-   }
+    function myMenuFunction() {
+     var i = document.getElementById("navMenu");
  
-</script>
-
-<script>
-
-    var a = document.getElementById("loginBtn");
-    var b = document.getElementById("registerBtn");
-    var x = document.getElementById("login");
-    var y = document.getElementById("register");
-
-    function login() {
-        x.style.left = "4px";
-        y.style.right = "-520px";
-        a.className += " white-btn";
-        b.className = "btn";
-        x.style.opacity = 1;
-        y.style.opacity = 0;
+     if(i.className === "nav-menu") {
+         i.className += " responsive";
+     } else {
+         i.className = "nav-menu";
+     }
     }
-
-    function register() {
-        x.style.left = "-510px";
-        y.style.right = "5px";
-        a.className = "btn";
-        b.className += " white-btn";
-        x.style.opacity = 0;
-        y.style.opacity = 1;
-    }
-
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   
+ </script>
+ 
+ <script>
+ 
+     var a = document.getElementById("loginBtn");
+     var b = document.getElementById("registerBtn");
+     var x = document.getElementById("login");
+     var y = document.getElementById("register");
+ 
+     function login() {
+         x.style.left = "4px";
+         y.style.right = "-520px";
+         a.className += " white-btn";
+         b.className = "btn";
+         x.style.opacity = 1;
+         y.style.opacity = 0;
+     }
+ 
+     function register() {
+         x.style.left = "-510px";
+         y.style.right = "5px";
+         a.className = "btn";
+         b.className += " white-btn";
+         x.style.opacity = 0;
+         y.style.opacity = 1;
+     }
+ 
+ </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js"></script>
+<script src="login.js"></script>
 
 </body>
 </html>

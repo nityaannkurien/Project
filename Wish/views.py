@@ -42,7 +42,7 @@ def logoutUser(request):
     logout(request)
     return redirect("/")
 
-def signup(request):
+"""def signup(request):
     if request.method == "POST":
         email = request.POST.get("email")
         username = email
@@ -57,7 +57,7 @@ def signup(request):
             messages.success(request, 'Account has been created')
         else:
             messages.error(request, 'User already exists')
-    return render(request, 'login.html')  
+    return render(request, 'login.html') """ 
 
 def create(request):
     if request.user.is_authenticated:
