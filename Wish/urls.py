@@ -8,7 +8,7 @@ from . import views
 urlpatterns = [
     path("", views.index, name="index"),
     path('login/', views.loginUser, name='login'),
-    #path('signup/',views.signup, name='signup'),
+    path('signup/',views.signup, name='signup'),
     path('create/', views.create, name='create'),
     path('logout/', views.logoutUser, name='logout'),
     path('edit/', views.edit_profile, name='edit_profile'),
@@ -32,4 +32,9 @@ urlpatterns = [
     path('scrape4/', views.scrape_flipkart4, name='scrape_flipkart4'),
     path('scrape_clothing4/', views.scrape_clothing4, name='scrape_clothing4'),
     path('delete/<uuid:wishlist_id>/', views.deleteList, name='delete_list'),
+    path('addtocartb/<str:product>/<str:price>/<path:image>/', views.addtocartb, name='addtocartb'),
+    path('addtocarth/<str:product>/<str:price>/<path:image>/', views.addtocarth, name='addtocarth'),
+    path('addtocartw/<str:product>/<str:price>/<path:image>/', views.addtocartw, name='addtocartw'),
+    path('addtocartbm/<str:product>/<str:price>/<path:image>/', views.addtocartbm, name='addtocartbm'),
+    path('addtocartan/<str:product>/<str:price>/<path:image>/', views.addtocartan, name='addtocartan'),
 ]
