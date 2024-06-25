@@ -126,6 +126,40 @@
             color: red;
             font-size: 20px;
         }
+        /* Individual product container styling */
+        .product {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            width: 500px; /* Increased width */
+        }
+        
+        /* Product title styling */
+        .product h2 {
+            font-size: 1.4em; /* Slightly larger font size */
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        /* Product image styling */
+        .product img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            width: 220px; /* Increased width for the image */
+            height: 220px; /* Increased height for the image */
+        }
+        
+        /* Product price styling */
+        .product p {
+            font-size: 1.2em; /* Slightly larger font size */
+            color: #666;
+        }
+
         
     </style>
 </head>
@@ -164,7 +198,13 @@
             {% endif%}
     </div>
     <div id="productDetails">
-        <!-- Product details will be populated here -->
+        {% for product_data in product_data_list %}
+        <div class="product">
+            <h2>{{ product_data.product_name }}</h2>
+            <img src="{{ product_data.image }}" alt="image">
+            <p>Price: {{ product_data.price }}</p>
+        </div>
+        {% endfor %}
     </div>
 </div>
 <input type="hidden" id="user-username" value="{{ request.user.username }}">
