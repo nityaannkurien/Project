@@ -14,36 +14,92 @@ import requests
 from .models import List,ListItem
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-
-
-
-
+import pyrebase
 from bs4 import BeautifulSoup
 import urllib.request
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
+from django.contrib import messages
+from urllib.parse import unquote
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import auth
+from firebase_admin import firestore
+cred = credentials.Certificate("C:\Django\WISHSTACK12\Project\wishstack-db-firebase-adminsdk-nqcon-fe31740038.json")
+firebase_admin.initialize_app(cred)
+
+db=firestore.client()
+
 # Create your views here.
+firebaseConfig = {
+  'apiKey': "AIzaSyDsyFTYrxJ4KOGEkGZ7ZZiJzIigvqhULMU",
+  'authDomain': "wishstack-db.firebaseapp.com",
+  'databaseURL': "https://wishstack-db-default-rtdb.firebaseio.com",
+  'projectId': "wishstack-db",
+  'storageBucket': "wishstack-db.appspot.com",
+  'messagingSenderId': "809425693364",
+  'appId': "1:809425693364:web:908ca30fc4f9f6194485e1",
+  'measurementId': "G-T0FJ57Y7CY"
+}
+firebase=pyrebase.initialize_app(firebaseConfig)
+authe = firebase.auth()
+database=firebase.database()
 
 def index(request):
     return render(request, 'index.html')
 
+
 def loginUser(request):
-    if request.method=="POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        user =  authenticate(username=username, password=password)
-        if user is not None:
-            login(request, user)
+    print("hi", request.method)
+    if request.method == "POST":
+        email = request.POST.get('email')
+        password = request.POST.get('pass')
+        
+        try:
+            # Authenticate user using your custom method
+            user = authe.sign_in_with_email_and_password(email, password)
+            print(user)
+            firebase_user = auth.get_user(user['localId'])
+            print("Firebase user data:")
+            print(f"Email: {firebase_user.email}")
+            print(f"User ID: {firebase_user.uid}")
+            print(f"Firebase user data: {firebase_user}")
+
+            # Store user data in session
+            request.session['user_email'] = firebase_user.email
+            request.session['user_uid'] = firebase_user.uid
+
+            # For simplicity, ensure the user exists in Django's User model or create one
+            django_user, created = User.objects.get_or_create(username=email, defaults={'email': email})
+            if created:
+                django_user.set_password(password)
+                django_user.save()
+
+            # Log the user in
+            login(request, django_user)
+
             return redirect('/create/')
-        else:
-            messages.error(request, 'Invalid Email or Password')
-            return render(request, 'login.html')
+        except Exception as e:
+            messages.error(request, 'An unexpected error occurred: ' + str(e))
+            
     return render(request, 'login.html')
 
 def logoutUser(request):
     logout(request)
     return redirect("/")
 
-"""def signup(request):
-    if request.method == "POST":
+def signup(request):
+    fname=request.POST.get('firstname')
+    lname=request.POST.get('lastname')
+    email = request.POST.get('email')
+    password = request.POST.get('pass')
+    user=authe.create_user_with_email_and_password(email,password)
+    data={"first name":fname,"last name":lname,"email":email}
+    db.collection('user').document(email).set(data)
+
+    return render(request, 'login.html')
+
+"""if request.method == "POST":
         email = request.POST.get("email")
         username = email
         fname = request.POST.get("firstname")
@@ -57,16 +113,34 @@ def logoutUser(request):
             messages.success(request, 'Account has been created')
         else:
             messages.error(request, 'User already exists')
-    return render(request, 'login.html') """ 
+    return render(request, 'login.html')  """
 
 def create(request):
+    print("dhoiusfoiefgofgfhsifhiurfreuhbfc",request)
+    print("Full request object:", request)
+    print("Request method:", request.method)
+    print("Request GET parameters:", request.GET)
+    print("Request POST parameters:", request.POST)
+    print("Request user:", request.user)
+     
     if request.user.is_authenticated:
+        print("User is authenticated")
         username = request.user
+        user_email = request.session.get('user_email')
+        user_uid = request.session.get('user_uid')
+        print("User email from session:", user_email)
+        print("User UID from session:", user_uid)
         items = List.objects.all()
-        variable = {'name': username.first_name, 'listname' : items}
+        variable = {
+            'name': username.first_name,
+            'listname': items,
+            'email': user_email,
+            'uid': user_uid
+        }
         return render(request, 'create.html', variable)
-    return redirect('/login')
-
+    else:
+        print("User is not authenticated")
+        return redirect('/login/')
 def edit_profile(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -100,56 +174,161 @@ def index(request):
     return render(request, 'index.html')
 
 def main(request):
-    if request.method=="POST":
-        wishname = request.POST.get('wishname')
-        wishdesc = request.POST.get('wishdesc')
+    if request.method=="GET":
+        # wishname = request.POST.get('wishname')
+        # wishdesc = request.POST.get('wishdesc')
+        
+        # namew=List( wishlist_name = wishname,description = wishdesc, user=request.user)
+        # namew.save()
+        # Assuming 'a' is the user_id and 'product' is the wishlist_id
+        user_email=str(request.user)
+        user_ref = db.collection('user').document(user_email)
+        wishlist_ref = user_ref.collection('wishlist').document('birthday')
+        products_ref = wishlist_ref.collection('products')
+        print(user_ref)
 
-        namew=List( wishlist_name = wishname,description = wishdesc, user=request.user)
-        namew.save()
-    variable = {'username': request.user}
-    return render(request, 'main.html',variable)
+        # Get all products in the wishlist
+        products = products_ref.get()
+        product_data_list = []
+        for product in products:
+           product_data = product.to_dict()
+           product_data_list.append(product_data)
 
+        context = {
+        'username': request.user,
+        }
+
+    # Check if product_data_list is not empty before adding it to the context
+    if product_data_list:
+        context['product_data_list'] = product_data_list
+
+    return render(request, 'main.html', context)
 
 def main4(request):
-    if request.method=="POST":
-        wishname = request.POST.get('wishname')
-        wishdesc = request.POST.get('wishdesc')
+    if request.method=="GET":
+        # wishname = request.POST.get('wishname')
+        # wishdesc = request.POST.get('wishdesc')
+        
+        # namew=List( wishlist_name = wishname,description = wishdesc, user=request.user)
+        # namew.save()
+        # Assuming 'a' is the user_id and 'product' is the wishlist_id
+        user_email=str(request.user)
+        user_ref = db.collection('user').document(user_email)
+        wishlist_ref = user_ref.collection('wishlist').document('anniversary')
+        products_ref = wishlist_ref.collection('products')
+        print(user_ref)
 
-        namew=List( wishlist_name = wishname,description = wishdesc, user=request.user)
-        namew.save()
-    variable = {'username': request.user}
-    return render(request, 'main4.html',variable)
+        # Get all products in the wishlist
+        products = products_ref.get()
+        product_data_list = []
+        for product in products:
+           product_data = product.to_dict()
+           product_data_list.append(product_data)
+
+        context = {
+        'username': request.user,
+        }
+
+    # Check if product_data_list is not empty before adding it to the context
+    if product_data_list:
+        context['product_data_list'] = product_data_list
+
+    return render(request, 'main4.html', context)
 
 def main1(request):
-    if request.method=="POST":
-        wishname = request.POST.get('wishname')
-        wishdesc = request.POST.get('wishdesc')
+    if request.method=="GET":
+        # wishname = request.POST.get('wishname')
+        # wishdesc = request.POST.get('wishdesc')
         
-        namew=List( wishlist_name = wishname,description = wishdesc, user=request.user)
-        namew.save()
-    variable = {'username': request.user}
-    return render(request, 'main1.html',variable)
-    
+        # namew=List( wishlist_name = wishname,description = wishdesc, user=request.user)
+        # namew.save()
+        # Assuming 'a' is the user_id and 'product' is the wishlist_id
+        user_email=str(request.user)
+        user_ref = db.collection('user').document(user_email)
+        wishlist_ref = user_ref.collection('wishlist').document('house_warming')
+        products_ref = wishlist_ref.collection('products')
+        print(user_ref)
+
+        # Get all products in the wishlist
+        products = products_ref.get()
+        product_data_list = []
+        for product in products:
+           product_data = product.to_dict()
+           product_data_list.append(product_data)
+
+        context = {
+        'username': request.user,
+        }
+
+    # Check if product_data_list is not empty before adding it to the context
+    if product_data_list:
+        context['product_data_list'] = product_data_list
+
+    return render(request, 'main1.html', context)
+
+   
 
 def main2(request):
-    if request.method=="POST":
-        wishname = request.POST.get('wishname')
-        wishdesc = request.POST.get('wishdesc')
+    if request.method=="GET":
+        # wishname = request.POST.get('wishname')
+        # wishdesc = request.POST.get('wishdesc')
+        
+        # namew=List( wishlist_name = wishname,description = wishdesc, user=request.user)
+        # namew.save()
+        # Assuming 'a' is the user_id and 'product' is the wishlist_id
+        user_email=str(request.user)
+        user_ref = db.collection('user').document(user_email)
+        wishlist_ref = user_ref.collection('wishlist').document('wedding')
+        products_ref = wishlist_ref.collection('products')
+        print(user_ref)
 
-        namew=List( wishlist_name = wishname,description = wishdesc, user=request.user)
-        namew.save()
-    variable = {'username': request.user}
-    return render(request, 'main2.html',variable)
+        # Get all products in the wishlist
+        products = products_ref.get()
+        product_data_list = []
+        for product in products:
+           product_data = product.to_dict()
+           product_data_list.append(product_data)
+
+        context = {
+        'username': request.user,
+        }
+
+    # Check if product_data_list is not empty before adding it to the context
+    if product_data_list:
+        context['product_data_list'] = product_data_list
+
+    return render(request, 'main2.html', context)
 
 def main3(request):
-    if request.method=="POST":
-        wishname = request.POST.get('wishname')
-        wishdesc = request.POST.get('wishdesc')
+    if request.method=="GET":
+        # wishname = request.POST.get('wishname')
+        # wishdesc = request.POST.get('wishdesc')
+        
+        # namew=List( wishlist_name = wishname,description = wishdesc, user=request.user)
+        # namew.save()
+        # Assuming 'a' is the user_id and 'product' is the wishlist_id
+        user_email=str(request.user)
+        user_ref = db.collection('user').document(user_email)
+        wishlist_ref = user_ref.collection('wishlist').document('baptism')
+        products_ref = wishlist_ref.collection('products')
+        print(user_ref)
 
-        namew=List( wishlist_name = wishname,description = wishdesc, user=request.user)
-        namew.save()
-    variable = {'username': request.user}
-    return render(request, 'main3.html',variable)
+        # Get all products in the wishlist
+        products = products_ref.get()
+        product_data_list = []
+        for product in products:
+           product_data = product.to_dict()
+           product_data_list.append(product_data)
+
+        context = {
+        'username': request.user,
+        }
+
+    # Check if product_data_list is not empty before adding it to the context
+    if product_data_list:
+        context['product_data_list'] = product_data_list
+
+    return render(request, 'main3.html', context)
 
 
 
@@ -170,7 +349,6 @@ def scrape_flipkart(request):
     if request.method=="POST":
         username = request.POST.get("username")
         print("US",username)
-    print("test")
     Product_name = []
     Prices = []
     Description = []
@@ -243,7 +421,6 @@ def scrape_flipkart(request):
     names2 = soup2.find_all("a", class_="wjcEIp")
     for name in names2:
         Product_name2.append(name.text)
-        print("Home Decor",name.text,"\n")
 
     # Scrape product prices
     prices2 = soup2.find_all("div", class_="Nx9bqj")
@@ -271,7 +448,6 @@ def scrape_flipkart(request):
     names4 = soup.find_all("a", class_="wjcEIp")
     for name in names4:
         Product_name4.append(name.text)
-        print("Earbuds",name.text,"\n")
     prices4 = soup4.find_all("div", class_="Nx9bqj")
     for price in prices4:
         Prices4.append(price.text)
@@ -291,7 +467,7 @@ def scrape_flipkart(request):
         'products2': zip(Product_name2, Prices2, Description2, Images2),
         'products4': zip(Product_name4, Prices4,Description4, Images4),
     }
-    
+    \
     return render(request, 'scraped_data.html', context)
     
 
@@ -1426,3 +1602,215 @@ def scrape_clothing4(request):
     }
     
     return render(request, 'scraped_clothing4.html', context)
+
+def addtocartb(request,product,price,image):
+    product = unquote(product)
+    price = unquote(price)
+    image = unquote(image)
+    
+    product = str(product)
+    price = str(price)
+    image = str(image)
+    
+    a=str(request.user)
+    print(a)
+    user_ref = db.collection('user').document(a)
+    wishlist_ref = user_ref.collection('wishlist').document('birthday')
+    product_ref = wishlist_ref.collection('products').document()
+
+    data={"product_name": product,"price":price,"image":image,"status":"not bought"}
+
+    product_ref.set(data)
+    print(image)
+    return redirect('/scrape/')
+
+def addtocartb(request,product,price,image):
+    product = unquote(product)
+    price = unquote(price)
+    image = unquote(image)
+    
+    product = str(product)
+    price = str(price)
+    image = str(image)
+    
+    a=str(request.user)
+    print(a)
+    user_ref = db.collection('user').document(a)
+    wishlist_ref = user_ref.collection('wishlist').document('birthday')
+    product_ref = wishlist_ref.collection('products').document()
+
+    data={"product_name": product,"price":price,"image":image,"status":"not bought"}
+
+    product_ref.set(data)
+    print(image)
+    return redirect('/scrape_clothing/')
+
+
+def addtocarth(request,product,price,image):
+    product = unquote(product)
+    price = unquote(price)
+    image = unquote(image)
+    
+    product = str(product)
+    price = str(price)
+    image = str(image)
+    
+    a=str(request.user)
+    print(a)
+    user_ref = db.collection('user').document(a)
+    wishlist_ref = user_ref.collection('wishlist').document('house_warming')
+    product_ref = wishlist_ref.collection('products').document()
+
+    data={"product_name": product,"price":price,"image":image,"status":"not bought"}
+
+    product_ref.set(data)
+    print(image)
+    return redirect('/scrape1/')
+
+def addtocarth(request,product,price,image):
+    product = unquote(product)
+    price = unquote(price)
+    image = unquote(image)
+    
+    product = str(product)
+    price = str(price)
+    image = str(image)
+    
+    a=str(request.user)
+    print(a)
+    user_ref = db.collection('user').document(a)
+    wishlist_ref = user_ref.collection('wishlist').document('house_warming')
+    product_ref = wishlist_ref.collection('products').document()
+
+    data={"product_name": product,"price":price,"image":image,"status":"not bought"}
+
+    product_ref.set(data)
+    print(image)
+    return redirect('/scrape_clothing1/')
+
+
+def addtocartw(request,product,price,image):
+    product = unquote(product)
+    price = unquote(price)
+    image = unquote(image)
+    
+    product = str(product)
+    price = str(price)
+    image = str(image)
+    
+    a=str(request.user)
+    print(a)
+    user_ref = db.collection('user').document(a)
+    wishlist_ref = user_ref.collection('wishlist').document('wedding')
+    product_ref = wishlist_ref.collection('products').document()
+
+    data={"product_name": product,"price":price,"image":image,"status":"not bought"}
+
+    product_ref.set(data)
+    print(image)
+    return redirect('/scrape2/')
+
+def addtocartw(request,product,price,image):
+    product = unquote(product)
+    price = unquote(price)
+    image = unquote(image)
+    
+    product = str(product)
+    price = str(price)
+    image = str(image)
+    
+    a=str(request.user)
+    print(a)
+    user_ref = db.collection('user').document(a)
+    wishlist_ref = user_ref.collection('wishlist').document('wedding')
+    product_ref = wishlist_ref.collection('products').document()
+
+    data={"product_name": product,"price":price,"image":image,"status":"not bought"}
+
+    product_ref.set(data)
+    print(image)
+    return redirect('/scrape_clothing2/')
+
+def addtocartbm(request,product,price,image):
+    product = unquote(product)
+    price = unquote(price)
+    image = unquote(image)
+    
+    product = str(product)
+    price = str(price)
+    image = str(image)
+    
+    a=str(request.user)
+    print(a)
+    user_ref = db.collection('user').document(a)
+    wishlist_ref = user_ref.collection('wishlist').document('baptism')
+    product_ref = wishlist_ref.collection('products').document()
+
+    data={"product_name": product,"price":price,"image":image,"status":"not bought"}
+
+    product_ref.set(data)
+    print(image)
+    return redirect('/scrape3/')
+
+def addtocartbm(request,product,price,image):
+    product = unquote(product)
+    price = unquote(price)
+    image = unquote(image)
+    
+    product = str(product)
+    price = str(price)
+    image = str(image)
+    
+    a=str(request.user)
+    print(a)
+    user_ref = db.collection('user').document(a)
+    wishlist_ref = user_ref.collection('wishlist').document('baptism')
+    product_ref = wishlist_ref.collection('products').document()
+
+    data={"product_name": product,"price":price,"image":image,"status":"not bought"}
+
+    product_ref.set(data)
+    print(image)
+    return redirect('/scrape_clothing3/')
+
+def addtocartan(request,product,price,image):
+    product = unquote(product)
+    price = unquote(price)
+    image = unquote(image)
+    
+    product = str(product)
+    price = str(price)
+    image = str(image)
+    
+    a=str(request.user)
+    print(a)
+    user_ref = db.collection('user').document(a)
+    wishlist_ref = user_ref.collection('wishlist').document('anniversary')
+    product_ref = wishlist_ref.collection('products').document()
+
+    data={"product_name": product,"price":price,"image":image,"status":"not bought"}
+
+    product_ref.set(data)
+    print(image)
+    return redirect('/scrape4/')
+
+def addtocartan(request,product,price,image):
+    product = unquote(product)
+    price = unquote(price)
+    image = unquote(image)
+    
+    product = str(product)
+    price = str(price)
+    image = str(image)
+    
+    a=str(request.user)
+    print(a)
+    user_ref = db.collection('user').document(a)
+    wishlist_ref = user_ref.collection('wishlist').document('anniversary')
+    product_ref = wishlist_ref.collection('products').document()
+
+    data={"product_name": product,"price":price,"image":image,"status":"not bought"}
+
+    product_ref.set(data)
+    print(image)
+    return redirect('/scrape_clothing4/')
