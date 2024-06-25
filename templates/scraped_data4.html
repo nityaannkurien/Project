@@ -63,8 +63,9 @@
                 <h2>{{ product }}</h2>
                 <p>Price: {{ price }}</p>
                 <p>Description: {{ description }}</p>
-                <button class="wish-button"
-                    onclick="myFunction('{{ product }}', '{{ price }}','{{ description }}','{{ image }}')">Wish</button>
+                <a href="{% url 'addtocartan' product|urlencode price|urlencode image|urlencode %}">
+                    <button  class="wish-button">Wish</button>
+                    </a>
             </div>
             {% endfor %}
         </div>
@@ -76,8 +77,9 @@
                 <h2>{{ product }}</h2>
                 <p>Price: {{ price }}</p>
                 <p>Description: {{ description }}</p>
-                <button class="wish-button"
-                onclick="myFunction('{{ product }}', '{{ price }}','{{ description }}','{{ image }}','{{name}}')">Wish</button>
+                <a href="{% url 'addtocartan' product|urlencode price|urlencode image|urlencode %}">
+                    <button  class="wish-button">Wish</button>
+                    </a>
             </div>
             {% endfor %}
         </div>
@@ -89,8 +91,10 @@
                 <h2>{{ product }}</h2>
                 <p>Price: {{ price }}</p>
                 <p>Description: {{ description }}</p>
-                <button class="wish-button"
-                onclick="myFunction('{{ product }}', '{{ price }}','{{ description }}','{{ image }}','{{name}}')">Wish</button>            </div>
+                <a href="{% url 'addtocartan' product|urlencode price|urlencode image|urlencode %}">
+                    <button  class="wish-button">Wish</button>
+                    </a>           
+            </div>
             {% endfor %}
         </div>
         <h1 id="earbuds">Earbuds</h1>
@@ -101,8 +105,9 @@
                 <h2>{{ product }}</h2>
                 <p>Price: {{ price }}</p>
                 <p>Description: {{ description }}</p>
-                <button class="wish-button"
-                onclick="myFunction('{{ product }}', '{{ price }}','{{ description }}','{{ image }}','{{name}}')">Wish</button>            </div>
+                <a href="{% url 'addtocartan' product|urlencode price|urlencode image|urlencode %}">
+                    <button  class="wish-button">Wish</button>
+                    </a>        </div>
             {% endfor %}
         </div>
     </div>
