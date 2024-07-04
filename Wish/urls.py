@@ -1,8 +1,6 @@
 from django.urls import path
+from .views import scrape_amazon
 from .views import scrape_flipkart
-from .views import scrape_clothing
-from .views import scrape_clothing1
-from .views import scrape_flipkart1
 from . import views
 
 urlpatterns = [
@@ -14,43 +12,14 @@ urlpatterns = [
     path('edit/', views.edit_profile, name='edit_profile'),
     path('wishing/', views.create_wishlist, name='create_wishlist'),
     path('', views.index, name='index'),
-    path('main/', views.main, name='main'),
-    path('main1/', views.main1, name='main1'),
-    path('main2/', views.main2, name='main2'),
-    path('main3/', views.main3, name='main3'),
-    path('main4/', views.main4, name='main4'),
-    path('api/', views.api_view, name='api'),  
+    path('main/<str:wishlist_name>/', views.main, name='main'),
     path("start-wishing/", views.start_wishing, name="start_wishing"),
-    path('scrape/', scrape_flipkart, name='scrape_flipkart'),
-    path('scrape_clothing/', scrape_clothing, name='scrape_clothing'),
-    path('scrape1/', scrape_flipkart1, name='scrape_flipkart1'),
-    path('scrape_clothing1/', scrape_clothing1, name='scrape_clothing1'),
-    path('scrape2/', views.scrape_flipkart2, name='scrape_flipkart2'),
-    path('scrape_clothing2/', views.scrape_clothing2, name='scrape_clothing2'),
-    path('scrape3/', views.scrape_flipkart3, name='scrape_flipkart3'),
-    path('scrape_clothing3/', views.scrape_clothing3, name='scrape_clothing3'),
-    path('scrape4/', views.scrape_flipkart4, name='scrape_flipkart4'),
-    path('scrape_clothing4/', views.scrape_clothing4, name='scrape_clothing4'),
+    path('scrapeflipkart/<str:wishlist>/', scrape_flipkart, name='scrapeflipkart'),
+    path('scrapeamazon/<str:wishlist>/', scrape_amazon, name='scrapeamazon'),
     path('delete/<uuid:wishlist_id>/', views.deleteList, name='delete_list'),
-    path('addtocartb/<str:product>/<str:price>/<path:image>/', views.addtocartb, name='addtocartb'),
-    path('addtocartb1/<str:product>/<str:price>/<path:image>/', views.addtocartb1, name='addtocartb1'),
-    path('addtocarth/<str:product>/<str:price>/<path:image>/', views.addtocarth, name='addtocarth'),
-    path('addtocarth1/<str:product>/<str:price>/<path:image>/', views.addtocarth1, name='addtocarth1'),
-    path('addtocartw/<str:product>/<str:price>/<path:image>/', views.addtocartw, name='addtocartw'),
-    path('addtocartw1/<str:product>/<str:price>/<path:image>/', views.addtocartw1, name='addtocartw1'),
-    path('addtocartbm/<str:product>/<str:price>/<path:image>/', views.addtocartbm, name='addtocartbm'),
-    path('addtocartbm1/<str:product>/<str:price>/<path:image>/', views.addtocartbm1, name='addtocartbm1'),
-    path('addtocartan/<str:product>/<str:price>/<path:image>/', views.addtocartan, name='addtocartan'),
-    path('addtocartan1/<str:product>/<str:price>/<path:image>/', views.addtocartan1, name='addtocartan1'),
-    path('status_update_b/<str:product_name>/', views.status_update_b, name='status_update_b'),
-    path('delete_item_b/<str:product_name>/', views.delete_item_b, name='delete_item_b'),
-    path('status_update_h/<str:product_name>/', views.status_update_h, name='status_update_h'),
-    path('delete_item_h/<str:product_name>/', views.delete_item_h, name='delete_item_h'),
-    path('status_update_w/<str:product_name>/', views.status_update_w, name='status_update_w'),
-    path('delete_item_w/<str:product_name>/', views.delete_item_w, name='delete_item_w'),
-    path('status_update_bm/<str:product_name>/', views.status_update_bm, name='status_update_bm'),
-    path('delete_item_bm/<str:product_name>/', views.delete_item_bm, name='delete_item_bm'),
-    path('status_update_an/<str:product_name>/', views.status_update_an, name='status_update_an'),
-    path('delete_item_an/<str:product_name>/', views.delete_item_an, name='delete_item_an'),
-    path('sort_low_to_high/', views.sort_low_to_high, name='sort_low_to_high'),
+    path('addtocart/<str:wishlist>/<str:product>/<str:price>/<path:image>/', views.addtocart, name='addtocart'),
+    path('status_update/<str:wishlist_name>/<str:product_name>/<str:status>/', views.status_update, name='status_update'),
+    path('delete_item/<str:wishlist_name>/<str:product_name>/', views.delete_item, name='delete_item'),
+    path('sort_low_to_high/<str:wishlist>/', views.sort_low_to_high, name='sort_low_to_high'),
+    path('sort_high_to_low/<str:wishlist>/', views.sort_high_to_low, name='sort_high_to_low'),
 ]

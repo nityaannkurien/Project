@@ -74,42 +74,15 @@
       <button class="logout-button1" onclick="window.location.href='{% url 'logout' %}'">Logout</button>
     </nav>
     
-
+    {% for wish_name in wishlist_names %}
     <div id="wishlist-container" class="wishlist-container">
       <div class="wishlist-item" onclick="redirectToWishing()">
         <div class="button-container">
-            <a href="/main/"><button class="add-button" onclick="setId(1)">Birthday</button></a>
+            <a href="{% url 'main' wish_name %}"><button class="add-button">{{ wish_name }}</button></a>
         </div>
       </div>
     </div>
-  <div id="wishlist-container" class="wishlist-container">
-    <div class="wishlist-item" onclick="redirectToWishing()">
-      <div class="button-container">
-          <a href="/main1/"><button class="add-button" onclick="setId(2)">House Warming</button></a>
-      </div>
-    </div>
-  </div>
-  <div id="wishlist-container" class="wishlist-container">
-    <div class="wishlist-item" onclick="redirectToWishing()">
-      <div class="button-container">
-          <a href="/main2/"><button class="add-button" onclick="setId(3)">Wedding</button></a>
-      </div>
-      </div>
-    </div>
-  <div id="wishlist-container" class="wishlist-container">
-    <div class="wishlist-item" onclick="redirectToWishing()">
-      <div class="button-container">
-          <a href="/main3/"><button class="add-button" onclick="setId(4)">Baptism</button></a>
-      </div>
-    </div>
-  </div>
-  <div id="wishlist-container" class="wishlist-container">
-    <div class="wishlist-item" onclick="redirectToWishing()">
-      <div class="button-container">
-          <a href="/main4/"><button class="add-button" onclick="setId(5)" >Anniversary</button></a> 
-      </div>
-    </div>
-  </div>
+    {% endfor %}
  
   </div>
   <script>
