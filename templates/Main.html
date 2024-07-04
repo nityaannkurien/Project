@@ -163,7 +163,6 @@
             font-size: 1.2em; /* Slightly larger font size */
             color: #666;
         }
-}
         
     </style>
 </head>
@@ -174,12 +173,24 @@
                 <li style="text-align: center;"><a>Birthday Wishlist</a></li>
             </ul>
             <div class="filter-dropdown">
-                Filter
+            Filter
                 <div class="filter-dropdown-content">
                     <button id="highToLowBtn">High to Low</button>
-                    <button id="lowToHighBtn">Low to High</button>
+                    <button onclick="location.href='{% url 'sort_low_to_high' %}'" id="lowToHighBtn">Low to High</button>
                 </div>
             </div>
+            <div id="wishlistItems">
+                {% for item in wishlist_items %}
+                    <div class="product-item" data-price="{{ item.price }}">
+                        {{ item.product_name }} - ₹{{ item.price }}
+                    </div>
+                {% endfor %}
+            </div>
+        
+            {% if error %}
+                <div class="error">{{ error }}</div>
+            {% endif %}
+        
                 <button class="share-button" id="shareButton">Share</button>
             {% if user.is_authenticated %}
                 <button class="logout-button" onclick="window.location.href='{% url 'logout' %}'">Logout</button>
@@ -207,13 +218,28 @@
                 <h2>{{ product_data.product_name }}</h2>
                 <img src="{{ product_data.image }}" alt="image">
                 <p>Price: {{ product_data.price }}</p>
-            </div>
+                <form action="{% url 'status_update_b' product_data.product_name %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="action" value="buy">Buy</button>
+                    <button type="submit" name="action" value="bought">Bought</button>
+                    <button type="submit" name="action" value="wish_to_buy">Wish to Buy</button>
+                </form>
+                {% if user.is_authenticated %}
+                <form action="{% url 'delete_item_b' product_data.product_name %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Delete</button>
+                </form>
+                {% endif %}
+            </div>
             {% endfor %}
         </div>
 </div>
 <input type="hidden" id="user-username" value="{{ request.user.username }}">
+    
+
 <script src="WishStack/js/Main.js"></script>
 <script>
+    
     document.getElementById("shareButton").addEventListener("click", function () {
         // Get the current URL
         var currentUrl = window.location.href;
@@ -353,19 +379,37 @@ var products = JSON.parse(productData);
 console.log(products)
 
 // Function to sort products by price in ascending order
-function sortProductsByPriceAscending() {
-    console.log("Before sorting:", products);
-    products.sort((a, b) => {
-        // Remove the currency symbol and commas, then parse as a number
-        const priceA = parseFloat(a.price.replace(/[^\d.]/g, ''));
-        const priceB = parseFloat(b.price.replace(/[^\d.]/g, ''));
+function sortLowToHigh() {
+    
+    // Select the wishlist container
+    var wishlistContainer = document.getElementById('wishlistItems');
+
+    // Get all product items within the container
+    var items = wishlistContainer.querySelectorAll('.product-item');
+
+    // Convert NodeList to Array for easier manipulation
+    var itemsArray = Array.from(items);
+
+    // Sort items by price (assuming price is stored in a data attribute)
+    itemsArray.sort(function(a, b) {
+        var priceA = parseFloat(a.getAttribute('data-price'));
+        var priceB = parseFloat(b.getAttribute('data-price'));
         return priceA - priceB;
     });
 
-    console.log("After sorting:", products);
-    updateLocalStorage();
-    renderProducts();
+    // Clear existing items in the container
+    wishlistContainer.innerHTML = '';
+
+    // Append sorted items back to the container
+    itemsArray.forEach(function(item) {
+        wishlistContainer.appendChild(item);
+    });
 }
+
+// Event listener for the "Low to High" button
+document.getElementById('lowToHighBtn').addEventListener('click', function() {
+    sortLowToHigh();
+});
 
 // Function to sort products by price in descending order
 function sortProductsByPriceDescending() {

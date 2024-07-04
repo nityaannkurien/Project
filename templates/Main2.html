@@ -159,8 +159,7 @@
             font-size: 1.2em; /* Slightly larger font size */
             color: #666;
         }
-}
-        
+     
     </style>
 </head>
 <body>
@@ -205,6 +204,18 @@
             <h2>{{ product_data.product_name }}</h2>
             <img src="{{ product_data.image }}" alt="image">
             <p>Price: {{ product_data.price }}</p>
+            <form action="{% url 'status_update_w' product_data.product_name %}" method="post">
+                {% csrf_token %}
+                <button type="submit" name="action" value="buy">Buy</button>
+                <button type="submit" name="action" value="bought">Bought</button>
+                <button type="submit" name="action" value="wish_to_buy">Wish to Buy</button>
+            </form>
+            {% if user.is_authenticated %}
+            <form action="{% url 'delete_item_w' product_data.product_name %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Delete</button>
+            </form>
+            {% endif %}
         </div>
         {% endfor %}
     </div>

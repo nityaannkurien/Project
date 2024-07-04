@@ -24,7 +24,8 @@ from urllib.parse import unquote
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import auth
-from firebase_admin import firestore
+from firebase_admin import firestore 
+import logging
 cred = credentials.Certificate("C:\Django\WISHSTACK12\Project\wishstack-db-firebase-adminsdk-nqcon-fe31740038.json")
 firebase_admin.initialize_app(cred)
 
@@ -193,7 +194,7 @@ def main(request):
         for product in products:
            product_data = product.to_dict()
            product_data_list.append(product_data)
-
+        print(product_data_list)
         context = {
         'username': request.user,
         }
@@ -1616,7 +1617,7 @@ def addtocartb(request,product,price,image):
     print(a)
     user_ref = db.collection('user').document(a)
     wishlist_ref = user_ref.collection('wishlist').document('birthday')
-    product_ref = wishlist_ref.collection('products').document()
+    product_ref = wishlist_ref.collection('products').document(product)
 
     data={"product_name": product,"price":price,"image":image,"status":"not bought"}
 
@@ -1624,7 +1625,7 @@ def addtocartb(request,product,price,image):
     print(image)
     return redirect('/scrape/')
 
-def addtocartb(request,product,price,image):
+def addtocartb1(request,product,price,image):
     product = unquote(product)
     price = unquote(price)
     image = unquote(image)
@@ -1637,7 +1638,7 @@ def addtocartb(request,product,price,image):
     print(a)
     user_ref = db.collection('user').document(a)
     wishlist_ref = user_ref.collection('wishlist').document('birthday')
-    product_ref = wishlist_ref.collection('products').document()
+    product_ref = wishlist_ref.collection('products').document(product)
 
     data={"product_name": product,"price":price,"image":image,"status":"not bought"}
 
@@ -1659,7 +1660,7 @@ def addtocarth(request,product,price,image):
     print(a)
     user_ref = db.collection('user').document(a)
     wishlist_ref = user_ref.collection('wishlist').document('house_warming')
-    product_ref = wishlist_ref.collection('products').document()
+    product_ref = wishlist_ref.collection('products').document(product)
 
     data={"product_name": product,"price":price,"image":image,"status":"not bought"}
 
@@ -1667,7 +1668,7 @@ def addtocarth(request,product,price,image):
     print(image)
     return redirect('/scrape1/')
 
-def addtocarth(request,product,price,image):
+def addtocarth1(request,product,price,image):
     product = unquote(product)
     price = unquote(price)
     image = unquote(image)
@@ -1680,7 +1681,7 @@ def addtocarth(request,product,price,image):
     print(a)
     user_ref = db.collection('user').document(a)
     wishlist_ref = user_ref.collection('wishlist').document('house_warming')
-    product_ref = wishlist_ref.collection('products').document()
+    product_ref = wishlist_ref.collection('products').document(product)
 
     data={"product_name": product,"price":price,"image":image,"status":"not bought"}
 
@@ -1702,7 +1703,7 @@ def addtocartw(request,product,price,image):
     print(a)
     user_ref = db.collection('user').document(a)
     wishlist_ref = user_ref.collection('wishlist').document('wedding')
-    product_ref = wishlist_ref.collection('products').document()
+    product_ref = wishlist_ref.collection('products').document(product)
 
     data={"product_name": product,"price":price,"image":image,"status":"not bought"}
 
@@ -1710,7 +1711,7 @@ def addtocartw(request,product,price,image):
     print(image)
     return redirect('/scrape2/')
 
-def addtocartw(request,product,price,image):
+def addtocartw1(request,product,price,image):
     product = unquote(product)
     price = unquote(price)
     image = unquote(image)
@@ -1723,7 +1724,7 @@ def addtocartw(request,product,price,image):
     print(a)
     user_ref = db.collection('user').document(a)
     wishlist_ref = user_ref.collection('wishlist').document('wedding')
-    product_ref = wishlist_ref.collection('products').document()
+    product_ref = wishlist_ref.collection('products').document(product)
 
     data={"product_name": product,"price":price,"image":image,"status":"not bought"}
 
@@ -1744,7 +1745,7 @@ def addtocartbm(request,product,price,image):
     print(a)
     user_ref = db.collection('user').document(a)
     wishlist_ref = user_ref.collection('wishlist').document('baptism')
-    product_ref = wishlist_ref.collection('products').document()
+    product_ref = wishlist_ref.collection('products').document(product)
 
     data={"product_name": product,"price":price,"image":image,"status":"not bought"}
 
@@ -1752,7 +1753,7 @@ def addtocartbm(request,product,price,image):
     print(image)
     return redirect('/scrape3/')
 
-def addtocartbm(request,product,price,image):
+def addtocartbm1(request,product,price,image):
     product = unquote(product)
     price = unquote(price)
     image = unquote(image)
@@ -1765,7 +1766,7 @@ def addtocartbm(request,product,price,image):
     print(a)
     user_ref = db.collection('user').document(a)
     wishlist_ref = user_ref.collection('wishlist').document('baptism')
-    product_ref = wishlist_ref.collection('products').document()
+    product_ref = wishlist_ref.collection('products').document(product)
 
     data={"product_name": product,"price":price,"image":image,"status":"not bought"}
 
@@ -1786,7 +1787,7 @@ def addtocartan(request,product,price,image):
     print(a)
     user_ref = db.collection('user').document(a)
     wishlist_ref = user_ref.collection('wishlist').document('anniversary')
-    product_ref = wishlist_ref.collection('products').document()
+    product_ref = wishlist_ref.collection('products').document(product)
 
     data={"product_name": product,"price":price,"image":image,"status":"not bought"}
 
@@ -1794,7 +1795,7 @@ def addtocartan(request,product,price,image):
     print(image)
     return redirect('/scrape4/')
 
-def addtocartan(request,product,price,image):
+def addtocartan1(request,product,price,image):
     product = unquote(product)
     price = unquote(price)
     image = unquote(image)
@@ -1807,10 +1808,241 @@ def addtocartan(request,product,price,image):
     print(a)
     user_ref = db.collection('user').document(a)
     wishlist_ref = user_ref.collection('wishlist').document('anniversary')
-    product_ref = wishlist_ref.collection('products').document()
+    product_ref = wishlist_ref.collection('products').document(product)
 
     data={"product_name": product,"price":price,"image":image,"status":"not bought"}
 
     product_ref.set(data)
     print(image)
     return redirect('/scrape_clothing4/')
+
+
+
+
+def status_update_b(request, product_name):
+    action = request.POST.get('action')
+   
+    user_id = str(request.user)
+    
+  
+    user_ref = db.collection('user').document(user_id)
+    wishlist_ref = user_ref.collection('wishlist').document('birthday')
+    item_ref = wishlist_ref.collection('products')
+    product_query = item_ref.where('product_name', '==', product_name).get()
+    if product_query:
+        product_doc = product_query[0]
+        key = product_doc.id
+
+        if action == 'buy':
+            item_ref.document(key).update({
+                'status': 'going to buy'
+            })
+        elif action == 'bought':
+            item_ref.document(key).update({
+                'status': 'already bought'
+            })
+        elif action == 'wish_to_buy':
+            item_ref.document(key).update({
+                'status': 'wish to buy'
+            })
+        return redirect('/main/')
+    
+def delete_item_b(request,product_name):
+        user_id = str(request.user)
+    
+        user_ref = db.collection('user').document(user_id)
+        wishlist_ref = user_ref.collection('wishlist').document('birthday')
+        item_ref = wishlist_ref.collection('products').document(product_name)
+    
+        item_ref.delete()
+    
+        return redirect('/main/')
+    
+def status_update_h(request, product_name):
+    action = request.POST.get('action')
+   
+    user_id = str(request.user)
+    
+  
+    user_ref = db.collection('user').document(user_id)
+    wishlist_ref = user_ref.collection('wishlist').document('house_warming')
+    item_ref = wishlist_ref.collection('products')
+    product_query = item_ref.where('product_name', '==', product_name).get()
+    if product_query:
+        product_doc = product_query[0]
+        key = product_doc.id
+
+        if action == 'buy':
+            item_ref.document(key).update({
+                'status': 'going to buy'
+            })
+        elif action == 'bought':
+            item_ref.document(key).update({
+                'status': 'already bought'
+            })
+        elif action == 'wish_to_buy':
+            item_ref.document(key).update({
+                'status': 'wish to buy'
+            })
+        return redirect('/main1/')
+    
+def delete_item_h(request,product_name):
+        user_id = str(request.user)
+    
+        user_ref = db.collection('user').document(user_id)
+        wishlist_ref = user_ref.collection('wishlist').document('house_warming')
+        item_ref = wishlist_ref.collection('products').document(product_name)
+    
+        item_ref.delete()
+    
+        return redirect('/main1/')
+    
+def status_update_w(request, product_name):
+    action = request.POST.get('action')
+   
+    user_id = str(request.user)
+    
+  
+    user_ref = db.collection('user').document(user_id)
+    wishlist_ref = user_ref.collection('wishlist').document('wedding')
+    item_ref = wishlist_ref.collection('products')
+    product_query = item_ref.where('product_name', '==', product_name).get()
+    if product_query:
+        product_doc = product_query[0]
+        key = product_doc.id
+
+        if action == 'buy':
+            item_ref.document(key).update({
+                'status': 'going to buy'
+            })
+        elif action == 'bought':
+            item_ref.document(key).update({
+                'status': 'already bought'
+            })
+        elif action == 'wish_to_buy':
+            item_ref.document(key).update({
+                'status': 'wish to buy'
+            })
+        return redirect('/main2/')
+    
+def delete_item_w(request,product_name):
+        user_id = str(request.user)
+    
+        user_ref = db.collection('user').document(user_id)
+        wishlist_ref = user_ref.collection('wishlist').document('wedding')
+        item_ref = wishlist_ref.collection('products').document(product_name)
+    
+        item_ref.delete()
+    
+        return redirect('/main2/')
+    
+def status_update_bm(request, product_name):
+    action = request.POST.get('action')
+   
+    user_id = str(request.user)
+    
+  
+    user_ref = db.collection('user').document(user_id)
+    wishlist_ref = user_ref.collection('wishlist').document('baptism')
+    item_ref = wishlist_ref.collection('products')
+    product_query = item_ref.where('product_name', '==', product_name).get()
+    if product_query:
+        product_doc = product_query[0]
+        key = product_doc.id
+
+        if action == 'buy':
+            item_ref.document(key).update({
+                'status': 'going to buy'
+            })
+        elif action == 'bought':
+            item_ref.document(key).update({
+                'status': 'already bought'
+            })
+        elif action == 'wish_to_buy':
+            item_ref.document(key).update({
+                'status': 'wish to buy'
+            })
+        return redirect('/main3/')
+    
+def delete_item_bm(request,product_name):
+        user_id = str(request.user)
+    
+        user_ref = db.collection('user').document(user_id)
+        wishlist_ref = user_ref.collection('wishlist').document('baptism')
+        item_ref = wishlist_ref.collection('products').document(product_name)
+    
+        item_ref.delete()
+    
+        return redirect('/main3/')
+    
+def status_update_an(request, product_name):
+    action = request.POST.get('action')
+   
+    user_id = str(request.user)
+    
+  
+    user_ref = db.collection('user').document(user_id)
+    wishlist_ref = user_ref.collection('wishlist').document('anniversary')
+    item_ref = wishlist_ref.collection('products')
+    product_query = item_ref.where('product_name', '==', product_name).get()
+    if product_query:
+        product_doc = product_query[0]
+        key = product_doc.id
+
+        if action == 'buy':
+            item_ref.document(key).update({
+                'status': 'going to buy'
+            })
+        elif action == 'bought':
+            item_ref.document(key).update({
+                'status': 'already bought'
+            })
+        elif action == 'wish_to_buy':
+            item_ref.document(key).update({
+                'status': 'wish to buy'
+            })
+        return redirect('/main4/')
+    
+def delete_item_an(request,product_name):
+        user_id = str(request.user)
+    
+        user_ref = db.collection('user').document(user_id)
+        wishlist_ref = user_ref.collection('wishlist').document('anniversary')
+        item_ref = wishlist_ref.collection('products').document(product_name)
+    
+        item_ref.delete()
+    
+        return redirect('/main4/')
+    
+
+
+    
+
+    
+def sort_low_to_high(request):
+        user_email=str(request.user)
+        user_ref = db.collection('user').document(user_email)
+        wishlist_ref = user_ref.collection('wishlist').document('birthday')
+        products_ref = wishlist_ref.collection('products')
+        print(user_ref)
+
+        # Get all products in the wishlist
+        products = products_ref.get()
+        product_data_list = []
+        for product in products:
+           product_data = product.to_dict()
+           product_data_list.append(product_data)
+           
+        def sort_products_by_price(products):
+            def get_price(item):
+                price_str = item['price']  # Assuming price is stored as a string like '₹44,997'
+                return int(price_str.replace('₹', '').replace(',', ''))  # Convert to integer
+            sorted_products = sorted(products, key=get_price)
+    
+            return sorted_products
+        sorted_products = sort_products_by_price(product_data_list)
+        print(sorted_products)
+        st = {'username': request.user,'product_data_list':sorted_products}
+        return render(request,"Main.html",st)
+
+        
