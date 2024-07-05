@@ -23,7 +23,7 @@ from firebase_admin import credentials
 from firebase_admin import auth
 from firebase_admin import firestore 
 import logging
-cred = credentials.Certificate("C:\Project\Wish\Wish\wishstack-db-firebase-adminsdk-nqcon-fe31740038.json")
+cred = credentials.Certificate("C:\Django\WISHSTACK12\Project\wishstack-db-firebase-adminsdk-nqcon-fe31740038.json")
 firebase_admin.initialize_app(cred)
 authe = auth
 db=firestore.client()
@@ -167,11 +167,18 @@ def edit_profile(request):
 
 def create_wishlist(request):
     if request.method == 'POST':
-        wishlist_name = request.POST.get('wishlistName')
-        if wishlist_name.strip() == "":
+        wishlist_name = request.POST.get('wishname')
+        if wishlist_name == "":
+            print("h")
             messages.error(request, 'Please enter a wishlist name.')
         else:
+            user_email=str(request.user)
+            user_ref = db.collection('user').document(user_email)
+            wishlist_ref = user_ref.collection('wishlist').document(wishlist_name)
+            data = {'exists':True}
+            wishlist_ref.set(data)
             messages.success(request, f'Wishlist "{wishlist_name}" created! Start adding your wishes.')
+            return redirect('/create/')
     return render(request, 'wishing.html')
 
 def main(request, wishlist_name):
@@ -216,6 +223,7 @@ def scrape_flipkart(request, wishlist):
     Prices = []
     Description = []
     Images = []
+    Href=[]
     url = "https://www.flipkart.com/search?q=mobiles+under+50000&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page="+str(1)
     r = requests.get(url)
     soup = BeautifulSoup(r.text, "html.parser")
@@ -238,6 +246,12 @@ def scrape_flipkart(request, wishlist):
         img_tag = img_item.find("img")
         img_src = img_tag.get('src')
         Images.append(img_src)
+    href_div=soup.find_all("a",class_="CGtC98")
+    for href in href_div:
+        href_src= href.get('href')
+        baseurl="https://www.flipkart.com"+ href_src
+        Href.append(baseurl)
+
     
 
     # Define Images1 for the second set of products
@@ -269,6 +283,13 @@ def scrape_flipkart(request, wishlist):
         img_tag = img_item.find("img")
         img_src = img_tag.get('src')
         Images1.append(img_src)
+    
+    href_div1=soup.find_all("a",class_="VJA3rP")
+    for href in href_div1:
+        href_src1 = href.get('href')
+        baseurl="https://www.flipkart.com"+ href_src1
+        Href1.append(baseurl)
+
         
         
     
@@ -301,12 +322,18 @@ def scrape_flipkart(request, wishlist):
         img_tag = img_item.find("img")
         img_src = img_tag.get('src')
         Images2.append(img_src)
+    href_div2=soup2.find_all("a",class_="VJA3rP")
+    for href in href_div2:
+        href_src2 = href.get('href')
+        baseurl="https://www.flipkart.com"+ href_src2
+        Href2.append(baseurl)
         
    #Earphones        
     Product_name4 = []
     Prices4 = []
     Images4=[]
     Description4=[]
+    Href4=[]
     url4 = "https://www.flipkart.com/search?q=earphone+with+power+bank&sid=0pm%2Cfcn%2C821%2Ca7x%2C2si&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&as-pos=2&as-type=RECENT&suggestionId=earphone+with+power+bank%7CTrue+Wireless&requestId=1c7ae1bd-ed21-4897-9fb6-ebadcee2fabf&as-searchtext=powerbank%20and%20earphones"
     r4 = requests.get(url4)
     soup4 = BeautifulSoup(r4.text, "lxml")
@@ -325,16 +352,24 @@ def scrape_flipkart(request, wishlist):
         img_tag = img_item.find("img")
         img_src = img_tag.get('src')
         Images4.append(img_src)
+    href_div4=soup4.find_all("a",class_="VJA3rP")
+    for href in href_div4:
+        href_src4 = href.get('href')
+        baseurl="https://www.flipkart.com"+ href_src4
+        Href4.append(baseurl)
 
     context = {
         'wishlist': wishlist,
-        'products': zip(Product_name, Prices, Description, Images),
-        'products1': zip(Product_name1, Prices1,Description1, Images1),
-        'products2': zip(Product_name2, Prices2, Description2, Images2),
-        'products4': zip(Product_name4, Prices4,Description4, Images4),
+        'products': zip(Product_name, Prices, Description, Images, Href),
+        'products1': zip(Product_name1, Prices1,Description1, Images1, Href1),
+        'products2': zip(Product_name2, Prices2, Description2, Images2, Href2),
+        'products4': zip(Product_name4, Prices4,Description4, Images4, Href4),
     }
     \
     return render(request, 'scraped_data.html', context)
+    
+
+
     
 
 
@@ -473,14 +508,16 @@ def deleteList(request, wishlist_id):
         # Return a failure response if the request is not POST or not AJAX
         #return redirect('/create')
 
-def addtocart(request,wishlist,product,price,image):
+def addtocart(request,wishlist,product,price,image,href):
     product = unquote(product)
     price = unquote(price)
     image = unquote(image)
+    href= unquote(href)
     
     product = str(product)
     price = str(price)
     image = str(image)
+    href=str(href)
     
     a=str(request.user)
     print(a)
@@ -488,12 +525,12 @@ def addtocart(request,wishlist,product,price,image):
     wishlist_ref = user_ref.collection('wishlist').document(wishlist)
     product_ref = wishlist_ref.collection('products').document(product)
 
-    data={"product_name": product,"price":price,"image":image,"status":"not bought"}
+    data={"product_name": product,"price":price,"image":image ,"href":href,"status":"not bought"}
 
     product_ref.set(data)
     return redirect('/scrapeamazon/'+wishlist+'/')
     
-def status_update(request, wishlist_name, product_name, status):
+def status_update(request, wishlist_name, product_name, status): 
     user_id = str(request.user)
     user_ref = db.collection('user').document(user_id)
     wishlist_ref = user_ref.collection('wishlist').document(wishlist_name)
