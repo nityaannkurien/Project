@@ -274,21 +274,29 @@
                 <h2>{{ product_data.product_name }}</h2>
                 <img src="{{ product_data.image }}" alt="image">
                 <p>Price: {{ product_data.price }}</p>
-                {% if product_data.status == "not bought" %}
+                {% if product_data.status == "not bought"  %}
                     <a href="{{ product_data.href }}"><button class="normalbutton">Buy</button></a>
                     <a href="{% url 'status_update' wishlist product_data.product_name 'bought' %}"><button class="normalbutton">Bought</button></a>
                     <a href="{% url 'status_update' wishlist product_data.product_name 'wishtobuy' %}"><button class="normalbutton">Wish To Buy</button></a>
+                    {% if userstatus == 'yes' %}
+                <a href="{% url 'delete_item' wishlist product_data.product_name %}"><button type="submit" class="delete-btn">Delete</button></a>
+                {% endif %}
                 {% endif %}
                 {% if product_data.status == "wish to buy" %}
                     <a href="{{ product_data.href }}"><button class="likebutton">Buy</button></a>
                     <a href="{% url 'status_update' wishlist product_data.product_name 'bought' %}"><button class="likebutton">Bought</button></a>
+                    {% if userstatus == 'yes' %}
+                <a href="{% url 'delete_item' wishlist product_data.product_name %}"><button type="submit" class="delete-btn">Delete</button></a>
+                {% endif %}
+                    <h3>Someone has already planned to get this</h3>
                 {% endif %}
                 {% if product_data.status == "already bought" %}
                     <button class="disablebutton" disabled>Already Bought</button>
-                {% endif %}
-                {% if userstatus == 'yes' %}
+                    {% if userstatus == 'yes' %}
                 <a href="{% url 'delete_item' wishlist product_data.product_name %}"><button type="submit" class="delete-btn">Delete</button></a>
                 {% endif %}
+                {% endif %}
+                
             </div>
             {% endfor %}
         </div>

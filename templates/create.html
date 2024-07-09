@@ -248,6 +248,34 @@ body {
 .button-container span {
     margin-bottom: 10px; /* Space between the message and the button */
 }
+.delete-link {
+  position: relative; /* Position relative for overlay */
+  display: inline-block; /* Ensure block-level properties apply */
+}
+
+.delete-image {
+  position: relative; /* Ensure image container is positioned */
+  display: inline-block; /* Ensure block-level properties apply */
+  margin-top: 5px; /* Adjust margin to move the image down */
+}
+
+.delete-text {
+  position: absolute; /* Position absolute for overlay text */
+  top: 200%; /* Position above the image */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Center horizontally */
+  background-color: #000; /* Background color for text */
+  color: #fff; /* Text color */
+  padding: 5px; /* Padding around text */
+  border-radius: 5px; /* Rounded corners */
+  opacity: 0; /* Initially hidden */
+  transition: opacity 0.3s ease-in-out; /* Smooth transition */
+}
+
+.delete-image:hover + .delete-text {
+  opacity: 1; /* Show text on hover */
+}
+
 
 
 
@@ -280,11 +308,20 @@ body {
           </div>
       </div>
     </div>
+    
+
+
     {% for wish_name in wishlist_names %}
     <div id="wishlist-container" class="wishlist-container">
       <div class="wishlist-item" onclick="redirectToWishing()">
         <div class="button-container">
             <a href="{% url 'main' wish_name.id %}"><button class="add-button">{{ wish_name.name }}</button></a>
+            <div class="dropdown-content">
+              <a href="{% url 'delete_wishlist' wish_name.id %}">
+                <img src="{% static 'WishStack/images/bin-removebg-preview.png' %}" width="25" height="25" class="delete-image">
+                <span class="delete-text">Delete wishlist</span>
+              </a>
+          </div>
         </div>
       </div>
     </div>
