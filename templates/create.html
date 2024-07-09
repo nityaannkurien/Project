@@ -257,7 +257,7 @@ body {
   <div class="wrapper">
     <nav class="navbar">
       <ul class="navbar-list">
-        <li><a>{{ email }}'s WishList</a></li>
+        <li><a>{{ name }}'s WishList</a></li>
       </ul>
       <!--<div class="profile-dropdown">
         <div class="profile-dropdown-btn">
@@ -284,7 +284,7 @@ body {
     <div id="wishlist-container" class="wishlist-container">
       <div class="wishlist-item" onclick="redirectToWishing()">
         <div class="button-container">
-            <a href="{% url 'main' wish_name %}"><button class="add-button">{{ wish_name }}</button></a>
+            <a href="{% url 'main' wish_name.id %}"><button class="add-button">{{ wish_name.name }}</button></a>
         </div>
       </div>
     </div>

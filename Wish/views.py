@@ -115,7 +115,7 @@ def signup(request):
     return render(request, 'signup.html')  # Render signup form on GET request
 
 def create(request):
-    print("dhoiusfoiefgofgfhsifhiurfreuhbfc",request)
+
     print("Full request object:", request)
     print("Request method:", request.method)
     print("Request GET parameters:", request.GET)
@@ -127,20 +127,32 @@ def create(request):
         username = request.user
         user_email = request.session.get('user_email')
         user_uid = request.session.get('user_uid')
+        user_doc_ref = db.collection('user').document(user_email)
+        user_doc = user_doc_ref.get()
+
+        if user_doc.exists:
+            user_data = user_doc.to_dict()
+            user_fname = user_data.get('first_name', 'User')
+            print("User first name from Firestore:", user_fname)
+        else:
+            user_fname = 'User'
+            print("User document not found in Firestore")
+
         print("User email from session:", user_email)
         print("User UID from session:", user_uid)
         items = List.objects.all()
         variable = {
-            'name': username.first_name,
+            'name': user_fname,
             'listname': items,
             'email': user_email,
             'uid': user_uid,
         }
         user_ref = db.collection('user').document(user_email)
-        wishlist_ref = user_ref.collection('wishlist').list_documents()
-        wishlist_items = {}
+        wishlist_ref = user_ref.collection('wishlist').get()
+        wishlist_items = []
         for wish_doc in wishlist_ref:
-            wishlist_items[wish_doc.id] = wish_doc.id
+            wishlist_items.append({'id':wish_doc.id,'name':wish_doc.get('name')})
+            print(wish_doc.get('name'))
         variable['wishlist_names'] = wishlist_items
         return render(request, 'create.html', variable)
     else:
@@ -169,39 +181,53 @@ def create_wishlist(request):
     if request.method == 'POST':
         wishlist_name = request.POST.get('wishname')
         if wishlist_name == "":
-            print("h")
             messages.error(request, 'Please enter a wishlist name.')
         else:
             user_email=str(request.user)
             user_ref = db.collection('user').document(user_email)
-            wishlist_ref = user_ref.collection('wishlist').document(wishlist_name)
-            data = {'exists':True}
+            wishlist_ref = user_ref.collection('wishlist').document()
+            data = {'name':wishlist_name}
             wishlist_ref.set(data)
-            messages.success(request, f'Wishlist "{wishlist_name}" created! Start adding your wishes.')
+            
+
             return redirect('/create/')
     return render(request, 'wishing.html')
 
 def main(request, wishlist_name):
     if request.method=="GET":
-        user_email=str(request.user)
-        user_ref = db.collection('user').document(user_email)
-        wishlist_ref = user_ref.collection('wishlist').document(wishlist_name)
-        products_ref = wishlist_ref.collection('products')
-        print(user_ref)
-
+        user_ref = db.collection('user').get()
+        user_email = request.session.get('user_email')
+        wish_user = None
+        for user_doc in user_ref:
+            wishlist_ref = user_doc.reference.collection('wishlist').get()
+            for wish_doc in wishlist_ref:
+                if wish_doc.id == wishlist_name:
+                    wish_user = user_doc.id
+                    namewish = wish_doc.get('name')
+                    break
+            if wish_user:
+                break
+        user_doc_ref = db.collection('user').document(wish_user)
+        wishlist_doc_ref = user_doc_ref.collection('wishlist').document(wishlist_name)
+        products_ref = wishlist_doc_ref.collection('products')
         # Get all products in the wishlist
         products = products_ref.get()
-        product_data_list = []
-        for product in products:
-           product_data = product.to_dict()
-           product_data_list.append(product_data)
+        product_data_list = [product.to_dict() for product in products]
         print(product_data_list)
         context = {
             'username': request.user,
             'wishlist': wishlist_name,
+            'name': namewish,
         }
-    if product_data_list:
-        context['product_data_list'] = product_data_list
+        print(namewish)
+        if user_email == wish_user:
+            print('h')
+            context['userstatus'] = 'yes'
+        else:
+            print('n')
+            context['userstatus'] = 'no'
+        if product_data_list:
+            context['product_data_list'] = product_data_list
 
     return render(request, 'main.html', context)
 
@@ -230,7 +256,6 @@ def scrape_flipkart(request, wishlist):
     names = soup.find_all("div", class_="KzDlHZ")
     for name in names:
         Product_name.append(name.text)
-
     # Scrape product prices
     prices = soup.find_all("div", class_="Nx9bqj _4b5DiR")
     for price in prices:
@@ -251,9 +276,7 @@ def scrape_flipkart(request, wishlist):
         href_src= href.get('href')
         baseurl="https://www.flipkart.com"+ href_src
         Href.append(baseurl)
-
     
-
     # Define Images1 for the second set of products
     Images1 = []
     Product_name1=[]
@@ -262,39 +285,35 @@ def scrape_flipkart(request, wishlist):
     Href1 = []
     url1 = "https://www.flipkart.com/search?q=bedsheet&sid=jra%2Cknw%2Cqcw&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_2_9_na_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_2_9_na_na_na&as-pos=2&as-type=RECENT&suggestionId=bedsheet%7CBedsheets&requestId=04de54c5-e4a5-4e25-af98-1629d4706010&as-backfill=on&page=2"
     r = requests.get(url1)
-    soup = BeautifulSoup(r.text, "html.parser")
+    soup1 = BeautifulSoup(r.text, "html.parser")
      # Scrape product names
-    names = soup.find_all("a", class_="wjcEIp")
-    for name in names:
+    names1 = soup1.find_all("a", class_="wjcEIp")
+    for name in names1:
         Product_name1.append(name.text)
     # Scrape product prices
-    prices = soup.find_all("div", class_="Nx9bqj")
-    for price in prices:
+    prices1 = soup1.find_all("div", class_="Nx9bqj")
+    for price in prices1:
         Prices1.append(price.text)
-
     # Scrape product descriptions
-    desc = soup.find_all("div", class_="NqpwHC")
-    for d in desc:
+    desc1 = soup1.find_all("div", class_="NqpwHC")
+    for d in desc1:
         Description1.append(d.text)
-
     # Scrape images
-    img_items = soup.find_all("div", class_="_4WELSP WH5SS-")
-    for img_item in img_items:
-        img_tag = img_item.find("img")
-        img_src = img_tag.get('src')
-        Images1.append(img_src)
+    img_items1 = soup1.find_all("div", class_="_4WELSP WH5SS-")
+    for img_item in img_items1:
+        img_tag1 = img_item.find("img")
+        img_src1 = img_tag1.get('src')
+        Images1.append(img_src1)
     
-    href_div1=soup.find_all("a",class_="VJA3rP")
+    href_div1=soup1.find_all("a",class_="VJA3rP")
     for href in href_div1:
         href_src1 = href.get('href')
         baseurl="https://www.flipkart.com"+ href_src1
         Href1.append(baseurl)
-
         
         
     
 # #Home Decor 
-
     Product_name2 = []
     Prices2 = []
     Images2=[]
@@ -307,21 +326,19 @@ def scrape_flipkart(request, wishlist):
     names2 = soup2.find_all("a", class_="wjcEIp")
     for name in names2:
         Product_name2.append(name.text)
-
     # Scrape product prices
     prices2 = soup2.find_all("div", class_="Nx9bqj")
     for price in prices2:
         Prices2.append(price.text)
-    desc = soup.find_all("div", class_="NqpwHC")
-    for d in desc:
+    desc2 = soup2.find_all("div", class_="NqpwHC")
+    for d in desc2:
         Description2.append(d.text)
-
     # Scrape images
     img_items2 = soup2.find_all("div", class_="_4WELSP WH5SS-")
     for img_item in img_items2:
-        img_tag = img_item.find("img")
-        img_src = img_tag.get('src')
-        Images2.append(img_src)
+        img_tag2 = img_item.find("img")
+        img_src2 = img_tag2.get('src')
+        Images2.append(img_src2)
     href_div2=soup2.find_all("a",class_="VJA3rP")
     for href in href_div2:
         href_src2 = href.get('href')
@@ -337,27 +354,25 @@ def scrape_flipkart(request, wishlist):
     url4 = "https://www.flipkart.com/search?q=earphone+with+power+bank&sid=0pm%2Cfcn%2C821%2Ca7x%2C2si&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_2_23_sc_na_na&as-pos=2&as-type=RECENT&suggestionId=earphone+with+power+bank%7CTrue+Wireless&requestId=1c7ae1bd-ed21-4897-9fb6-ebadcee2fabf&as-searchtext=powerbank%20and%20earphones"
     r4 = requests.get(url4)
     soup4 = BeautifulSoup(r4.text, "lxml")
-    names4 = soup.find_all("a", class_="wjcEIp")
+    names4 = soup4.find_all("a", class_="wjcEIp")
     for name in names4:
         Product_name4.append(name.text)
     prices4 = soup4.find_all("div", class_="Nx9bqj")
     for price in prices4:
         Prices4.append(price.text)
-    desc = soup.find_all("div", class_="UkUFwK")
-    for d in desc:
+    desc4 = soup.find_all("div", class_="UkUFwK")
+    for d in desc4:
         Description4.append(d.text)
-
     img_items4 = soup4.find_all("div", class_="_4WELSP")
     for img_item in img_items4:
-        img_tag = img_item.find("img")
-        img_src = img_tag.get('src')
-        Images4.append(img_src)
+        img_tag4 = img_item.find("img")
+        img_src4 = img_tag4.get('src')
+        Images4.append(img_src4)
     href_div4=soup4.find_all("a",class_="VJA3rP")
     for href in href_div4:
         href_src4 = href.get('href')
         baseurl="https://www.flipkart.com"+ href_src4
         Href4.append(baseurl)
-
     context = {
         'wishlist': wishlist,
         'products': zip(Product_name, Prices, Description, Images, Href),
@@ -365,8 +380,9 @@ def scrape_flipkart(request, wishlist):
         'products2': zip(Product_name2, Prices2, Description2, Images2, Href2),
         'products4': zip(Product_name4, Prices4,Description4, Images4, Href4),
     }
-    \
+    
     return render(request, 'scraped_data.html', context)
+
     
 
 
@@ -382,20 +398,24 @@ def scrape_amazon(request, wishlist):
     Prices = []
     Description = []
     Images = []
+    Href=[]
     url = "https://www.flipkart.com/search?q=tops+for+women&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off&page=4"
     r = requests.get(url)
     soup = BeautifulSoup(r.text, "html.parser")
     names = soup.find_all("div", class_="syl9yP")
     for name in names:
         Product_name.append(name.text)
+   
     # Indian Rupee symbol
     prices = soup.find_all("div", class_="Nx9bqj")
     for price in prices:
         Prices.append(price.text)
+
     desc = soup.find_all("a", class_="WKTcLC")
     for d in desc:
         description = d.text
         Description.append(description)
+
    
     # The rest of your code for processing imagespage = urllib.request.urlopen(url)
     
@@ -404,52 +424,73 @@ def scrape_amazon(request, wishlist):
         img_tag = img.find("img")
         img_src = img_tag.get('src')
         Images.append(img_src)
-    href_div = soup.find_all("a", class_="wjcEIp")
+
+    href_div=soup.find_all("a",class_="rPDeLR")
+    for href in href_div:
+        href_src= href.get('href')
+        baseurl="https://www.flipkart.com"+ href_src
+        Href.append(baseurl)
+
+
 
     # Define Images1 for the second set of products
     Images1 = []
     Product_name1=[]
     Prices1=[]
     Description1=[]
+    Href1=[]
     url1 = "https://www.flipkart.com/search?q=men%20t%20shirt%20stylish&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off"
     r1 = requests.get(url1)
     soup1 = BeautifulSoup(r1.text, "html.parser")
     names1 = soup1.find_all("div", class_="syl9yP")
     for name in names1:
         Product_name1.append(name.text)
+
     # Indian Rupee symbol
     prices1 = soup1.find_all("div", class_="Nx9bqj")
     for price in prices1:
         Prices1.append(price.text)
+
     desc1 = soup1.find_all("a", class_="WKTcLC")
     for d in desc1:
         Description1.append(d.text)
-    
+
     img_div1 = soup1.find_all(class_="gqcSqV YGE0gZ")
     for img in img_div1:
         img_tag1 = img.find("img")
         img_src1 = img_tag1.get('src')
         Images1.append(img_src1)
+
+    href_div=soup1.find_all("a",class_="rPDeLR")
+    for href in href_div:
+        href_src= href.get('href')
+        baseurl="https://www.flipkart.com"+ href_src
+        Href1.append(baseurl)
+
+
         
         
     Product_name2 = []
     Prices2 = []
     Images2=[]
     Description2=[]
+    Href2=[]
     url2 = "https://www.flipkart.com/search?q=boys+t+shirt+12%2F13+years&sid=clo%2Cash%2Cank%2Cpgi&as=on&as-show=on&otracker=AS_QueryStore_OrganicAutoSuggest_1_13_na_na_na&otracker1=AS_QueryStore_OrganicAutoSuggest_1_13_na_na_na&as-pos=1&as-type=RECENT&suggestionId=boys+t+shirt+12%2F13+years%7CKids%27+T-shirts&requestId=4760a67d-8bf7-4c4e-adab-d9accf664d73&as-searchtext=boys%20t%20shirt%20"
     r2 = requests.get(url2)
     soup2 = BeautifulSoup(r2.text, "lxml")
     names2 = soup2.find_all("div", class_="syl9yP")
     for name in names2:
         Product_name2.append(name.text)
-        print("Boys Clothing",name.text,"\n")
+
     # Indian Rupee symbol
     prices2 = soup2.find_all("div", class_="Nx9bqj")
     for price in prices2:
         Prices2.append(price.text)
+
     desc2 = soup2.find_all("a", class_="WKTcLC")
     for d in desc2:
         Description2.append(d.text)
+
         
 
     img_div2 = soup2.find_all(class_="gqcSqV YGE0gZ")
@@ -458,10 +499,21 @@ def scrape_amazon(request, wishlist):
         img_src2 = img_tag2.get('src')
         Images2.append(img_src2) 
         
+
+    href_div=soup2.find_all("a",class_="rPDeLR")
+    for href in href_div:
+        href_src= href.get('href')
+        baseurl="https://www.flipkart.com"+ href_src
+        Href2.append(baseurl)
+
+
+
+
     Product_name4 = []
     Prices4 = []
     Images4=[]
     Description4=[]
+    Href4=[]
     url4 = "https://www.flipkart.com/search?q=girls%20dress%2011%2F12years%20frock%20stylish&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off"
     r4 = requests.get(url4)
     soup4 = BeautifulSoup(r4.text, "lxml")
@@ -482,12 +534,20 @@ def scrape_amazon(request, wishlist):
         img_src4 = img_tag4.get('src')
         Images4.append(img_src4)
 
+        
+
+    href_div=soup4.find_all("a",class_="rPDeLR")
+    for href in href_div:
+        href_src= href.get('href')
+        baseurl="https://www.flipkart.com"+ href_src
+        Href4.append(baseurl)
+
     context = {
         'wishlist': wishlist,
-        'products': zip(Product_name, Prices, Description, Images),
-        'products1': zip(Product_name1, Prices1, Description1, Images1),
-        'products2': zip(Product_name2, Prices2, Description2, Images2),
-        'products4': zip(Product_name4, Prices4, Description4, Images4),
+        'products': zip(Product_name, Prices, Description, Images,Href),
+        'products1': zip(Product_name1, Prices1, Description1, Images1,Href1),
+        'products2': zip(Product_name2, Prices2, Description2, Images2,Href2),
+        'products4': zip(Product_name4, Prices4, Description4, Images4,Href4),
     }
     
     return render(request, 'scraped_clothing.html', context)
@@ -509,15 +569,21 @@ def deleteList(request, wishlist_id):
         #return redirect('/create')
 
 def addtocart(request,wishlist,product,price,image,href):
+    print("link2:",href)
+    print("link3:",product)
     product = unquote(product)
     price = unquote(price)
-    image = unquote(image)
-    href= unquote(href)
+    image1 = unquote(image)
+    href1= unquote(href)
     
     product = str(product)
     price = str(price)
-    image = str(image)
-    href=str(href)
+    image1 = str(image)
+    href1=str(href)
+    
+    imagelink = image1.split('?q=70/https://www.flipkart.com/')
+    print(imagelink)
+    href2 = 'https://www.flipkart.com/'+imagelink[1]+'/'+href1
     
     a=str(request.user)
     print(a)
@@ -525,14 +591,23 @@ def addtocart(request,wishlist,product,price,image,href):
     wishlist_ref = user_ref.collection('wishlist').document(wishlist)
     product_ref = wishlist_ref.collection('products').document(product)
 
-    data={"product_name": product,"price":price,"image":image ,"href":href,"status":"not bought"}
+    data={"product_name": product,"price":price,"image":imagelink[0] ,"href":href2,"status":"not bought"}
 
     product_ref.set(data)
-    return redirect('/scrapeamazon/'+wishlist+'/')
+    return redirect('/scrapeflipkart/'+wishlist+'/')
     
 def status_update(request, wishlist_name, product_name, status): 
-    user_id = str(request.user)
-    user_ref = db.collection('user').document(user_id)
+    user_ref = db.collection('user').get()
+    wish_user = None
+    for user_doc in user_ref:
+        wishlist_ref = user_doc.reference.collection('wishlist').get()
+        for wish_doc in wishlist_ref:
+            if wish_doc.id == wishlist_name:
+                wish_user = user_doc.id
+                break
+            if wish_user:
+                break
+    user_ref = db.collection('user').document(wish_user)
     wishlist_ref = user_ref.collection('wishlist').document(wishlist_name)
     item_ref = wishlist_ref.collection('products')
     if status=="bought":
@@ -557,43 +632,74 @@ def delete_item(request,wishlist_name,product_name):
         return redirect('/main/'+wishlist_name+'/')
 
 def sort_low_to_high(request, wishlist):
-        user_email=str(request.user)
-        user_ref = db.collection('user').document(user_email)
-        wishlist_ref = user_ref.collection('wishlist').document(wishlist)
-        products_ref = wishlist_ref.collection('products')
-        products = products_ref.get()
-        product_data_list = []
-        for product in products:
-           product_data = product.to_dict()
-           product_data_list.append(product_data)
-        def sort_products_by_price(products):
-            def get_price(item):
-                price_str = item['price']
-                return int(price_str.replace('₹', '').replace(',', ''))
-            sorted_products = sorted(products, key=get_price)
-            return sorted_products
-        sorted_products = sort_products_by_price(product_data_list)
-        print(sorted_products)
-        st = {'username': request.user,'product_data_list':sorted_products, 'wishlist':wishlist}
-        return render(request,"Main.html",st)
+    user_ref = db.collection('user').get()
+    wish_user = None
+    for user_doc in user_ref:
+        wishlist_ref = user_doc.reference.collection('wishlist').get()
+        for wish_doc in wishlist_ref:
+            if wish_doc.id == wishlist:
+                wish_user = user_doc.id
+                break
+            if wish_user:
+                break
+    user_ref = db.collection('user').document(wish_user)
+    wishlist_ref = user_ref.collection('wishlist').document(wishlist)
+    products_ref = wishlist_ref.collection('products')
+    products = products_ref.get()
+    product_data_list = []
+    for product in products:
+        product_data = product.to_dict()
+        product_data_list.append(product_data)
+    def sort_products_by_price(products):
+        def get_price(item):
+            price_str = item['price']
+            return float(price_str.replace('₹', '').replace(',', ''))#₹
+        sorted_products = sorted(products, key=get_price)
+        return sorted_products
+    sorted_products = sort_products_by_price(product_data_list)
+    print(sorted_products)
+    st = {'username': request.user,'product_data_list':sorted_products, 'wishlist':wishlist}
+    return render(request,"Main.html",st)
 
 def sort_high_to_low(request, wishlist):
-        user_email=str(request.user)
-        user_ref = db.collection('user').document(user_email)
-        wishlist_ref = user_ref.collection('wishlist').document(wishlist)
-        products_ref = wishlist_ref.collection('products')
-        products = products_ref.get()
-        product_data_list = []
-        for product in products:
-           product_data = product.to_dict()
-           product_data_list.append(product_data)
-        def sort_products_by_price(products):
-            def get_price(item):
-                price_str = item['price']
-                return int(price_str.replace('₹', '').replace(',', ''))
-            sorted_products = sorted(products, key=get_price, reverse=True)
-            return sorted_products
-        sorted_products = sort_products_by_price(product_data_list)
-        print(sorted_products)
-        st = {'username': request.user,'product_data_list':sorted_products, 'wishlist':wishlist}
-        return render(request,"Main.html",st)
+    user_ref = db.collection('user').get()
+    wish_user = None
+    for user_doc in user_ref:
+        wishlist_ref = user_doc.reference.collection('wishlist').get()
+        for wish_doc in wishlist_ref:
+            if wish_doc.id == wishlist:
+                wish_user = user_doc.id
+                break
+            if wish_user:
+                break
+    user_ref = db.collection('user').document(wish_user)
+    wishlist_ref = user_ref.collection('wishlist').document(wishlist)
+    products_ref = wishlist_ref.collection('products')
+    products = products_ref.get()
+    product_data_list = []
+    for product in products:
+        product_data = product.to_dict()
+        product_data_list.append(product_data)
+    def sort_products_by_price(products):
+        def get_price(item):
+            price_str = item['price']
+            return float(price_str.replace('₹', '').replace(',', ''))#₹
+        sorted_products = sorted(products, key=get_price, reverse=True)
+        return sorted_products
+    sorted_products = sort_products_by_price(product_data_list)
+    print(sorted_products)
+    st = {'username': request.user,'product_data_list':sorted_products, 'wishlist':wishlist}
+    return render(request,"Main.html",st)
+
+def main_view(request):
+    return render(request, 'Main.html')
+
+def delete_wishlist(request,wishlist_name):
+        user_id = str(request.user)
+        user_ref = db.collection('user').document(user_id)
+        wishlist_ref = user_ref.collection('wishlist').document(wishlist_name)
+    
+        wishlist_ref.delete()
+    
+        return redirect('/create/')
+    

@@ -22,4 +22,5 @@ urlpatterns = [
     path('delete_item/<str:wishlist_name>/<str:product_name>/', views.delete_item, name='delete_item'),
     path('sort_low_to_high/<str:wishlist>/', views.sort_low_to_high, name='sort_low_to_high'),
     path('sort_high_to_low/<str:wishlist>/', views.sort_high_to_low, name='sort_high_to_low'),
+    path('delete_wishlist/<str:wishlist_name>',views.delete_wishlist,name='delete_wishlist'),
 ]

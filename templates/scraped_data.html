@@ -50,48 +50,46 @@
 <body>
     <div class="navigation">
         <a href="#mobiles">Mobile Phone</a>
-        <a href="#bedsheets">Home Decor </a>
-        <a href="#homedecor">Bedsheet</a>
+        <a href="#homedecor">Home Decor </a>
+        <a href="#bedsheets">Bedsheet</a>
         <a href="#earbuds">Earbuds</a>
+        <a href="{% url 'main' wishlist %}">Go to WishList</a>
     </div>
     <div class="container">
-        <h1 id="mobiles">Mobile Phones</h1>
+        <h1 id="mobiles">Mobile Phone</h1>
         <div class="product-row">
             {% for product, price,description, image , href in products %}
             <div class="product-item">
                 <img src="{{ image }}" alt="{{ product }}">
                 <h2>{{ product }}</h2>
                 <p>Price: {{ price }}</p>
-                <p>Link: {{href}}</p>
-                <a href="{% url 'addtocart' wishlist product|urlencode price|urlencode image|urlencode href|urlencode %}">
+                <a href="{% url 'addtocart' wishlist product price|urlencode image href  %}">
                 <button  class="wish-button">Wish</button>
                 </a>
             </div>
             {% endfor %}
         </div>
-        <h1 id="bedsheets">Home Decor</h1>
+        <h1 id="bedsheets">Bedsheet</h1>
         <div class="product-row">
             {% for product, price,description, image,href in products1 %}
             <div class="product-item">
                 <img src="{{ image }}" alt="{{ product }}">
                 <h2>{{ product }}</h2>
                 <p>Price: {{ price }}</p>
-                <p>Link: {{href}}</p>
-                <a href="{% url 'addtocart' wishlist product|urlencode price|urlencode image|urlencode href|urlencode  %}">
+                <a href="{% url 'addtocart' wishlist product|urlencode price|urlencode image href  %}">
                 <button  class="wish-button">Wish</button>
                 </a>
             </div>
             {% endfor %}
         </div>
-        <h1 id="homedecor">Bedsheet</h1>
+        <h1 id="homedecor">Home Decor</h1>
         <div class="product-row">
             {% for product, price,description,image, href in products2 %}
             <div class="product-item">
                 <img src="{{ image }}" alt="{{ product }}">
                 <h2>{{ product }}</h2>
                 <p>Price: {{ price }}</p>
-                <p>Link: {{href}}</p>
-                <a href="{% url 'addtocart' wishlist product|urlencode price|urlencode image|urlencode href|urlencode  %}">
+                <a href="{% url 'addtocart' wishlist product|urlencode price|urlencode image href  %}">
                 <button  class="wish-button">Wish</button>
                 </a>
             </div>
@@ -104,8 +102,7 @@
                 <img src="{{ image }}" alt="{{ product }}">
                 <h2>{{ product }}</h2>
                 <p>Price: {{ price }}</p>
-                <p>Link: {{href}}</p>
-                <a href="{% url 'addtocart' wishlist product|urlencode price|urlencode image|urlencode href|urlencode %}">
+                <a href="{% url 'addtocart' wishlist product|urlencode price|urlencode image href %}">
                 <button  class="wish-button">Wish</button>
                 </a>
             </div>
