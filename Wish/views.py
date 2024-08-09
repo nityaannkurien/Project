@@ -47,7 +47,6 @@ def index(request):
 
 
 def loginUser(request):
-    print("hi", request.method)
     if request.method == "POST":
         email = request.POST.get('email')
         password = request.POST.get('pass')
@@ -700,6 +699,29 @@ def delete_wishlist(request,wishlist_name):
         wishlist_ref = user_ref.collection('wishlist').document(wishlist_name)
     
         wishlist_ref.delete()
-    
+
+        def delete_collection(collection_ref, batch_size):
+            docs = collection_ref.limit(batch_size).stream()
+            deleted = 0
+
+            for doc in docs:
+                # Recursively delete subcollections of this document
+                subcollections = doc.reference.collections()
+                for subcollection in subcollections:
+                    delete_collection(subcollection, batch_size)
+                
+                doc.reference.delete()
+                deleted += 1
+
+            if deleted >= batch_size:
+                return delete_collection(collection_ref, batch_size)
+
+            # Delete all subcollections of the wishlist document
+            subcollections = wishlist_ref.collections()
+            for subcollection in subcollections:
+                delete_collection(subcollection, 10)
+
+            # Delete the wishlist document
+            wishlist_ref.delete()
         return redirect('/create/')
     
